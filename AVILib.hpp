@@ -84,6 +84,15 @@ namespace AVIL
              */
             void pop(const size_t &index)
             {
+                if(size == 0)
+                {
+                    return;
+                }
+                if(size - 1 == 0)
+                {
+                    clean();
+                    return;
+                }
                 if(index >= size or size == 0) return;
                 type* newArray = new type[size - 1];
                 size_t j = 0;
@@ -98,12 +107,17 @@ namespace AVIL
                 }
                 delete[] array;
                 array = newArray;
-                ++arraySize;
+                --arraySize;
             }
 
             //Excludes list from list.
             void exclude(const size_t &from, const size_t &to)
             {
+                if((size - (from - to + 1)) == 0)
+                {
+                    clean();
+                    return;
+                }
                 if(from > to)
                 {
                     if(to >= size) return;
@@ -123,6 +137,7 @@ namespace AVIL
                     }
                     delete[] array;
                     array = newArray;
+                    arraySize -= (from - to + 1);
                 }
                 else
                 {
@@ -143,6 +158,7 @@ namespace AVIL
                     }
                     delete[] array;
                     array = newArray;
+                    arraySize -= (to - from + 1);
                 }
             }
 
@@ -198,8 +214,8 @@ namespace AVIL
             /**
              * @brief Function, which inserts vector at index.
              * 
-             * @param insertedVector 
-             * @param index 
+             * @param insertedVector Vector which will be inserted.
+             * @param index Index at which vector will be inserted.
              */
             void insert(vector<type> insertedVector, size_t index = 0)
             {
