@@ -235,7 +235,13 @@ namespace AVIL
                 return allFound;
             }
 
-            size_t index(const type& checkedElement) const
+            /**
+             * @brief Allows you to find where is specific element.
+             * 
+             * @param checkedElement Searched element.
+             * @return size_t Placement. Size of vector, if no such element found.
+             */
+            size_t where(const type& checkedElement) const
             {
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -247,7 +253,13 @@ namespace AVIL
                 return size;
             }
 
-            size_t index(bool(shouldCount)(const type&)) const
+            /**
+             * @brief Allows you to find where is element which corresponds to the function condition.
+             * 
+             * @param shouldCount Function which defines which element we searching.
+             * @return size_t Placement. Size of vector, if no such element found.
+             */
+            size_t where(bool(shouldCount)(const type&)) const
             {
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -259,6 +271,47 @@ namespace AVIL
                 return size;
             }
 
+            /**
+             * @brief Allows you to find where is specific vector.
+             * 
+             * @param comparedVector Searched vector.
+             * @return size_t Placement. Size of vector, if no such element found.
+             */
+            size_t where(vector<type> comparedVector) const
+            {
+                size_t counter = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(comparedVector[counter] == array[i])
+                    {
+                        ++counter;
+                        if(counter == comparedVector.size)
+                        {
+                            return counter;
+                        }
+                    }
+                }
+                return size;
+            }
+
+            /**
+             * @brief Composes new vector from all elements which flagged by given function.
+             * 
+             * @param shouldInclude Checks whenever element should be included.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> compose(bool(shouldInclude)(const type&)) const
+            {
+                vector<type> newVector{standart};
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldInclude(array[i]))
+                    {
+                        newVector.append(array[i]);
+                    }
+                }
+                return newVector;
+            }
 
             //Excludes list from list.
             void exclude(const size_t &from, const size_t &to)
