@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <initializer_list>
+#include <functional>
 
 /**
  * @brief Namespace of Alternative Vector Implementation Library.
@@ -29,7 +30,7 @@ namespace AVIL
              * @brief Default value for new vector elements.
              * 
              */
-            type standart;
+            type standart = 0;
 
             vector<type>(const type& selectedStandart)
             {
@@ -46,9 +47,9 @@ namespace AVIL
                 return *this;
             }
 
-            // explicit vector<type>(std::initializer_list<type> initializationArray)
+            // vector<type>(std::initializer_list<type> initializationArray)
             // {
-            //     
+                
             //     for(type newElement : initializationArray)
             //     {
             //         append(newElement);
@@ -274,18 +275,18 @@ namespace AVIL
             /**
              * @brief Allows you to find where is specific vector.
              * 
-             * @param comparedVector Searched vector.
+             * @param searchedVector Searched vector.
              * @return size_t Placement. Size of vector, if no such element found.
              */
-            size_t where(vector<type> comparedVector) const
+            size_t where(vector<type> searchedVector) const
             {
                 size_t counter = 0;
                 for(size_t i = 0; i < size; ++i)
                 {
-                    if(comparedVector[counter] == array[i])
+                    if(searchedVector[counter] == array[i])
                     {
                         ++counter;
-                        if(counter == comparedVector.size)
+                        if(counter == searchedVector.size)
                         {
                             return counter;
                         }
@@ -320,6 +321,41 @@ namespace AVIL
              * @return vector<type> Returned vector.
              */
             vector<type> process(type(processFunction)(const type&))
+            {
+                vector<type> newVector{standart};
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector.append(processFunction(array[i]));
+                }
+                return newVector;
+            }
+
+            /**
+             * @brief Composes new vector from all elements which flagged by given function.
+             * 
+             * @param shouldInclude Checks whenever element should be included.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> compose(std::function<bool(const type&)> shouldInclude) const
+            {
+                vector<type> newVector{standart};
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldInclude(array[i]))
+                    {
+                        newVector.append(array[i]);
+                    }
+                }
+                return newVector;
+            }
+
+            /**
+             * @brief Composes new vector out of elements of old vector which were processed by specific function.
+             * 
+             * @param processFunction Function, which changes value.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> process(std::function<type(const type&)> processFunction)
             {
                 vector<type> newVector{standart};
                 for(size_t i = 0; i < size; ++i)
@@ -530,6 +566,11 @@ namespace AVIL
                 arraySize = 0;
             }
 
+            /**
+             * @brief Appends variable.
+             * 
+             * @param newElement Variable to append.
+             */
             void append(const type& newElement)
             {
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
@@ -543,6 +584,11 @@ namespace AVIL
                 ++arraySize;
             }
 
+            /**
+             * @brief Appends vector.
+             * 
+             * @param appendedVector Vector to append.
+             */
             void append(const vector<type>& appendedVector)
             {
                 insert(appendedVector, size);
@@ -665,6 +711,19 @@ namespace AVIL
             ~vector()
             {
                 if(array != nullptr) free(array);
+            }
+
+            vector<type> operator+(const vector<type>& appendedVector) const
+            {
+                vector<type> newVector{standart};
+                newVector.append(appendedVector);
+                return newVector;
+            }
+
+            vector<type> operator+=(const vector<type>& appendedVector)
+            {
+                append(appendedVector);
+                return *this;
             }
 
             vector<type> operator<(const type& comparedValue) const
