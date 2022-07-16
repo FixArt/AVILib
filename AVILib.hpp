@@ -313,6 +313,22 @@ namespace AVIL
                 return newVector;
             }
 
+            /**
+             * @brief Composes new vector out of elements of old vector which were processed by specific function.
+             * 
+             * @param processFunction Function, which changes value.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> process(type(processFunction)(const type&))
+            {
+                vector<type> newVector{standart};
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector.append(processFunction(array[i]));
+                }
+                return newVector;
+            }
+
             size_t max() const
             {
                 if(array == nullptr) return 0;
@@ -669,6 +685,36 @@ namespace AVIL
             vector<type> operator>=(const type& comparedValue) const
             {
                 return compose([comparedValue](const type& checkedValue){ return checkedValue >= comparedValue; });
+            }
+
+            vector<type> operator==(const type& comparedValue) const
+            {
+                return compose([comparedValue](const type& checkedValue){ return checkedValue == comparedValue; });
+            }
+
+            vector<type> operator!=(const type& comparedValue) const
+            {
+                return compose([comparedValue](const type& checkedValue){ return checkedValue != comparedValue; });
+            }
+
+            vector<type> operator+(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue + processedValue; });
+            }
+
+            vector<type> operator-(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue - processedValue; });
+            }
+
+            vector<type> operator*(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue * processedValue; });
+            }
+
+            vector<type> operator/(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue / processedValue; });
             }
     };
 
