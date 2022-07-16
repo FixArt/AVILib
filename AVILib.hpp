@@ -78,6 +78,7 @@ namespace AVIL
             void push(const type &newElement, const size_t &index)
             {
                 if(index > size) return;
+                if(index == size){ (*this)[index] = newElement; return; }
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
                 size_t writteni = 0;
                 for(size_t i = 0; i < size; ++i)
@@ -280,6 +281,10 @@ namespace AVIL
              */
             size_t where(vector<type> searchedVector) const
             {
+                if(searchedVector.size == 0)
+                {
+                    return size;
+                }
                 size_t counter = 0;
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -522,7 +527,7 @@ namespace AVIL
             void insert(vector<type> insertedVector, size_t index = 0)
             {
                 if(index > size) return;
-                for(size_t i = 0; i < size; ++i)
+                for(size_t i = 0; i < insertedVector.size; ++i)
                 {
                     push(insertedVector[i], i + index);
                 }
