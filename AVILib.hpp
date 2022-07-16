@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdlib>
 #include <initializer_list>
 
 /**
@@ -30,10 +31,29 @@ namespace AVIL
              */
             type standart;
 
-            vector<type>(type selectedStandart)
+            vector<type>(const type& selectedStandart)
             {
                 standart = selectedStandart;
             }
+
+            vector<type>& operator=(std::initializer_list<type> initializationArray)
+            {
+                clean();
+                for(type newElement : initializationArray)
+                {
+                    append(newElement);
+                }
+                return *this;
+            }
+
+            // explicit vector<type>(std::initializer_list<type> initializationArray)
+            // {
+            //     clean();
+            //     for(type newElement : initializationArray)
+            //     {
+            //         append(newElement);
+            //     }
+            // }
 
             /**
              * @brief Checks whenever given index currently exists.
@@ -57,7 +77,7 @@ namespace AVIL
             void push(const type &newElement, const size_t &index)
             {
                 if(index > size) return;
-                type* newArray = new type[size + 1];
+                type* newArray = (type*)malloc((size + 1) * sizeof(type));
                 size_t writteni = 0;
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -72,7 +92,7 @@ namespace AVIL
                     }
                     ++writteni;
                 }
-                delete[] array;
+                free(array);
                 array = newArray;
                 ++arraySize;
             }
@@ -84,6 +104,36 @@ namespace AVIL
              */
             void pop(const size_t &index)
             {
+                if(size - 1 == 0)
+                {
+                    clean();
+                    return;
+                }
+                if(index >= size or size == 0) return;
+                //type* newArray = (type*)malloc((size - 1) * sizeof(type));
+                size_t j = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(index == i)
+                    {
+                        continue;
+                    }
+                    array[j] = array[i];
+                    ++j;
+                }
+                //free(array);
+                //array = newArray;
+                //--arraySize;
+                reduce(1);
+            }
+
+            /**
+             * @brief Remove all instances which equal to given.
+             * 
+             * @param checkedElement Element searched.
+             */
+            void remove(const type& checkedElement)
+            {
                 if(size == 0)
                 {
                     return;
@@ -93,21 +143,96 @@ namespace AVIL
                     clean();
                     return;
                 }
-                if(index >= size or size == 0) return;
-                type* newArray = new type[size - 1];
+                //type* newArray = (type*)malloc((size - 1) * sizeof(type));
                 size_t j = 0;
+                size_t allFound = 0;
                 for(size_t i = 0; i < size; ++i)
                 {
-                    if(index == i)
+                    if(checkedElement == array[i])
                     {
+                        ++allFound;
                         continue;
                     }
-                    newArray[j] = array[i];
+                    array[j] = array[i];
                     ++j;
                 }
-                delete[] array;
-                array = newArray;
-                --arraySize;
+                //free(array);
+                //array = newArray;
+                //--arraySize;
+                reduce(allFound);
+            }
+
+            /**
+             * @brief Remove all instances which marked by given function.
+             * 
+             * @param shouldRemove Function to check whenever element should be removed.
+             */
+            void remove(bool(shouldRemove)(const type&))
+            {
+                if(size == 0)
+                {
+                    return;
+                }
+                if(size - 1 == 0)
+                {
+                    clean();
+                    return;
+                }
+                //type* newArray = (type*)malloc((size - 1) * sizeof(type));
+                size_t j = 0;
+                size_t allFound = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldRemove(array[i]))
+                    {
+                        ++allFound;
+                        continue;
+                    }
+                    array[j] = array[i];
+                    ++j;
+                }
+                //free(array);
+                //array = newArray;
+                //--arraySize;
+                reduce(allFound);
+            }
+
+            /**
+             * @brief Count all instances which equal to given.
+             * 
+             * @param checkedElement Element counted.
+             * @return size_t Number of occurences.
+             */
+            size_t count(const type& checkedElement) const
+            {
+                size_t allFound = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(checkedElement == array[i])
+                    {
+                        ++allFound;
+                    }
+                }
+                return allFound;
+            }
+
+            /**
+             * @brief Count all instances which considered good by given function.
+             * 
+             * @param shouldCount Function which will check if element should be counted.
+             * @return size_t Number of occurences.
+             */
+            size_t count(bool(shouldCount)(const type&)) const
+            {
+                size_t allFound = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldCount(array[i]))
+                    {
+                        ++allFound;
+                    }
+                }
+                return allFound;
             }
 
             //Excludes list from list.
@@ -121,7 +246,7 @@ namespace AVIL
                 if(from > to)
                 {
                     if(to >= size) return;
-                    type* newArray = new type[size - (from - to + 1)];
+                    type* newArray = (type*)malloc((size - (from - to + 1)) * sizeof(type));
                     size_t readi = 0;
                     for(size_t i = 0; i < size - (from - to + 1); ++i)
                     {
@@ -135,14 +260,14 @@ namespace AVIL
                         }
                         ++readi;
                     }
-                    delete[] array;
+                    free(array);
                     array = newArray;
                     arraySize -= (from - to + 1);
                 }
                 else
                 {
                     if(from >= size) return;
-                    type* newArray = new type[size - (to - from + 1)];
+                    type* newArray = (type*)malloc((size - (to - from + 1)) * sizeof(type));
                     size_t readi = 0;
                     for(size_t i = 0; i < size - (to - from + 1); ++i)
                     {
@@ -156,7 +281,7 @@ namespace AVIL
                         }
                         ++readi;
                     }
-                    delete[] array;
+                    free(array);
                     array = newArray;
                     arraySize -= (to - from + 1);
                 }
@@ -240,13 +365,13 @@ namespace AVIL
             {
                 if(index >= arraySize or array == nullptr)
                 {
-                    type* newArray = new type[index + 1];
+                    type* newArray = (type*)malloc((index + 1) * sizeof(type));
                     for(size_t i = 0; i < index + 1; ++i)
                     {
                         if(i < size) newArray[i] = array[i];
                         else newArray[i] = standart;
                     }
-                    delete[] array;
+                    free(array);
                     array = newArray;
                     arraySize = index + 1;
                     return array[index];
@@ -259,20 +384,20 @@ namespace AVIL
 
             void clean()
             {
-                delete[] array;
+                if(array != nullptr) free(array);
                 array = nullptr;
                 arraySize = 0;
             }
 
             void append(const type& newElement)
             {
-                type* newArray = new type[size + 1];
+                type* newArray = (type*)malloc((size + 1) * sizeof(type));
                 for(size_t i = 0; i < size + 1; ++i)
                 {
                     if(i < size) newArray[i] = array[i];
                     else newArray[i] = newElement;
                 }
-                delete[] array;
+                free(array);
                 array = newArray;
                 ++arraySize;
             }
@@ -315,25 +440,6 @@ namespace AVIL
                 //return *this;
             }
 
-            vector<type>& operator=(std::initializer_list<type> initializationArray)
-            {
-                clean();
-                for(type newElement : initializationArray)
-                {
-                    append(newElement);
-                }
-                return *this;
-            }
-
-            vector<type>(std::initializer_list<type> initializationArray)
-            {
-                clean();
-                for(type newElement : initializationArray)
-                {
-                    append(newElement);
-                }
-            }
-
             /**
              * @brief Makes arrays smaller by given size.
              * 
@@ -341,12 +447,17 @@ namespace AVIL
              */
             void reduce(const size_t &reducedSize = 1)
             {
-                type* newArray = new type[arraySize - reducedSize];
-                for(size_t i = 0; i < arraySize - reducedSize; ++i)
+                //type* newArray = (type*)malloc((arraySize - reducedSize) * sizeof(type));
+                type* newArray = (type*)reallocarray(array, sizeof(type), arraySize - reducedSize);
+                if(newArray == nullptr)
                 {
-                    newArray[i] = array[i];
+                    newArray = (type*)malloc((arraySize - reducedSize) * sizeof(type));
+                    for(size_t i = 0; i < arraySize - reducedSize; ++i)
+                    {
+                        newArray[i] = array[i];
+                    }
+                    free(array);
                 }
-                delete[] array;
                 array = newArray;
                 arraySize = arraySize - reducedSize;
             }
@@ -357,7 +468,7 @@ namespace AVIL
                 {
                     return;
                 }
-                type* newArray = new type[arraySize + choosedOffset];
+                type* newArray = (type*)malloc((arraySize + choosedOffset) * sizeof(type));
                 size_t readi = 0;
                 for(size_t i = 0; i < arraySize + choosedOffset; ++i)
                 {
@@ -371,7 +482,7 @@ namespace AVIL
                         ++readi;
                     }
                 }
-                delete[] array;
+                free(array);
                 array = newArray;
                 arraySize = arraySize + choosedOffset;
             }
@@ -384,14 +495,14 @@ namespace AVIL
                 }
                 else
                 {
-                    type* newArray = new type[arraySize + choosedOffset];
+                    type* newArray = (type*)malloc((arraySize + choosedOffset) * sizeof(type));
                     size_t writteni = 0;
                     for(size_t i = std::abs(choosedOffset); i < arraySize + choosedOffset; ++i)
                     {
                         newArray[writteni] = array[i];
                         ++writteni;
                     }
-                    delete[] array;
+                    free(array);
                     array = newArray;
                     arraySize = arraySize + choosedOffset;
                 }
@@ -412,7 +523,7 @@ namespace AVIL
 
             ~vector()
             {
-                if(array != nullptr) delete[] array;
+                if(array != nullptr) free(array);
             }
     };
 };
