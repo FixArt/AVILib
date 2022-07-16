@@ -38,7 +38,7 @@ namespace AVIL
 
             vector<type>& operator=(std::initializer_list<type> initializationArray)
             {
-                clean();
+                
                 for(type newElement : initializationArray)
                 {
                     append(newElement);
@@ -48,7 +48,7 @@ namespace AVIL
 
             // explicit vector<type>(std::initializer_list<type> initializationArray)
             // {
-            //     clean();
+            //     
             //     for(type newElement : initializationArray)
             //     {
             //         append(newElement);
@@ -106,7 +106,7 @@ namespace AVIL
             {
                 if(size - 1 == 0)
                 {
-                    clean();
+                    
                     return;
                 }
                 if(index >= size or size == 0) return;
@@ -140,7 +140,7 @@ namespace AVIL
                 }
                 if(size - 1 == 0)
                 {
-                    clean();
+                    
                     return;
                 }
                 //type* newArray = (type*)malloc((size - 1) * sizeof(type));
@@ -175,7 +175,7 @@ namespace AVIL
                 }
                 if(size - 1 == 0)
                 {
-                    clean();
+                    
                     return;
                 }
                 //type* newArray = (type*)malloc((size - 1) * sizeof(type));
@@ -313,12 +313,44 @@ namespace AVIL
                 return newVector;
             }
 
+            size_t max() const
+            {
+                if(array == nullptr) return 0;
+                size_t maxPlacement = 0;
+                type maxValue = array[0];
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(array[i] > maxValue)
+                    {
+                        maxValue = array[i];
+                        maxPlacement = i;
+                    }
+                }
+                return maxPlacement;
+            }
+
+            size_t min() const
+            {
+                if(array == nullptr) return 0;
+                size_t minPlacement = 0;
+                type minValue = array[0];
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(array[i] < minValue)
+                    {
+                        minValue = array[i];
+                        minPlacement = i;
+                    }
+                }
+                return minPlacement;
+            }
+
             //Excludes list from list.
             void exclude(const size_t &from, const size_t &to)
             {
                 if((size - (from - to + 1)) == 0)
                 {
-                    clean();
+                    
                     return;
                 }
                 if(from > to)
@@ -475,7 +507,7 @@ namespace AVIL
                 }
             }
 
-            void clean()
+            void clear()
             {
                 if(array != nullptr) free(array);
                 array = nullptr;
@@ -502,7 +534,7 @@ namespace AVIL
 
             vector<type>& operator=(const vector<type>& assignedVector)
             {
-                clean();
+                
                 for(size_t i = 0; i < assignedVector.size; ++i)
                 {
                     append(assignedVector[i]);
@@ -513,7 +545,7 @@ namespace AVIL
 
             vector<type>(const vector<type>& assignedVector)
             {
-                clean();
+                
                 for(size_t i = 0; i < assignedVector.size; ++i)
                 {
                     append(assignedVector[i]);
@@ -524,7 +556,7 @@ namespace AVIL
 
             vector<type>(const type* const assignedArray, size_t assignedSize, type newStandart = 0)
             {
-                clean();
+                
                 for(size_t i = 0; i < assignedSize; ++i)
                 {
                     append(assignedArray[i]);
