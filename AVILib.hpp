@@ -650,6 +650,26 @@ namespace AVIL
             {
                 if(array != nullptr) free(array);
             }
+
+            vector<type> operator<(const type& comparedValue) const
+            {
+                return compose([comparedValue](const type& checkedValue){ return checkedValue < comparedValue; });
+            }
+
+            vector<type> operator>(const type& comparedValue) const
+            {
+                return compose([comparedValue](const type& checkedValue){ return checkedValue > comparedValue; });
+            }
+
+            vector<type> operator<=(const type& comparedValue) const
+            {
+                return compose([comparedValue](const type& checkedValue){ return checkedValue <= comparedValue; });
+            }
+
+            vector<type> operator>=(const type& comparedValue) const
+            {
+                return compose([comparedValue](const type& checkedValue){ return checkedValue >= comparedValue; });
+            }
     };
 
     template<class type>
