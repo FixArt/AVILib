@@ -695,6 +695,13 @@ namespace AVIL
                 }
             }
 
+            ~vector()
+            {
+                if(array != nullptr) free(array);
+            }
+
+            /*Vectors operations*/
+
             bool operator==(const vector& comparedVector) const
             {
                 if(size != comparedVector.size) return false;
@@ -706,11 +713,6 @@ namespace AVIL
                     }
                 }
                 return true;
-            }
-
-            ~vector()
-            {
-                if(array != nullptr) free(array);
             }
 
             vector<type> operator+(const vector<type>& appendedVector) const
@@ -725,6 +727,8 @@ namespace AVIL
                 append(appendedVector);
                 return *this;
             }
+
+            /*Variables comparisons*/
 
             vector<type> operator<(const type& comparedValue) const
             {
