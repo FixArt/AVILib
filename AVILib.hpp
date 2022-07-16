@@ -235,6 +235,31 @@ namespace AVIL
                 return allFound;
             }
 
+            size_t index(const type& checkedElement) const
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(checkedElement == array[i])
+                    {
+                        return i;
+                    }
+                }
+                return size;
+            }
+
+            size_t index(bool(shouldCount)(const type&)) const
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldCount(array[i]))
+                    {
+                        return i;
+                    }
+                }
+                return size;
+            }
+
+
             //Excludes list from list.
             void exclude(const size_t &from, const size_t &to)
             {
@@ -315,6 +340,21 @@ namespace AVIL
                         if(i < size) newVector[i - from] = array[i];
                     }
                     return newVector;
+                }
+            }
+
+            /**
+             * @brief Reverts vector.
+             * 
+             */
+            void reverse()
+            {
+                type temporary;
+                for(unsigned long long i = 0; i < size/2; ++i)
+                {
+                    temporary = array[size - 1 - i];
+                    array[size - 1 - i] = array[i];
+                    array[i] = temporary;
                 }
             }
 
@@ -526,4 +566,12 @@ namespace AVIL
                 if(array != nullptr) free(array);
             }
     };
+
+    template<class type>
+    inline vector<type> range(type first, type last)
+    {
+        vector<type> newVector;
+        for(type i = first; i < last; ++i) newVector.append(i);
+        return newVector;
+    }
 };
