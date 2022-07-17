@@ -23,6 +23,20 @@ namespace AVIL
             type* array = nullptr;
             size_t arraySize = 0;
 
+            //Function for generating random numbers between min and max.
+            static size_t random(const size_t& min, const size_t& max)
+            {
+                //Random number in range from min to max for long long.
+                return min + rand() % (max - min + 1);
+            }
+
+            //Function for generating random numbers between min and max.
+            static type random(const type& min, const type& max)
+            {
+                //Random number in range from min to max for long long.
+                return min + rand() % (max - min + 1);
+            }
+
             void heapify(size_t lookedStart, size_t lookedSize)
             {
                 type largest = lookedStart;
@@ -452,6 +466,46 @@ namespace AVIL
                     newVector.append(processFunction(array[i]));
                 }
                 return newVector;
+            }
+
+            void fill(type(processFunction)(const size_t&))
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    array[i] = processFunction(i);
+                }
+            }
+
+            void fill(std::function<type(const size_t&)> processFunction)
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    array[i] = processFunction(i);
+                }
+            }
+
+            void fill(type(processFunction)())
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    array[i] = processFunction();
+                }
+            }
+
+            void fill(std::function<type()> processFunction)
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    array[i] = processFunction();
+                }
+            }
+
+            void shuffle()
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    swap(i, random(0, size));
+                }
             }
 
             size_t max() const
