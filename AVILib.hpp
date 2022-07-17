@@ -100,7 +100,7 @@ namespace AVIL
                 ++arraySize;
             }
 
-            short compare(const vector<type>& comparedVector) const
+            short compare(const vector<type>& comparedVector, bool includeSizes = false) const
             {
                 if(size > comparedVector.size)
                 {
@@ -115,7 +115,7 @@ namespace AVIL
                             return -1;
                         }
                     }
-                    return 1;
+                    if(includeSizes) return 1;
                 }
                 else
                 {
@@ -130,8 +130,9 @@ namespace AVIL
                             return -1;
                         }
                     }
-                    return (size == comparedVector.size)?(0):(-1);
+                    if(includeSizes) return (size == comparedVector.size)?(0):(-1);
                 }
+                return 0;
             }
 
             /**
@@ -787,28 +788,28 @@ namespace AVIL
 
             bool operator>(const vector<type>& comparedVector) const
             {
-                return compare(comparedVector) == 1;
+                return compare(comparedVector, true) == 1;
             }
 
             bool operator<(const vector<type>& comparedVector) const
             {
-                return compare(comparedVector) == -1;
+                return compare(comparedVector, true) == -1;
             }
 
             bool operator>=(const vector<type>& comparedVector) const
             {
-                return compare(comparedVector) != -1;
+                return compare(comparedVector, true) != -1;
             }
 
             bool operator<=(const vector<type>& comparedVector) const
             {
-                return compare(comparedVector) != 1;
+                return compare(comparedVector, true) != 1;
             }
 
             #if __cplusplus == 202002L
             short operator<=>(const vector<type>& comparedVector) const
             {
-                return compare(comparedVector);
+                return compare(comparedVector, true);
             }
             #endif
 
