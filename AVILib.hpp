@@ -101,11 +101,26 @@ namespace AVIL
                 ++arraySize;
             }
 
+            /**
+             * @brief Sums all elements.
+             * 
+             * @return type Sum of all elements.
+             */
+            type sum() const
+            {
+                type allElements = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    allElements += array[i];
+                }
+                return allElements;
+            }
+
             short compare(const vector<type>& comparedVector, bool includeSizes = false) const
             {
                 if(size > comparedVector.size)
                 {
-                    for(unsigned long long i = 0; i < comparedVector.size; ++i)
+                    for(size_t i = 0; i < comparedVector.size; ++i)
                     {
                         if(array[i] > comparedVector[i])
                         {
@@ -120,7 +135,7 @@ namespace AVIL
                 }
                 else
                 {
-                    for(unsigned long long i = 0; i < size; ++i)
+                    for(size_t i = 0; i < size; ++i)
                     {
                         if(array[i] > comparedVector[i])
                         {
@@ -529,7 +544,7 @@ namespace AVIL
             void reverse()
             {
                 type temporary;
-                for(unsigned long long i = 0; i < size/2; ++i)
+                for(size_t i = 0; i < size/2; ++i)
                 {
                     temporary = array[size - 1 - i];
                     array[size - 1 - i] = array[i];
@@ -718,9 +733,9 @@ namespace AVIL
             
             void bubbleSort()
             {
-                for (unsigned long long checkedsize = 0; checkedsize < size - 1; ++checkedsize)
+                for (size_t checkedsize = 0; checkedsize < size - 1; ++checkedsize)
                 {
-                    for(unsigned long long i = 0; i<(size-checkedsize-1); ++i)
+                    for(size_t i = 0; i<(size-checkedsize-1); ++i)
                     {
                         if(array[i] > array[i+1])
                         {
@@ -734,9 +749,9 @@ namespace AVIL
 
             void bubbleSort(bool(comparer)(const type&, const type&))
             {
-                for (unsigned long long checkedsize = 0; checkedsize < size - 1; ++checkedsize)
+                for (size_t checkedsize = 0; checkedsize < size - 1; ++checkedsize)
                 {
-                    for(unsigned long long i = 0; i<(size-checkedsize-1); ++i)
+                    for(size_t i = 0; i<(size-checkedsize-1); ++i)
                     {
                         if(comparer(array[i], array[i+1]))
                         {
@@ -750,9 +765,9 @@ namespace AVIL
 
             void insertionSort()
             {
-                for (unsigned long long currentpoint = 0; currentpoint < size; ++currentpoint)
+                for (size_t currentpoint = 0; currentpoint < size; ++currentpoint)
                 {
-                    for(unsigned long long i = 0; i < currentpoint; ++i)
+                    for(size_t i = 0; i < currentpoint; ++i)
                     {
                         if(array[currentpoint] < array[i])
                         {
@@ -769,9 +784,9 @@ namespace AVIL
 
             void insertionSort(bool(comparer)(const type&, const type&))
             {
-                for (unsigned long long currentpoint = 0; currentpoint < size; ++currentpoint)
+                for (size_t currentpoint = 0; currentpoint < size; ++currentpoint)
                 {
-                    for(unsigned long long i = 0; i < currentpoint; ++i)
+                    for(size_t i = 0; i < currentpoint; ++i)
                     {
                         if(comparer(array[i], array[currentpoint]))
                         {
@@ -788,10 +803,10 @@ namespace AVIL
 
             void selectionSort()
             {
-                for(unsigned long long i = 0; i < size - 1; ++i)
+                for(size_t i = 0; i < size - 1; ++i)
                 {
-                    unsigned long long minimalIndex = i;
-                    for (unsigned long long j = i + 1; j < size; ++j)
+                    size_t minimalIndex = i;
+                    for (size_t j = i + 1; j < size; ++j)
                     {
                         if (array[j] < array[minimalIndex])
                         {
@@ -807,10 +822,10 @@ namespace AVIL
 
             void selectionSort(bool(comparer)(const type&, const type&))
             {
-                for(unsigned long long i = 0; i < size - 1; ++i)
+                for(size_t i = 0; i < size - 1; ++i)
                 {
-                    unsigned long long minimalIndex = i;
-                    for (unsigned long long j = i + 1; j < size; ++j)
+                    size_t minimalIndex = i;
+                    for (size_t j = i + 1; j < size; ++j)
                     {
                         if (comparer(array[j], array[minimalIndex]))
                         {
@@ -846,7 +861,7 @@ namespace AVIL
                 {
                     return true;
                 }
-                for(unsigned long long i = 0; i < size - 1; ++i)
+                for(size_t i = 0; i < size - 1; ++i)
                 {
                     if(array[i] > array[i+1])
                     {
@@ -869,7 +884,7 @@ namespace AVIL
                 {
                     return true;
                 }
-                for(unsigned long long i = 0; i < size - 1; ++i)
+                for(size_t i = 0; i < size - 1; ++i)
                 {
                     if(comparer(array[i], array[i+1]))
                     {
