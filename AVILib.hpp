@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <initializer_list>
 #include <functional>
-//#include <algorithm>
+#include <algorithm>
 
 /**
  * @brief Namespace of Alternative Vector Implementation Library.
@@ -891,15 +891,25 @@ namespace AVIL
                 }
             }
 
-            // void sort()
-            // {
-            //     std::sort(array[0], array[size]);
-            // }
+            void sort()
+            {
+                std::sort(array[0], array[size]);
+            }
 
-            // void sort(bool(comparer)(const type&, const type&))
-            // {
-            //     std::sort(array[0], array[size], comparer);
-            // }
+            void sort(bool(comparer)(const type&, const type&))
+            {
+                std::sort(array[0], array[size], comparer);
+            }
+            
+            void stableSort()
+            {
+                std::stable_sort(array[0], array[size]);
+            }
+
+            void stableSort(bool(comparer)(const type&, const type&))
+            {
+                std::stable_sort(array[0], array[size], comparer);
+            }
 
             /**
              * @brief Checks whenever vector is sorted.
