@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdint>
 #include <cstdlib>
 #include <initializer_list>
 #include <functional>
@@ -679,7 +680,7 @@ namespace AVIL
                 arraySize = arraySize + choosedOffset;
             }
 
-            void offset(const long long &choosedOffset)
+            void offset(const intmax_t &choosedOffset)
             {
                 if(choosedOffset >= 0)
                 {
@@ -687,14 +688,18 @@ namespace AVIL
                 }
                 else
                 {
-                    type* newArray = (type*)malloc((arraySize + choosedOffset) * sizeof(type));
-                    size_t writteni = 0;
-                    for(size_t i = std::abs(choosedOffset); i < arraySize + choosedOffset; ++i)
+                    type* newArray = (type*)reallocarray(array, sizeof(type), (arraySize + choosedOffset));
+                    if(newArray == nullptr)
                     {
-                        newArray[writteni] = array[i];
-                        ++writteni;
+                        newArray = (type*)malloc((arraySize + choosedOffset) * sizeof(type));
+                        size_t writteni = 0;
+                        for(size_t i = std::abs(choosedOffset); i < arraySize + choosedOffset; ++i)
+                        {
+                            newArray[writteni] = array[i];
+                            ++writteni;
+                        }
+                        free(array);
                     }
-                    free(array);
                     array = newArray;
                     arraySize = arraySize + choosedOffset;
                 }
