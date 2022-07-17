@@ -67,7 +67,7 @@ namespace AVIL
              */
             bool exists(const size_t& index) const
             {
-                if(array == nullptr) return false;
+                //if(array == nullptr) return false; //Not needed.
                 return index >= size;
             }
 
@@ -582,7 +582,7 @@ namespace AVIL
 
             type &operator[](const size_t &index)
             {
-                if(index >= arraySize or array == nullptr)
+                if(exists(index))
                 {
                     type* newArray = (type*)malloc((index + 1) * sizeof(type));
                     for(size_t i = 0; i < index + 1; ++i)
