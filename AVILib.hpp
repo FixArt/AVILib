@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <initializer_list>
 #include <functional>
+//#include <algorithm>
 
 /**
  * @brief Namespace of Alternative Vector Implementation Library.
@@ -713,6 +714,169 @@ namespace AVIL
                 free(array);
                 array = newArray;
                 arraySize = arraySize + choosedOffset;
+            }
+            
+            void bubbleSort()
+            {
+                for (unsigned long long checkedsize = 0; checkedsize < size - 1; ++checkedsize)
+                {
+                    for(unsigned long long i = 0; i<(size-checkedsize-1); ++i)
+                    {
+                        if(array[i] > array[i+1])
+                        {
+                            type swap = array[i];
+                            array[i] = array[i+1];
+                            array[i+1] = swap;
+                        }
+                    }
+                }
+            }
+
+            void bubbleSort(bool(comparer)(const type&, const type&))
+            {
+                for (unsigned long long checkedsize = 0; checkedsize < size - 1; ++checkedsize)
+                {
+                    for(unsigned long long i = 0; i<(size-checkedsize-1); ++i)
+                    {
+                        if(comparer(array[i], array[i+1]))
+                        {
+                            type swap = array[i];
+                            array[i] = array[i+1];
+                            array[i+1] = swap;
+                        }
+                    }
+                }
+            }
+
+            void insertionSort()
+            {
+                for (unsigned long long currentpoint = 0; currentpoint < size; ++currentpoint)
+                {
+                    for(unsigned long long i = 0; i < currentpoint; ++i)
+                    {
+                        if(array[currentpoint] < array[i])
+                        {
+                            int value = array[currentpoint];
+                            for(int j = currentpoint - 1; j >= i; --j)
+                            {
+                                array[j+1] = array[j];
+                            }
+                            array[i] = value;
+                        }
+                    }
+                }
+            }
+
+            void insertionSort(bool(comparer)(const type&, const type&))
+            {
+                for (unsigned long long currentpoint = 0; currentpoint < size; ++currentpoint)
+                {
+                    for(unsigned long long i = 0; i < currentpoint; ++i)
+                    {
+                        if(comparer(array[i], array[currentpoint]))
+                        {
+                            int value = array[currentpoint];
+                            for(int j = currentpoint - 1; j >= i; --j)
+                            {
+                                array[j+1] = array[j];
+                            }
+                            array[i] = value;
+                        }
+                    }
+                }
+            }
+
+            void selectionSort()
+            {
+                for(unsigned long long i = 0; i < size - 1; ++i)
+                {
+                    unsigned long long minimalIndex = i;
+                    for (unsigned long long j = i + 1; j < size; ++j)
+                    {
+                        if (array[j] < array[minimalIndex])
+                        {
+                            minimalIndex = j;
+                        }
+                    }
+                    if (minimalIndex != i)
+                    {
+                        swap(array[i], array[minimalIndex]);
+                    }
+                }
+            }
+
+            void selectionSort(bool(comparer)(const type&, const type&))
+            {
+                for(unsigned long long i = 0; i < size - 1; ++i)
+                {
+                    unsigned long long minimalIndex = i;
+                    for (unsigned long long j = i + 1; j < size; ++j)
+                    {
+                        if (comparer(array[j], array[minimalIndex]))
+                        {
+                            minimalIndex = j;
+                        }
+                    }
+                    if (minimalIndex != i)
+                    {
+                        swap(array[i], array[minimalIndex]);
+                    }
+                }
+            }
+
+            // void sort()
+            // {
+            //     std::sort(array[0], array[size]);
+            // }
+
+            // void sort(bool(comparer)(const type&, const type&))
+            // {
+            //     std::sort(array[0], array[size], comparer);
+            // }
+
+            /**
+             * @brief Checks whenever vector is sorted.
+             * 
+             * @return true Vector is sorted.
+             * @return false Vector isn't sorted.
+             */
+            bool sorted() const
+            {
+                if(size == 0)
+                {
+                    return true;
+                }
+                for(unsigned long long i = 0; i < size - 1; ++i)
+                {
+                    if(array[i] > array[i+1])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            /**
+             * @brief Checks whenever vector is sorted with given comparison function.
+             * 
+             * @param comparer Given comparison function.
+             * @return true Vector is sorted.
+             * @return false Vector isn't sorted.
+             */
+            bool sorted(bool(comparer)(const type&, const type&)) const
+            {
+                if(size == 0)
+                {
+                    return true;
+                }
+                for(unsigned long long i = 0; i < size - 1; ++i)
+                {
+                    if(comparer(array[i], array[i+1]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
 
             void offset(const intmax_t &choosedOffset)
