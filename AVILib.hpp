@@ -789,6 +789,16 @@ namespace AVIL
             {
                 return process([processedValue](const type& checkedValue){ return checkedValue / processedValue; });
             }
+
+            type* begin()
+            {
+                return &array[0];
+            }
+
+            type* end()
+            {
+                return &array[arraySize];
+            }
     };
 
     template<class type>
