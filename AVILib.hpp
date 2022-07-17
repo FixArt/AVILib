@@ -805,6 +805,13 @@ namespace AVIL
                 return compare(comparedVector) != 1;
             }
 
+            #if __cplusplus == 202002L
+            short operator<=>(const vector<type>& comparedVector) const
+            {
+                return compare(comparedVector);
+            }
+            #endif
+
             /*Variables comparisons*/
 
             vector<type> operator<(const type& comparedValue) const
