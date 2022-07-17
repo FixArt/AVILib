@@ -100,6 +100,40 @@ namespace AVIL
                 ++arraySize;
             }
 
+            short compare(const vector<type>& comparedVector) const
+            {
+                if(size > comparedVector.size)
+                {
+                    for(unsigned long long i = 0; i < comparedVector.size; ++i)
+                    {
+                        if(array[i] > comparedVector[i])
+                        {
+                            return 1;
+                        }
+                        else if(array[i] < comparedVector[i])
+                        {
+                            return -1;
+                        }
+                    }
+                    return 1;
+                }
+                else
+                {
+                    for(unsigned long long i = 0; i < size; ++i)
+                    {
+                        if(array[i] > comparedVector[i])
+                        {
+                            return 1;
+                        }
+                        else if(array[i] < comparedVector[i])
+                        {
+                            return -1;
+                        }
+                    }
+                    return (size == comparedVector.size)?(0):(-1);
+                }
+            }
+
             /**
              * @brief Exclude element from array by index
              * 
@@ -712,7 +746,7 @@ namespace AVIL
 
             /*Vectors operations*/
 
-            bool operator==(const vector& comparedVector) const
+            bool operator==(const vector<type>& comparedVector) const
             {
                 if(size != comparedVector.size) return false;
                 for(size_t i = 0; i < size; ++i)
@@ -723,6 +757,19 @@ namespace AVIL
                     }
                 }
                 return true;
+            }
+
+            bool operator!=(const vector<type>& comparedVector) const
+            {
+                if(size != comparedVector.size) return false;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(array[i] != comparedVector[i])
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             vector<type> operator+(const vector<type>& appendedVector) const
@@ -736,6 +783,26 @@ namespace AVIL
             {
                 append(appendedVector);
                 return *this;
+            }
+
+            bool operator>(const vector<type>& comparedVector) const
+            {
+                return compare(comparedVector) == 1;
+            }
+
+            bool operator<(const vector<type>& comparedVector) const
+            {
+                return compare(comparedVector) == -1;
+            }
+
+            bool operator>=(const vector<type>& comparedVector) const
+            {
+                return compare(comparedVector) != -1;
+            }
+
+            bool operator<=(const vector<type>& comparedVector) const
+            {
+                return compare(comparedVector) != 1;
             }
 
             /*Variables comparisons*/
