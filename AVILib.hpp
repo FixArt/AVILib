@@ -22,6 +22,38 @@ namespace AVIL
         protected:
             type* array = nullptr;
             size_t arraySize = 0;
+
+            void heapify(size_t lookedStart, size_t lookedSize)
+            {
+                type largest = lookedStart;
+                size_t left = 2 * lookedStart + 1;
+                size_t right = 2 * lookedStart + 2;
+                if (left < lookedSize && array[left] > array[largest])
+                    largest = left;
+                if (right < lookedSize && array[right] > array[largest])
+                    largest = right;
+                if (largest != lookedStart)
+                {
+                    swap(array[lookedStart], array[largest]);
+                    heapify(largest, lookedSize);
+                }
+            }
+
+            void heapify(size_t lookedStart, size_t lookedSize, bool(comparer)(const type&, const type&))
+            {
+                type largest = lookedStart;
+                size_t left = 2 * lookedStart + 1;
+                size_t right = 2 * lookedStart + 2;
+                if (left < lookedSize && comparer(array[left], array[largest]))
+                    largest = left;
+                if (right < lookedSize && comparer(array[right], array[largest]))
+                    largest = right;
+                if (largest != lookedStart)
+                {
+                    swap(array[lookedStart], array[largest]);
+                    heapify(largest, lookedSize);
+                }
+            }
         public:
 
             vector<type>() = default;
@@ -836,6 +868,26 @@ namespace AVIL
                     {
                         swap(array[i], array[minimalIndex]);
                     }
+                }
+            }
+
+            void heapSort()
+            {
+                for (size_t i = size / 2 - 1; i != 0; i--) heapify(i, size);
+                for (size_t i = size - 1; i > 0; i--)
+                {
+                    swap(array[0], array[i]);
+                    heapify(0, i);
+                }
+            }
+            
+            void heapSort(bool(comparer)(const type&, const type&))
+            {
+                for (size_t i = size / 2 - 1; i != 0; i--) heapify(i, size, comparer);
+                for (size_t i = size - 1; i > 0; i--)
+                {
+                    swap(array[0], array[i]);
+                    heapify(0, i, comparer);
                 }
             }
 
