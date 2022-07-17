@@ -24,14 +24,8 @@ namespace AVIL
             size_t arraySize = 0;
 
             //Function for generating random numbers between min and max.
-            static size_t random(const size_t& min, const size_t& max)
-            {
-                //Random number in range from min to max for long long.
-                return min + rand() % (max - min + 1);
-            }
-
-            //Function for generating random numbers between min and max.
-            static type random(const type& min, const type& max)
+            template<class randomType>
+            randomType random(const randomType& min, const randomType& max)
             {
                 //Random number in range from min to max for long long.
                 return min + rand() % (max - min + 1);
@@ -418,22 +412,6 @@ namespace AVIL
             }
 
             /**
-             * @brief Composes new vector out of elements of old vector which were processed by specific function.
-             * 
-             * @param processFunction Function, which changes value.
-             * @return vector<type> Returned vector.
-             */
-            vector<type> process(type(processFunction)(const type&))
-            {
-                vector<type> newVector{standart};
-                for(size_t i = 0; i < size; ++i)
-                {
-                    newVector.append(processFunction(array[i]));
-                }
-                return newVector;
-            }
-
-            /**
              * @brief Composes new vector from all elements which flagged by given function.
              * 
              * @param shouldInclude Checks whenever element should be included.
@@ -454,6 +432,22 @@ namespace AVIL
 
             /**
              * @brief Composes new vector out of elements of old vector which were processed by specific function.
+             *
+             * @param processFunction Function, which changes value.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> process(type(processFunction)(const type&))
+            {
+                vector<type> newVector{standart};
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector.append(processFunction(array[i]));
+                }
+                return newVector;
+            }
+
+            /**
+             * @brief Composes new vector out of elements of old vector which were processed by specific function.
              * 
              * @param processFunction Function, which changes value.
              * @return vector<type> Returned vector.
@@ -468,6 +462,11 @@ namespace AVIL
                 return newVector;
             }
 
+            /**
+             * @brief Fills vector through given function.
+             * 
+             * @param processFunction Function which gets position as argument.
+             */
             void fill(type(processFunction)(const size_t&))
             {
                 for(size_t i = 0; i < size; ++i)
@@ -476,6 +475,11 @@ namespace AVIL
                 }
             }
 
+            /**
+             * @brief Fills vector through given function.
+             * 
+             * @param processFunction Function which gets position as argument.
+             */
             void fill(std::function<type(const size_t&)> processFunction)
             {
                 for(size_t i = 0; i < size; ++i)
@@ -484,6 +488,11 @@ namespace AVIL
                 }
             }
 
+            /**
+             * @brief Fills vector through given function.
+             * 
+             * @param processFunction Given function.
+             */
             void fill(type(processFunction)())
             {
                 for(size_t i = 0; i < size; ++i)
@@ -492,12 +501,51 @@ namespace AVIL
                 }
             }
 
+            /**
+             * @brief Fills vector through given function.
+             * 
+             * @param processFunction Given function.
+             */
             void fill(std::function<type()> processFunction)
             {
                 for(size_t i = 0; i < size; ++i)
                 {
                     array[i] = processFunction();
                 }
+            }
+
+            bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&)) const
+            {
+                return checkedVector == compose(shouldInclude);
+            }
+
+            bool isComposed(const vector<type>& checkedVector, std::function<bool(const type&)> shouldInclude) const
+            {
+                return checkedVector == compose(shouldInclude);
+            }
+
+            bool isProcessed(const vector<type>& checkedVector, bool(processFunction)(const type&)) const
+            {
+                return checkedVector == process(processFunction);
+            }
+
+            bool isProcessed(const vector<type>& checkedVector, std::function<bool(const type&)> processFunction) const
+            {
+                return checkedVector == process(processFunction);
+            }
+
+            bool isFilled(bool(processFunction)(const type&)) const
+            {
+                vector<type> newVector{standart};
+                newVector[size - 1] = standart;
+                return *this == newVector.fill(processFunction);
+            }
+
+            bool isFilled(std::function<bool(const type&)> processFunction) const
+            {
+                vector<type> newVector{standart};
+                newVector[size - 1] = standart;
+                return *this == newVector.fill(processFunction);
             }
 
             void shuffle()
@@ -1035,6 +1083,19 @@ namespace AVIL
                 }
             }
 
+            vector<type> apply(const vector<size_t>& map) const
+            {
+                vector<type> newVector = *this;
+                if(map.size != size) return newVector;
+                size_t i = 0;
+                for(size_t placement : map)
+                {
+                    newVector[placement] = array[i];
+                    ++i;
+                }
+                return newVector;
+            }
+
             ~vector()
             {
                 if(array != nullptr) free(array);
@@ -1158,6 +1219,16 @@ namespace AVIL
             vector<type> operator/(const type& processedValue)
             {
                 return process([processedValue](const type& checkedValue){ return checkedValue / processedValue; });
+            }
+
+            type* begin() const
+            {
+                return (const type &)&array[0];
+            }
+
+            type* end() const
+            {
+                return (const type &)&array[arraySize];
             }
 
             type* begin()
