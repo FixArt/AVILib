@@ -1083,9 +1083,9 @@ namespace AVIL
                 }
             }
 
-            vector<type> apply(const vector<size_t>& map) const
+            vector<type> order(const vector<size_t>& map) const
             {
-                vector<type> newVector = *this;
+                vector<type> newVector{standart};
                 if(map.size != size) return newVector;
                 size_t i = 0;
                 for(size_t placement : map)
