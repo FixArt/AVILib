@@ -1291,6 +1291,15 @@ namespace AVIL
                 if(array != nullptr) free(array);
             }
 
+            void swap(vector<type>& swappedWith)
+            {
+                vector<type> newVector = swappedWith;
+                swappedWith.resize(size);
+                swappedWith = *this;
+                resize(newVector.size);
+                *this = newVector;
+            }
+
             /*Vectors operations*/
 
             bool operator==(const vector<type>& comparedVector) const
