@@ -631,11 +631,6 @@ namespace AVIL
                 return checkedVector == process(processFunction);
             }
 
-            bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
-            {
-                return checkedVector == order(map);
-            }
-
             bool isFilled(bool(processFunction)(const type&)) const
             {
                 vector<type> newVector;
@@ -648,6 +643,11 @@ namespace AVIL
                 vector<type> newVector;
                 newVector.resize(size);
                 return *this == newVector.fill(processFunction);
+            }
+
+            bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
+            {
+                return checkedVector == order(map);
             }
 
             void shuffle()
