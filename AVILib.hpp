@@ -1083,6 +1083,19 @@ namespace AVIL
                 }
             }
 
+            bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
+            {
+                vector<type> newVector{standart};
+                if(map.size != size) return newVector;
+                size_t i = 0;
+                for(size_t placement : map)
+                {
+                    newVector[placement] = array[i];
+                    ++i;
+                }
+                return newVector == checkedVector;
+            }
+
             vector<type> order(const vector<size_t>& map) const
             {
                 vector<type> newVector{standart};
