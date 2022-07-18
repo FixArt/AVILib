@@ -1070,9 +1070,9 @@ namespace AVIL
             
             void bubbleSort()
             {
-                for (size_t checkedsize = 0; checkedsize < size - 1; ++checkedsize)
+                for (size_t checkedSize = 0; checkedSize < size - 1; ++checkedSize)
                 {
-                    for(size_t i = 0; i<(size-checkedsize-1); ++i)
+                    for(size_t i = 0; i<(size-checkedSize-1); ++i)
                     {
                         if(array[i] > array[i+1])
                         {
@@ -1086,9 +1086,9 @@ namespace AVIL
 
             void bubbleSort(bool(comparer)(const type&, const type&))
             {
-                for (size_t checkedsize = 0; checkedsize < size - 1; ++checkedsize)
+                for (size_t checkedSize = 0; checkedSize < size - 1; ++checkedSize)
                 {
-                    for(size_t i = 0; i<(size-checkedsize-1); ++i)
+                    for(size_t i = 0; i < (size -checkedSize - 1); ++i)
                     {
                         if(comparer(array[i], array[i+1]))
                         {
@@ -1102,14 +1102,14 @@ namespace AVIL
 
             void insertionSort()
             {
-                for (size_t currentpoint = 0; currentpoint < size; ++currentpoint)
+                for (size_t currentPoint = 0; currentPoint < size; ++currentPoint)
                 {
-                    for(size_t i = 0; i < currentpoint; ++i)
+                    for(size_t i = 0; i < currentPoint; ++i)
                     {
-                        if(array[currentpoint] < array[i])
+                        if(array[currentPoint] < array[i])
                         {
-                            int value = array[currentpoint];
-                            for(int j = currentpoint - 1; j >= i; --j)
+                            int value = array[currentPoint];
+                            for(int j = currentPoint - 1; j >= i; --j)
                             {
                                 array[j+1] = array[j];
                             }
@@ -1121,14 +1121,14 @@ namespace AVIL
 
             void insertionSort(bool(comparer)(const type&, const type&))
             {
-                for (size_t currentpoint = 0; currentpoint < size; ++currentpoint)
+                for (size_t currentPoint = 0; currentPoint < size; ++currentPoint)
                 {
-                    for(size_t i = 0; i < currentpoint; ++i)
+                    for(size_t i = 0; i < currentPoint; ++i)
                     {
-                        if(comparer(array[i], array[currentpoint]))
+                        if(comparer(array[i], array[currentPoint]))
                         {
-                            int value = array[currentpoint];
-                            for(int j = currentpoint - 1; j >= i; --j)
+                            int value = array[currentPoint];
+                            for(int j = currentPoint - 1; j >= i; --j)
                             {
                                 array[j+1] = array[j];
                             }
