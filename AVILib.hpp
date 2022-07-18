@@ -25,7 +25,7 @@ namespace AVIL
 
             //Function for generating random numbers between min and max.
             template<class randomType>
-            randomType random(const randomType& min, const randomType& max)
+            static randomType random(const randomType& min, const randomType& max)
             {
                 //Random number in range from min to max for long long.
                 return min + rand() % (max - min + 1);
