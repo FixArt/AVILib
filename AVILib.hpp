@@ -31,6 +31,13 @@ namespace AVIL
                 return min + rand() % (max - min + 1);
             }
 
+            //Function for generating random numbers between min and max.
+            template<class randomType>
+            static randomType random(const randomType& min, const randomType& max, randomType(randomProvider)())
+            {
+                return min + rand() % (max - min + 1);
+            }
+
             void heapify(size_t lookedStart, size_t lookedSize)
             {
                 type largest = lookedStart;
@@ -556,6 +563,14 @@ namespace AVIL
                 for(size_t i = 0; i < size; ++i)
                 {
                     swap(array[i], array[provider(0, size - 1, i)]);
+                }
+            }
+
+            void shuffle(size_t(provider)())
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    swap(array[i], array[random<size_t>(0, size - 1, provider)]);
                 }
             }
 
