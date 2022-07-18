@@ -1088,7 +1088,7 @@ namespace AVIL
             {
                 for (size_t checkedSize = 0; checkedSize < size - 1; ++checkedSize)
                 {
-                    for(size_t i = 0; i < (size -checkedSize - 1); ++i)
+                    for(size_t i = 0; i < (size - checkedSize - 1); ++i)
                     {
                         if(comparer(array[i], array[i+1]))
                         {
