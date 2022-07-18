@@ -1262,4 +1262,43 @@ namespace AVIL
         for(type i = first; i < last; ++i) newVector.append(i);
         return newVector;
     }
+
+    /**
+     * @brief Variable, which will be stored in heap. You most likely don't need this.
+     * 
+     * @tparam type Type of the variable.
+     */
+    template<class type>
+    struct heapvariable
+    {
+        protected:
+            type* variable = nullptr;
+        public:
+            
+            heapvariable<type>(const type& value)
+            {
+                variable = new type{value};
+            }
+
+            heapvariable<type>(heapvariable<type>& value)
+            {
+                variable = new type{value};
+            }
+
+            heapvariable<type>& operator=(const type& value)
+            {
+                variable = value;
+                return *this;
+            }
+
+            operator type&()
+            {
+                return *variable;
+            }
+
+            ~heapvariable<type>()
+            {
+                if(variable != nullptr) delete variable;
+            }
+    };
 };
