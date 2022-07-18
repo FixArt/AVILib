@@ -69,17 +69,6 @@ namespace AVIL
 
             const size_t &size = arraySize;
 
-            /**
-             * @brief Default value for new vector elements.
-             * 
-             */
-            type standart = 0;
-
-            vector<type>(const type& selectedStandart)
-            {
-                standart = selectedStandart;
-            }
-
             vector<type>& operator=(std::initializer_list<type> initializationArray)
             {
                 for(type newElement : initializationArray)
@@ -89,14 +78,13 @@ namespace AVIL
                 return *this;
             }
 
-            // vector<type>(std::initializer_list<type> initializationArray)
-            // {
-                
-            //     for(type newElement : initializationArray)
-            //     {
-            //         append(newElement);
-            //     }
-            // }
+            vector<type>(std::initializer_list<type> initializationArray)
+            {
+                for(type newElement : initializationArray)
+                {
+                    append(newElement);
+                }
+            }
 
             /**
              * @brief Checks whenever given index currently exists.
@@ -108,7 +96,7 @@ namespace AVIL
             bool exists(const size_t& index) const
             {
                 //if(array == nullptr) return false; //Not needed.
-                return index >= size;
+                return index < size;
             }
 
             /**
@@ -400,7 +388,7 @@ namespace AVIL
              */
             vector<type> compose(bool(shouldInclude)(const type&)) const
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 for(size_t i = 0; i < size; ++i)
                 {
                     if(shouldInclude(array[i]))
@@ -419,7 +407,7 @@ namespace AVIL
              */
             vector<type> compose(std::function<bool(const type&)> shouldInclude) const
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 for(size_t i = 0; i < size; ++i)
                 {
                     if(shouldInclude(array[i]))
@@ -438,7 +426,7 @@ namespace AVIL
              */
             vector<type> process(type(processFunction)(const type&))
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 for(size_t i = 0; i < size; ++i)
                 {
                     newVector.append(processFunction(array[i]));
@@ -454,7 +442,7 @@ namespace AVIL
              */
             vector<type> process(std::function<type(const type&)> processFunction)
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 for(size_t i = 0; i < size; ++i)
                 {
                     newVector.append(processFunction(array[i]));
@@ -536,15 +524,15 @@ namespace AVIL
 
             bool isFilled(bool(processFunction)(const type&)) const
             {
-                vector<type> newVector{standart};
-                newVector[size - 1] = standart;
+                vector<type> newVector;
+                newVector.resize(size);
                 return *this == newVector.fill(processFunction);
             }
 
             bool isFilled(std::function<bool(const type&)> processFunction) const
             {
-                vector<type> newVector{standart};
-                newVector[size - 1] = standart;
+                vector<type> newVector;
+                newVector.resize(size);
                 return *this == newVector.fill(processFunction);
             }
 
@@ -552,7 +540,7 @@ namespace AVIL
             {
                 for(size_t i = 0; i < size; ++i)
                 {
-                    swap(i, random(0, size));
+                    swap(array[i], array[random<size_t>(0, size)]);
                 }
             }
 
@@ -649,7 +637,7 @@ namespace AVIL
              */
             vector<type> copy(const size_t &from, const size_t &to) const
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 if(array == nullptr) return newVector;
                 if(from > to)
                 {
@@ -695,7 +683,7 @@ namespace AVIL
              */
             vector<type> cut(const size_t &from, const size_t &to)
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 if(array == nullptr) return newVector;
                 if(from > to and to >= size) return newVector;
                 else if(from >= size) return newVector;
@@ -788,24 +776,25 @@ namespace AVIL
 
             vector<type>& operator=(const vector<type>& assignedVector)
             {
-                for(size_t i = 0; i < assignedVector.size; ++i)
-                {
-                    append(assignedVector[i]);
-                }
+                // for(size_t i = 0; i < assignedVector.size; ++i)
+                // {
+                //     append(assignedVector[i]);
+                // }
                 // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
-                // std::copy(assignedVector[0], assignedVector[assignedVector.size], array);
-                standart = assignedVector.standart;
+                resize(assignedVector.size);
+                std::copy(assignedVector[0], assignedVector[assignedVector.size], array);
                 return *this;
             }
 
             vector<type>(const vector<type>& assignedVector)
             {
-                for(size_t i = 0; i < assignedVector.size; ++i)
-                {
-                    append(assignedVector[i]);
-                }
+                // for(size_t i = 0; i < assignedVector.size; ++i)
+                // {
+                //     append(assignedVector[i]);
+                // }
                 // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
-                standart = assignedVector.standart;
+                resize(assignedVector.size);
+                std::copy(assignedVector[0], assignedVector[assignedVector.size], array);
                 //return *this;
             }
 
@@ -816,8 +805,8 @@ namespace AVIL
                     append(assignedArray[i]);
                 }
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
-                standart = newStandart;
-                //return *this;
+                resize(assignedSize);
+                std::copy(assignedArray[0], assignedArray[assignedSize], array);
             }
 
             void resize(const size_t &newSize)
@@ -826,10 +815,9 @@ namespace AVIL
                 if(newArray == nullptr)
                 {
                     newArray = (type*)malloc((newSize) * sizeof(type));
-                    for(size_t i = 0; i < newSize; ++i)
+                    for(size_t i = 0; i < newSize and i < size; ++i)
                     {
-                        if(i < size) newArray[i] = array[i];
-                        else newArray[i] = standart;
+                        newArray[i] = array[i];
                     }
                     free(array);
                 }
@@ -854,6 +842,7 @@ namespace AVIL
                         newArray[i] = array[i];
                     }
                     // newArray = (type*)memcpy(newArray, array, (arraySize - reducedSize) * sizeof(type));
+                    // std::copy(array[0], array[(arraySize - reducedSize) * sizeof(type)], newArray);
                     free(array);
                 }
                 array = newArray;
@@ -870,11 +859,7 @@ namespace AVIL
                 size_t readi = 0;
                 for(size_t i = 0; i < arraySize + choosedOffset; ++i)
                 {
-                    if(i < choosedOffset)
-                    {
-                        newArray[i] = standart;
-                    }
-                    else
+                    if(i >= choosedOffset)
                     {
                         newArray[i] = array[readi];
                         ++readi;
@@ -1105,7 +1090,7 @@ namespace AVIL
 
             bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 if(map.size != size) return newVector;
                 size_t i = 0;
                 for(size_t placement : map)
@@ -1118,7 +1103,7 @@ namespace AVIL
 
             vector<type> order(const vector<size_t>& map) const
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 if(map.size != size) return newVector;
                 size_t i = 0;
                 for(size_t placement : map)
@@ -1164,7 +1149,7 @@ namespace AVIL
 
             vector<type> operator+(const vector<type>& appendedVector) const
             {
-                vector<type> newVector{standart};
+                vector<type> newVector;
                 newVector.append(appendedVector);
                 return newVector;
             }
