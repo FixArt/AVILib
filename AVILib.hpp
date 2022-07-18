@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
+// #include <cstring>
 #include <initializer_list>
 #include <functional>
 #include <algorithm>
@@ -81,7 +82,6 @@ namespace AVIL
 
             vector<type>& operator=(std::initializer_list<type> initializationArray)
             {
-                
                 for(type newElement : initializationArray)
                 {
                     append(newElement);
@@ -787,33 +787,33 @@ namespace AVIL
 
             vector<type>& operator=(const vector<type>& assignedVector)
             {
-                
                 for(size_t i = 0; i < assignedVector.size; ++i)
                 {
                     append(assignedVector[i]);
                 }
+                // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
                 standart = assignedVector.standart;
                 return *this;
             }
 
             vector<type>(const vector<type>& assignedVector)
             {
-                
                 for(size_t i = 0; i < assignedVector.size; ++i)
                 {
                     append(assignedVector[i]);
                 }
+                // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
                 standart = assignedVector.standart;
                 //return *this;
             }
 
             vector<type>(const type* const assignedArray, size_t assignedSize, type newStandart = 0)
             {
-                
                 for(size_t i = 0; i < assignedSize; ++i)
                 {
                     append(assignedArray[i]);
                 }
+                // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 standart = newStandart;
                 //return *this;
             }
@@ -834,6 +834,7 @@ namespace AVIL
                     {
                         newArray[i] = array[i];
                     }
+                    // newArray = (type*)memcpy(newArray, array, (arraySize - reducedSize) * sizeof(type));
                     free(array);
                 }
                 array = newArray;
