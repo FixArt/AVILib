@@ -591,6 +591,46 @@ namespace AVIL
                 return newVector;
             }
 
+            vector<type> order(size_t(processFunction)(const size_t&)) const
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector[processFunction(i)] = array[i];
+                }
+                return newVector;
+            }
+
+            vector<type> order(size_t(processFunction)(const size_t&, const type&)) const
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector[processFunction(i, array[i])] = array[i];
+                }
+                return newVector;
+            }
+
+            vector<type> order(std::function<size_t(const size_t&)> processFunction) const
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector[processFunction(i)] = array[i];
+                }
+                return newVector;
+            }
+
+            vector<type> order(std::function<size_t(const size_t&, const type&)> processFunction) const
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector[processFunction(i, array[i])] = array[i];
+                }
+                return newVector;
+            }
+
             bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&)) const
             {
                 return checkedVector == compose(shouldInclude);
@@ -648,6 +688,26 @@ namespace AVIL
             bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
             {
                 return checkedVector == order(map);
+            }
+
+            bool isOrdered(const vector<type>& checkedVector, size_t(processFunction)(const size_t&)) const
+            {
+                return checkedVector == order(processFunction);
+            }
+
+            bool isOrdered(const vector<type>& checkedVector, size_t(processFunction)(const size_t&, const type&)) const
+            {
+                return checkedVector == order(processFunction);
+            }
+
+            bool isOrdered(const vector<type>& checkedVector, std::function<size_t(const size_t&)> processFunction) const
+            {
+                return checkedVector == order(processFunction);
+            }
+
+            bool isOrdered(const vector<type>& checkedVector, std::function<size_t(const size_t&, const type&)> processFunction) const
+            {
+                return checkedVector == order(processFunction);
             }
 
             void shuffle()
