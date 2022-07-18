@@ -425,6 +425,44 @@ namespace AVIL
             }
 
             /**
+             * @brief Composes new vector from all elements which flagged by given function.
+             * 
+             * @param shouldInclude Checks whenever element should be included.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> compose(bool(shouldInclude)(const type&, size_t)) const
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldInclude(array[i], i))
+                    {
+                        newVector.append(array[i]);
+                    }
+                }
+                return newVector;
+            }
+
+            /**
+             * @brief Composes new vector from all elements which flagged by given function.
+             * 
+             * @param shouldInclude Checks whenever element should be included.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> compose(std::function<bool(const type&, size_t)> shouldInclude) const
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldInclude(array[i], i))
+                    {
+                        newVector.append(array[i]);
+                    }
+                }
+                return newVector;
+            }
+
+            /**
              * @brief Composes new vector out of elements of old vector which were processed by specific function.
              *
              * @param processFunction Function, which changes value.
@@ -452,6 +490,38 @@ namespace AVIL
                 for(size_t i = 0; i < size; ++i)
                 {
                     newVector.append(processFunction(array[i]));
+                }
+                return newVector;
+            }
+
+            /**
+             * @brief Composes new vector out of elements of old vector which were processed by specific function.
+             *
+             * @param processFunction Function, which changes value.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> process(type(processFunction)(const type&, size_t))
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector.append(processFunction(array[i], i));
+                }
+                return newVector;
+            }
+
+            /**
+             * @brief Composes new vector out of elements of old vector which were processed by specific function.
+             * 
+             * @param processFunction Function, which changes value.
+             * @return vector<type> Returned vector.
+             */
+            vector<type> process(std::function<type(const type&, size_t)> processFunction)
+            {
+                vector<type> newVector;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    newVector.append(processFunction(array[i], i));
                 }
                 return newVector;
             }
@@ -508,12 +578,35 @@ namespace AVIL
                 }
             }
 
+            vector<type> order(const vector<size_t>& map) const
+            {
+                vector<type> newVector;
+                if(map.size != size) return newVector;
+                size_t i = 0;
+                for(size_t placement : map)
+                {
+                    newVector[placement] = array[i];
+                    ++i;
+                }
+                return newVector;
+            }
+
             bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&)) const
             {
                 return checkedVector == compose(shouldInclude);
             }
 
             bool isComposed(const vector<type>& checkedVector, std::function<bool(const type&)> shouldInclude) const
+            {
+                return checkedVector == compose(shouldInclude);
+            }
+
+            bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&, size_t)) const
+            {
+                return checkedVector == compose(shouldInclude);
+            }
+
+            bool isComposed(const vector<type>& checkedVector, std::function<bool(const type&, size_t)> shouldInclude) const
             {
                 return checkedVector == compose(shouldInclude);
             }
@@ -526,6 +619,21 @@ namespace AVIL
             bool isProcessed(const vector<type>& checkedVector, std::function<bool(const type&)> processFunction) const
             {
                 return checkedVector == process(processFunction);
+            }
+
+            bool isProcessed(const vector<type>& checkedVector, bool(processFunction)(const type&, size_t)) const
+            {
+                return checkedVector == process(processFunction);
+            }
+
+            bool isProcessed(const vector<type>& checkedVector, std::function<bool(const type&, size_t)> processFunction) const
+            {
+                return checkedVector == process(processFunction);
+            }
+
+            bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
+            {
+                return checkedVector == order(map);
             }
 
             bool isFilled(bool(processFunction)(const type&)) const
@@ -1116,32 +1224,6 @@ namespace AVIL
                     array = newArray;
                     arraySize = arraySize + choosedOffset;
                 }
-            }
-
-            bool isOrdered(const vector<type>& checkedVector, const vector<size_t>& map) const
-            {
-                vector<type> newVector;
-                if(map.size != size) return newVector;
-                size_t i = 0;
-                for(size_t placement : map)
-                {
-                    newVector[placement] = array[i];
-                    ++i;
-                }
-                return newVector == checkedVector;
-            }
-
-            vector<type> order(const vector<size_t>& map) const
-            {
-                vector<type> newVector;
-                if(map.size != size) return newVector;
-                size_t i = 0;
-                for(size_t placement : map)
-                {
-                    newVector[placement] = array[i];
-                    ++i;
-                }
-                return newVector;
             }
 
             ~vector()
