@@ -731,17 +731,18 @@ namespace AVIL
 
             type &operator[](const size_t &index)
             {
-                if(exists(index))
+                if(!exists(index))
                 {
-                    type* newArray = (type*)malloc((index + 1) * sizeof(type));
-                    for(size_t i = 0; i < index + 1; ++i)
-                    {
-                        if(i < size) newArray[i] = array[i];
-                        else newArray[i] = standart;
-                    }
-                    free(array);
-                    array = newArray;
-                    arraySize = index + 1;
+                    // type* newArray = (type*)malloc((index + 1) * sizeof(type));
+                    // for(size_t i = 0; i < index + 1; ++i)
+                    // {
+                    //     if(i < size) newArray[i] = array[i];
+                    //     else newArray[i] = standart;
+                    // }
+                    // free(array);
+                    // array = newArray;
+                    // arraySize = index + 1;
+                    resize(index + 1);
                     return array[index];
                 }
                 else
@@ -792,6 +793,7 @@ namespace AVIL
                     append(assignedVector[i]);
                 }
                 // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
+                // std::copy(assignedVector[0], assignedVector[assignedVector.size], array);
                 standart = assignedVector.standart;
                 return *this;
             }
@@ -816,6 +818,23 @@ namespace AVIL
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 standart = newStandart;
                 //return *this;
+            }
+
+            void resize(const size_t &newSize)
+            {
+                type* newArray = (type*)reallocarray(array, sizeof(type), newSize);
+                if(newArray == nullptr)
+                {
+                    newArray = (type*)malloc((newSize) * sizeof(type));
+                    for(size_t i = 0; i < newSize; ++i)
+                    {
+                        if(i < size) newArray[i] = array[i];
+                        else newArray[i] = standart;
+                    }
+                    free(array);
+                }
+                array = newArray;
+                arraySize = newSize;
             }
 
             /**
