@@ -1198,22 +1198,22 @@ namespace AVIL
 
             void sort()
             {
-                std::sort(array[0], array[size]);
+                std::sort(begin(), end());
             }
 
             void sort(bool(comparer)(const type&, const type&))
             {
-                std::sort(array[0], array[size], comparer);
+                std::sort(begin(), end(), comparer);
             }
             
             void stableSort()
             {
-                std::stable_sort(array[0], array[size]);
+                std::stable_sort(begin(), end());
             }
 
             void stableSort(bool(comparer)(const type&, const type&))
             {
-                std::stable_sort(array[0], array[size], comparer);
+                std::stable_sort(begin(), end(), comparer);
             }
 
             /**
