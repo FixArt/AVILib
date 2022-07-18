@@ -540,7 +540,23 @@ namespace AVIL
             {
                 for(size_t i = 0; i < size; ++i)
                 {
-                    swap(array[i], array[random<size_t>(0, size)]);
+                    swap(array[i], array[random<size_t>(0, size - 1)]);
+                }
+            }
+
+            void shuffle(size_t(provider)(size_t, size_t))
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    swap(array[i], array[provider(0, size - 1)]);
+                }
+            }
+
+            void shuffle(size_t(provider)(size_t, size_t, size_t))
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    swap(array[i], array[provider(0, size - 1, i)]);
                 }
             }
 
