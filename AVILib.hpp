@@ -527,6 +527,19 @@ namespace AVIL
             }
 
             /**
+             * @brief Fills list with value.
+             * 
+             * @param fillValue Value with which vector will be filled.
+             */
+            void fill(const type& fillValue)
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    array[i] = fillValue;
+                }
+            }
+
+            /**
              * @brief Fills vector through given function.
              * 
              * @param processFunction Function which gets position as argument.
@@ -669,6 +682,13 @@ namespace AVIL
             bool isProcessed(const vector<type>& checkedVector, std::function<bool(const type&, size_t)> processFunction) const
             {
                 return checkedVector == process(processFunction);
+            }
+
+            bool isFilled(const type& fillValue) const
+            {
+                vector<type> newVector;
+                newVector.resize(size);
+                return *this == newVector.fill(fillValue);
             }
 
             bool isFilled(bool(processFunction)(const type&)) const
@@ -1418,6 +1438,121 @@ namespace AVIL
             vector<type> operator/(const type& processedValue)
             {
                 return process([processedValue](const type& checkedValue){ return checkedValue / processedValue; });
+            }
+
+            vector<type> operator%(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue % processedValue; });
+            }
+
+            vector<type> operator++()
+            {
+                process([](const type& checkedValue){ return checkedValue + 1; });
+                return *this;
+            }
+
+            vector<type> operator--()
+            {
+                process([](const type& checkedValue){ return checkedValue - 1; });
+                return *this;
+            }
+
+            vector<type> operator++(int)
+            {
+                process([](const type& checkedValue){ return checkedValue + 1; });
+                return *process([](const type& checkedValue){ return checkedValue - 1; });;
+            }
+
+            vector<type> operator--(int)
+            {
+                process([](const type& checkedValue){ return checkedValue - 1; });
+                return *process([](const type& checkedValue){ return checkedValue + 1; });;
+            }
+
+            vector<type> operator=(const type& processedValue)
+            {
+                fill(processedValue);
+                return *this;
+            }
+
+            vector<type> operator+=(const type& processedValue)
+            {
+                *this = process([processedValue](const type& checkedValue){ return checkedValue + processedValue; });
+                return *this;
+            }
+
+            vector<type> operator-=(const type& processedValue)
+            {
+                *this = process([processedValue](const type& checkedValue){ return checkedValue - processedValue; });
+                return *this;
+            }
+
+            vector<type> operator*=(const type& processedValue)
+            {
+                *this = process([processedValue](const type& checkedValue){ return checkedValue * processedValue; });
+                return *this;
+            }
+
+            vector<type> operator/=(const type& processedValue)
+            {
+                *this = process([processedValue](const type& checkedValue){ return checkedValue / processedValue; });
+                return *this;
+            }
+
+            vector<type> operator%=(const type& processedValue)
+            {
+                *this = process([processedValue](const type& checkedValue){ return checkedValue % processedValue; });
+                return *this;
+            }
+
+            vector<type> operator&&(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue && processedValue; });
+            }
+
+            vector<type> operator||(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue || processedValue; });
+            }
+
+            vector<type> operator!()
+            {
+                return process([](const type& checkedValue){ return !checkedValue; });
+            }
+
+            vector<type> operator&(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue & processedValue; });
+            }
+
+            vector<type> operator|(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue | processedValue; });
+            }
+
+            vector<type> operator^(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue ^ processedValue; });
+            }
+
+            vector<type> operator<<(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue << processedValue; });
+            }
+
+            vector<type> operator>>(const type& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue >> processedValue; });
+            }
+
+            vector<type> operator<<(const intmax_t& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue << processedValue; });
+            }
+
+            vector<type> operator>>(const intmax_t& processedValue)
+            {
+                return process([processedValue](const type& checkedValue){ return checkedValue >> processedValue; });
             }
 
             type* begin() const
