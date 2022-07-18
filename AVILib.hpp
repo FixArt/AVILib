@@ -1584,42 +1584,84 @@ namespace AVIL
         return newVector;
     }
 
-    /**
-     * @brief Variable, which will be stored in heap. You most likely don't need this.
-     * 
-     * @tparam type Type of the variable.
-     */
-    template<class type>
-    struct heapvariable
-    {
-        protected:
-            type* variable = nullptr;
-        public:
+    // /**
+    //  * @brief Variable without specified type.
+    //  * 
+    //  */
+    // struct untypized
+    // {
+    //     protected:
+    //         void* variable = nullptr;
+    //         size_t capacity = 0;
+    //     public:
+
+    //         const size_t& size = capacity;
             
-            heapvariable<type>(const type& value)
-            {
-                variable = new type{value};
-            }
+    //         template<class type>
+    //         untypized()
+    //         {
+                
+    //         }
 
-            heapvariable<type>(heapvariable<type>& value)
-            {
-                variable = new type{value};
-            }
+    //         template<class type>
+    //         untypized(const type& value)
+    //         {
+    //             capacity = sizeof(value);
+    //             variable = malloc(capacity);
+    //         }
 
-            heapvariable<type>& operator=(const type& value)
-            {
-                variable = value;
-                return *this;
-            }
+    //         template<class type>
+    //         untypized(const untypized& value)
+    //         {
+    //             capacity = value.size;
+    //             variable = malloc(capacity);
+    //             variable = (type&)value;
+    //         }
 
-            operator type&()
-            {
-                return *variable;
-            }
+    //         template<class type>
+    //         untypized& operator=(const untypized& value)
+    //         {
+    //             if(&value == this) return *this; 
+    //             capacity = value.size;
+    //             if(variable != nullptr) free(variable);
+    //             variable = malloc(capacity);
+    //             variable = (type&)value;
+    //             return *this;
+    //         }
 
-            ~heapvariable<type>()
-            {
-                if(variable != nullptr) delete variable;
-            }
-    };
+    //         template<class type>
+    //         untypized& operator=(untypized& value)
+    //         {
+    //             if(&value == this) return *this; 
+    //             capacity = value.size;
+    //             if(variable != nullptr) free(variable);
+    //             variable = malloc(capacity);
+    //             variable = (type&)value;
+    //             return *this;
+    //         }
+
+    //         template<class type>
+    //         untypized& operator=(const type& value)
+    //         {
+    //             variable = value;
+    //             return *this;
+    //         }
+
+    //         template<class type>
+    //         operator type&()
+    //         {
+    //             return *((type*)variable);
+    //         }
+
+    //         // template<class type>
+    //         // operator type()
+    //         // {
+    //         //     return *((type*)variable);
+    //         // }
+
+    //         ~untypized()
+    //         {
+    //             if(variable != nullptr) free(variable);
+    //         }
+    // };
 };
