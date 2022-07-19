@@ -2,6 +2,7 @@
 // #include <cstdint>
 // #include <cstdlib>
 // #include <cstring>
+#include <cstring>
 #include <initializer_list>
 #include <functional>
 #include <algorithm>
@@ -72,7 +73,11 @@ namespace AVIL
             }
         public:
 
-            vector<type>() = default;
+            vector<type>()
+            {
+                array = nullptr;
+                arraySize = 0;
+            }
 
             const size_t &size = arraySize;
 
@@ -1034,18 +1039,60 @@ namespace AVIL
 
             void resize(const size_t &newSize)
             {
-                type* newArray = (type*)reallocarray(array, sizeof(type), newSize);
-                if(newArray == nullptr)
+                if(newSize == 0)
                 {
-                    newArray = (type*)malloc((newSize) * sizeof(type));
-                    for(size_t i = 0; i < newSize and i < size; ++i)
-                    {
-                        newArray[i] = array[i];
-                    }
-                    free(array);
+                    clear();
+                    return;
                 }
-                array = newArray;
-                arraySize = newSize;
+                if(newSize == arraySize) return;
+                if(array != nullptr)
+                {
+                    type* newArray = (type*)reallocarray(array, sizeof(type), newSize);
+                    if(newArray == nullptr)
+                    {
+                        newArray = (type*)malloc((newSize) * sizeof(type));
+                        // for(size_t i = 0; i < newSize; ++i)
+                        // {
+                        //     // type nulled{};
+                        //     array[i] = {};
+                        //     // memcpy(&newArray[i], &nulled, sizeof(type));
+                        //     // std::copy(&nulled, (&nulled + sizeof(type)), &array[i]);
+                        // }
+                        // memset(newArray, 0, (newSize) * sizeof(type));
+                        for(size_t i = 0; i < newSize; ++i)
+                        {
+                            if(i < size) newArray[i] = array[i];
+                        }
+                        free(array);
+                    }
+                    // else
+                    // {
+                    //     if(newSize > arraySize)
+                    //     for(size_t i = arraySize; i < newSize; ++i)
+                    //     {
+                    //         // type nulled{};
+                    //         array[i] = {};
+                    //         // memcpy(&newArray[i], &nulled, sizeof(type));
+                    //         //std::copy(&nulled, (&nulled + sizeof(type)), &array[i]);
+                    //     }
+                    //     // memset((newArray + arraySize), 0, newSize - arraySize);
+                    // }
+                    array = newArray;
+                    arraySize = newSize;
+                }
+                else
+                {
+                    array = (type*)malloc((newSize) * sizeof(type));
+                    // for(size_t i = 0; i < newSize; ++i)
+                    // {
+                    //     // type nulled{};
+                    //     array[i] = {};
+                    //     // memcpy(&array[i], &nulled, sizeof(type));
+                    //     // std::copy(&nulled, (&nulled + sizeof(type)), &array[i]);
+                    // }
+                    // memset(array, 0, (newSize) * sizeof(type));
+                    arraySize = newSize;
+                }
             }
 
             /**
@@ -1055,6 +1102,11 @@ namespace AVIL
              */
             void reduce(const size_t &reducedSize = 1)
             {
+                if(reducedSize >= arraySize)
+                {
+                    clear();
+                    return;
+                }
                 //type* newArray = (type*)malloc((arraySize - reducedSize) * sizeof(type));
                 type* newArray = (type*)reallocarray(array, sizeof(type), arraySize - reducedSize);
                 if(newArray == nullptr)
@@ -1599,115 +1651,116 @@ namespace AVIL
         return newVector;
     }
 
-    // /**
-    //  * @brief Variable without specified type.
-    //  * 
-    //  */
-    // struct untypized
-    // {
-    //     private:
-    //         void* variable = nullptr;
-    //         size_t capacity = 0;
+    /**
+     * @brief Variable without specified type.
+     * 
+     */
+    struct untypized
+    {
+        private:
+            void* variable = nullptr;
+            size_t capacity = 0;
 
-    //         void resize(const size_t& newCapacity)
-    //         {
-    //             if(newCapacity == capacity) return;
-    //             if(newCapacity == 0)
-    //             {
-    //                 free(variable);
-    //                 variable = nullptr;
-    //                 capacity = 0;
-    //                 return;
-    //             }
+            void resize(const size_t& newCapacity)
+            {
+                if(newCapacity == capacity) return;
+                if(newCapacity == 0)
+                {
+                    free(variable);
+                    variable = nullptr;
+                    capacity = 0;
+                    return;
+                }
 
-    //             if(variable != nullptr)
-    //             {
-    //                 void* newVariable = realloc(variable, newCapacity);
-    //                 if(newVariable == nullptr)
-    //                 {
-    //                     // free(variable);
-    //                     variable = malloc(newCapacity);
-    //                 }
-    //                 else
-    //                 {
-    //                     variable = newVariable;
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 // free(variable);
-    //                 variable = malloc(newCapacity);
-    //             }
-    //             capacity = newCapacity;
-    //         }
-    //     public:
+                if(variable != nullptr)
+                {
+                    void* newVariable = realloc(variable, newCapacity);
+                    if(newVariable == nullptr)
+                    {
+                        // free(variable);
+                        variable = malloc(newCapacity);
+                    }
+                    else
+                    {
+                        variable = newVariable;
+                    }
+                }
+                else
+                {
+                    // free(variable);
+                    variable = malloc(newCapacity);
+                }
+                capacity = newCapacity;
+            }
+        public:
 
-    //         const size_t& size = capacity;
+            const size_t& size = capacity;
             
-    //         untypized()
-    //         {
-    //             capacity = 0;
-    //             resize(0);
-    //         }
+            untypized()
+            {
+                capacity = 0;
+                variable = nullptr;
+                resize(0);
+            }
 
-    //         template<class type>
-    //         untypized(const type& value)
-    //         {
-    //             resize(sizeof(value));
-    //             *((type*)variable) = (type&)value;
-    //         }
+            template<class type>
+            untypized(const type& value)
+            {
+                resize(sizeof(value));
+                *((type*)variable) = (type&)value;
+            }
 
-    //         untypized(const untypized& value)
-    //         {
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //         }
+            untypized(const untypized& value)
+            {
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+            }
 
-    //         untypized& operator=(const untypized& value)
-    //         {
-    //             if(&value == this) return *this;
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //             return *this;
-    //         }
+            untypized& operator=(const untypized& value)
+            {
+                if(&value == this) return *this;
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+                return *this;
+            }
 
-    //         untypized(const untypized&& value)
-    //         {
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //         }
+            untypized(const untypized&& value)
+            {
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+            }
 
-    //         untypized& operator=(const untypized&& value)
-    //         {
-    //             if(&value == this) return *this;
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //             return *this;
-    //         }
+            untypized& operator=(const untypized&& value)
+            {
+                if(&value == this) return *this;
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+                return *this;
+            }
 
-    //         template<class type>
-    //         untypized& operator=(const type& value)
-    //         {
-    //             resize(sizeof(type));
-    //             *((type*)variable) = value;
-    //             return *this;
-    //         }
+            template<class type>
+            untypized& operator=(const type& value)
+            {
+                resize(sizeof(type));
+                *((type*)variable) = value;
+                return *this;
+            }
 
-    //         template<class type>
-    //         operator type&() const
-    //         {
-    //             return *((type*)variable);
-    //         }
+            template<class type>
+            operator type&() const
+            {
+                return *((type*)variable);
+            }
 
-    //         // template<class type>
-    //         // operator type()
-    //         // {
-    //         //     return *((type*)variable);
-    //         // }
+            // template<class type>
+            // operator type()
+            // {
+            //     return *((type*)variable);
+            // }
 
-    //         ~untypized()
-    //         {
-    //             if(variable != nullptr) free(variable);
-    //         }
-    // };
+            ~untypized()
+            {
+                if(variable != nullptr) free(variable);
+            }
+    };
 };
