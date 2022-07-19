@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <functional>
 #include <algorithm>
+#include <type_traits>
 
 /**
  * @brief Namespace of Alternative Vector Implementation Library.
@@ -77,23 +78,23 @@ namespace AVIL
 
             vector<type>& operator=(std::initializer_list<type> initializationArray)
             {
-                for(type newElement : initializationArray)
-                {
-                    append(newElement);
-                }
-                // resize(initializationArray.size());
-                // std::copy(initializationArray.begin(), initializationArray.end(), (*this).begin());
+                // for(type newElement : initializationArray)
+                // {
+                //     append(newElement);
+                // }
+                resize(initializationArray.size());
+                std::copy(initializationArray.begin(), initializationArray.end(), (*this).begin());
                 return *this;
             }
 
             vector<type>(std::initializer_list<type> initializationArray)
             {
-                for(type newElement : initializationArray)
-                {
-                    append(newElement);
-                }
-                // resize(initializationArray.size());
-                // std::copy(initializationArray.begin(), initializationArray.end(), (*this).begin());
+                // for(type newElement : initializationArray)
+                // {
+                //     append(newElement);
+                // }
+                resize(initializationArray.size());
+                std::copy(initializationArray.begin(), initializationArray.end(), (*this).begin());
             }
 
             /**
@@ -1004,7 +1005,7 @@ namespace AVIL
                 // }
                 // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
                 resize(assignedVector.size);
-                std::copy<type, type>(assignedVector[0], assignedVector[assignedVector.size], *array);
+                std::copy(assignedVector.begin(), assignedVector.end(), (*this).begin());
                 return *this;
             }
 
@@ -1016,7 +1017,7 @@ namespace AVIL
                 // }
                 // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
                 resize(assignedVector.size);
-                std::copy<type, type>(assignedVector[0], assignedVector[assignedVector.size], *array);
+                std::copy(assignedVector.begin(), assignedVector.end(), (*this).begin());
                 //return *this;
             }
 
@@ -1559,14 +1560,24 @@ namespace AVIL
                 return process([processedValue](const type& checkedValue){ return checkedValue >> processedValue; });
             }
 
-            type* begin() const
+            // const type* const begin() const
+            // {
+            //     return (const type &)&array[0];
+            // }
+
+            // const type* const end() const
+            // {
+            //     return (const type &)&array[arraySize];
+            // }
+            
+            const type* begin() const
             {
-                return (const type &)&array[0];
+                return &array[0];
             }
 
-            type* end() const
+            const type* end() const
             {
-                return (const type &)&array[arraySize];
+                return &array[arraySize];
             }
 
             type* begin()
