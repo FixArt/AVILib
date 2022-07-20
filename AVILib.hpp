@@ -326,6 +326,14 @@ namespace AVIL
                 remove(checkedElements...);
             }
 
+            void remove(vector<type> checkedElements)
+            {
+                for(type checkedElement : checkedElements)
+                {
+                    remove(checkedElement);
+                }
+            }
+
             template<class... arguments>
             void remove(bool(shouldRemove)(const type&), arguments... removalFunctions)
             {
