@@ -3,4 +3,4 @@
 
 Alternative Vector Implementation Library (C++)
 
-*Warning!* Currently broken, wait some time.
+**Warning!** Currently broken, wait some time.
