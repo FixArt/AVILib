@@ -131,15 +131,16 @@ namespace AVIL
                 {
                     if(writteni == index)
                     {
-                        newArray[writteni] = newElement;
+                        new (&newArray[writteni]) type(newElement);
                         --i;
                     }
                     else
                     {
-                        newArray[writteni] = array[i];
+                        new (&newArray[writteni]) type(array[i]);
                     }
                     ++writteni;
                 }
+                for(size_t i = 0; i < arraySize; ++i) { array[i].~type(); }
                 free(array);
                 array = newArray;
                 ++arraySize;
@@ -825,10 +826,11 @@ namespace AVIL
                         }
                         else
                         {
-                            newArray[i] = array[readi];
+                            new (&newArray[i]) type(array[readi]);
                         }
                         ++readi;
                     }
+                    for(size_t i = 0; i < arraySize; ++i) { array[i].~type(); }
                     free(array);
                     array = newArray;
                     arraySize -= (from - to + 1);
@@ -846,10 +848,11 @@ namespace AVIL
                         }
                         else
                         {
-                            newArray[i] = array[readi];
+                            new (&newArray[i]) type(array[readi]);
                         }
                         ++readi;
                     }
+                    for(size_t i = 0; i < arraySize; ++i) { array[i].~type(); }
                     free(array);
                     array = newArray;
                     arraySize -= (to - from + 1);
@@ -988,11 +991,17 @@ namespace AVIL
             void append(const type& newElement)
             {
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
+                if(newArray == nullptr)
+                {
+                    throw(ENOMEM);
+                    return;
+                }
                 for(size_t i = 0; i < size + 1; ++i)
                 {
-                    if(i < size) newArray[i] = array[i];
-                    else newArray[i] = newElement;
+                    if(i < size) new (&newArray[i]) type(array[i]);
+                    else new (&newArray[i]) type(newElement);
                 }
+                for(size_t i = 0; i < arraySize; ++i) { array[i].~type(); }
                 free(array);
                 array = newArray;
                 ++arraySize;
@@ -1138,6 +1147,10 @@ namespace AVIL
                     }
                     // newArray = (type*)memcpy(newArray, array, (arraySize - reducedSize) * sizeof(type));
                     // std::copy(array[0], array[(arraySize - reducedSize) * sizeof(type)], newArray);
+                    for(size_t i = 0; i < arraySize - reducedSize; ++i)
+                    {
+                        array[i].~type();
+                    }
                     free(array);
                 }
                 array = newArray;
@@ -1150,19 +1163,35 @@ namespace AVIL
                 {
                     return;
                 }
-                type* newArray = (type*)malloc((arraySize + choosedOffset) * sizeof(type));
                 size_t readi = 0;
+                resize(arraySize + choosedOffset);
                 for(size_t i = 0; i < arraySize + choosedOffset; ++i)
                 {
                     if(i >= choosedOffset)
                     {
-                        newArray[i] = array[readi];
+                        array[i] = array[readi];
+                        array[readi] = {};
                         ++readi;
                     }
                 }
-                free(array);
-                array = newArray;
-                arraySize = arraySize + choosedOffset;
+            }
+
+            void offset(const intmax_t &choosedOffset)
+            {
+                if(choosedOffset >= 0)
+                {
+                    offset((size_t)choosedOffset);
+                }
+                else
+                {
+                    size_t writteni = 0;
+                    for(size_t i = std::abs(choosedOffset); i < arraySize - std::abs(choosedOffset); ++i)
+                    {
+                        array[writteni] = array[i];
+                        ++writteni;
+                    }
+                    resize(arraySize - std::abs(choosedOffset));
+                }
             }
             
             void bubbleSort()
@@ -1356,31 +1385,6 @@ namespace AVIL
                     }
                 }
                 return true;
-            }
-
-            void offset(const intmax_t &choosedOffset)
-            {
-                if(choosedOffset >= 0)
-                {
-                    offset((size_t)choosedOffset);
-                }
-                else
-                {
-                    type* newArray = (type*)realloc(array, sizeof(type) * (arraySize + choosedOffset));
-                    if(newArray == nullptr)
-                    {
-                        newArray = (type*)malloc((arraySize + choosedOffset) * sizeof(type));
-                        size_t writteni = 0;
-                        for(size_t i = std::abs(choosedOffset); i < arraySize + choosedOffset; ++i)
-                        {
-                            newArray[writteni] = array[i];
-                            ++writteni;
-                        }
-                        free(array);
-                    }
-                    array = newArray;
-                    arraySize = arraySize + choosedOffset;
-                }
             }
 
             ~vector()
