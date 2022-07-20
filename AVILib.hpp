@@ -1445,6 +1445,16 @@ namespace AVIL
             {
                 std::stable_sort(begin(), end(), comparer);
             }
+            
+            size_t unsorted()
+            {
+                std::is_sorted_until(begin(), end());
+            }
+
+            size_t unsorted(bool(comparer)(const type&, const type&))
+            {
+                std::is_sorted_until(begin(), end(), comparer);
+            }
 
             /**
              * @brief Checks whenever vector is sorted.
