@@ -435,11 +435,56 @@ namespace AVIL
                         ++counter;
                         if(counter == searchedVector.size)
                         {
-                            return counter;
+                            return i - counter;
                         }
                     }
                 }
                 return size;
+            }
+
+            bool contains(const type& checkedElement) const
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(checkedElement == array[i])
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool contains(bool(shouldCount)(const type&)) const
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(shouldCount(array[i]))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool contains(vector<type> searchedVector) const
+            {
+                if(searchedVector.size == 0)
+                {
+                    return size;
+                }
+                size_t counter = 0;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(searchedVector[counter] == array[i])
+                    {
+                        ++counter;
+                        if(counter == searchedVector.size)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
 
             /**
