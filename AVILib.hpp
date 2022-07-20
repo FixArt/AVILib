@@ -1389,11 +1389,11 @@ namespace AVIL
                 if(array != nullptr) free(array);
             }
 
-            void swap(vector<type>& swappedWith)
+            void exchange(vector<type>& exchangedWith)
             {
-                vector<type> newVector = swappedWith;
-                swappedWith.resize(size);
-                swappedWith = *this;
+                vector<type> newVector = exchangedWith;
+                exchangedWith.resize(size);
+                exchangedWith = *this;
                 resize(newVector.size);
                 *this = newVector;
             }
