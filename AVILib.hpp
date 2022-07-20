@@ -924,17 +924,17 @@ namespace AVIL
             }
 
             /**
-             * @brief Function, which inserts vector at index.
+             * @brief Function, which places vector at index.
              * 
-             * @param insertedVector Vector which will be inserted.
-             * @param index Index at which vector will be inserted.
+             * @param pushedVector Vector which will be placed at index.
+             * @param index Index at which vector will be placed.
              */
-            void insert(vector<type> insertedVector, size_t index = 0)
+            void push(vector<type> pushedVector, size_t index = 0)
             {
                 if(index > size) return;
-                for(size_t i = 0; i < insertedVector.size; ++i)
+                for(size_t i = 0; i < pushedVector.size; ++i)
                 {
-                    push(insertedVector[i], i + index);
+                    push(pushedVector[i], i + index);
                 }
             }
 
@@ -1014,7 +1014,7 @@ namespace AVIL
              */
             void append(const vector<type>& appendedVector)
             {
-                insert(appendedVector, size);
+                push(appendedVector, size);
             }
 
             vector<type>& operator=(const vector<type>& assignedVector)
