@@ -126,6 +126,7 @@ namespace AVIL
                 if(index > size) return;
                 if(index == size){ (*this)[index] = newElement; return; }
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
+                if(newArray == nullptr) { throw(ENOMEM); }
                 size_t writteni = 0;
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -817,6 +818,7 @@ namespace AVIL
                 {
                     if(to >= size) return;
                     type* newArray = (type*)malloc((size - (from - to + 1)) * sizeof(type));
+                    if(newArray == nullptr) { throw(ENOMEM); }
                     size_t readi = 0;
                     for(size_t i = 0; i < size - (from - to + 1); ++i)
                     {
@@ -839,6 +841,7 @@ namespace AVIL
                 {
                     if(from >= size) return;
                     type* newArray = (type*)malloc((size - (to - from + 1)) * sizeof(type));
+                    if(newArray == nullptr) { throw(ENOMEM); }
                     size_t readi = 0;
                     for(size_t i = 0; i < size - (to - from + 1); ++i)
                     {
@@ -991,11 +994,7 @@ namespace AVIL
             void append(const type& newElement)
             {
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
-                if(newArray == nullptr)
-                {
-                    throw(ENOMEM);
-                    return;
-                }
+                if(newArray == nullptr) { throw(ENOMEM); }
                 for(size_t i = 0; i < size + 1; ++i)
                 {
                     if(i < size) new (&newArray[i]) type(array[i]);
@@ -1073,14 +1072,9 @@ namespace AVIL
                     if(newArray == nullptr)
                     {
                         newArray = (type*)malloc((newSize) * sizeof(type));
-                        // for(size_t i = 0; i < newSize; ++i)
-                        // {
-                        //     new (&newArray[i]) type;
-                        // }
-                        // memset(newArray, 0, (newSize) * sizeof(type));
+                        if(newArray == nullptr) { throw(ENOMEM); }
                         for(size_t i = 0; i < newSize; ++i)
                         {
-                            // if(i < size) newArray[i] = array[i];
                             if(i < size) new (&newArray[i]) type(array[i]);
                         }
                         for(size_t i = 0; i < ((arraySize > newSize)?(newSize):(arraySize)); ++i)
@@ -1105,6 +1099,7 @@ namespace AVIL
                 else
                 {
                     array = (type*)malloc((newSize) * sizeof(type));
+                    if(array == nullptr) { throw(ENOMEM); }
                     for(size_t i = 0; i < newSize; ++i)
                     {
                         new (&array[i]) type;
@@ -1141,6 +1136,7 @@ namespace AVIL
                 if(newArray == nullptr)
                 {
                     newArray = (type*)malloc((arraySize - reducedSize) * sizeof(type));
+                    if(newArray == nullptr) { throw(ENOMEM); }
                     for(size_t i = 0; i < arraySize - reducedSize; ++i)
                     {
                         new (&newArray[i]) type(array[i]);
