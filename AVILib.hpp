@@ -51,7 +51,7 @@ namespace AVIL
                     largest = right;
                 if (largest != lookedStart)
                 {
-                    swap(array[lookedStart], array[largest]);
+                    std::swap(array[lookedStart], array[largest]);
                     heapify(largest, lookedSize);
                 }
             }
@@ -67,7 +67,7 @@ namespace AVIL
                     largest = right;
                 if (largest != lookedStart)
                 {
-                    swap(array[lookedStart], array[largest]);
+                    std::swap(array[lookedStart], array[largest]);
                     heapify(largest, lookedSize);
                 }
             }
@@ -295,6 +295,20 @@ namespace AVIL
                 //array = newArray;
                 //--arraySize;
                 reduce(allFound);
+            }
+
+            template<class... arguments>
+            void remove(const type& checkedElement, arguments... checkedElements)
+            {
+                remove(checkedElement);
+                remove(checkedElements...);
+            }
+
+            template<class... arguments>
+            void remove(bool(shouldRemove)(const type&), arguments... removalFunctions)
+            {
+                remove(shouldRemove);
+                remove(removalFunctions...);
             }
 
             /**
@@ -746,7 +760,7 @@ namespace AVIL
             {
                 for(size_t i = 0; i < size; ++i)
                 {
-                    swap(array[i], array[random<size_t>(0, size - 1)]);
+                    std::swap(array[i], array[random<size_t>(0, size - 1)]);
                 }
             }
 
@@ -754,7 +768,7 @@ namespace AVIL
             {
                 for(size_t i = 0; i < size; ++i)
                 {
-                    swap(array[i], array[provider(0, size - 1)]);
+                    std::swap(array[i], array[provider(0, size - 1)]);
                 }
             }
 
@@ -762,7 +776,7 @@ namespace AVIL
             {
                 for(size_t i = 0; i < size; ++i)
                 {
-                    swap(array[i], array[provider(0, size - 1, i)]);
+                    std::swap(array[i], array[provider(0, size - 1, i)]);
                 }
             }
 
@@ -770,7 +784,7 @@ namespace AVIL
             {
                 for(size_t i = 0; i < size; ++i)
                 {
-                    swap(array[i], array[random<size_t>(0, size - 1, provider)]);
+                    std::swap(array[i], array[random<size_t>(0, size - 1, provider)]);
                 }
             }
 
@@ -946,9 +960,21 @@ namespace AVIL
              * 
              * @return type* Returned constant array.
              */
-            operator const type*&() const
+            operator const type*() const
             {
-                return (const type*&)array;
+                if(array == nullptr) throw(EFAULT);
+                return (const type*)array;
+            }
+
+            /**
+             * @brief Returns constant array from itself. Useful for strings printing.
+             * 
+             * @return type& Returned constant array.
+             */
+            operator const type&() const
+            {
+                if(array == nullptr) throw(EFAULT);
+                return (const type&)array;
             }
 
             type &operator[](const size_t &index)
@@ -956,26 +982,17 @@ namespace AVIL
                 if(!exists(index))
                 {
                     resize(index + 1);
-                    return array[index];
                 }
-                else
-                {
-                    return array[index];
-                }
+                return array[index];
             }
 
             const type& operator[](const size_t &index) const
             {
-
                 if(!exists(index))
                 {
                     throw(EFAULT);
-                    return array[index];
                 }
-                else
-                {
-                    return array[index];
-                }
+                return array[index];
             }
 
             void clear()
@@ -1014,6 +1031,20 @@ namespace AVIL
             void append(const vector<type>& appendedVector)
             {
                 push(appendedVector, size);
+            }
+
+            template<class... arguments>
+            void append(const type& newElement, arguments... appendedElements)
+            {
+                append(newElement);
+                append(appendedElements...);
+            }
+
+            template<class... arguments>
+            void append(const vector<type>& newElement, arguments... appendedElements)
+            {
+                append(newElement);
+                append(appendedElements...);
             }
 
             vector<type>& operator=(const vector<type>& assignedVector)
@@ -1198,9 +1229,10 @@ namespace AVIL
                     {
                         if(array[i] > array[i+1])
                         {
-                            type swap = array[i];
-                            array[i] = array[i+1];
-                            array[i+1] = swap;
+                            swap(array[i], array[i + 1]);
+                            // type swap = array[i];
+                            // array[i] = array[i+1];
+                            // array[i+1] = swap;
                         }
                     }
                 }
@@ -1214,9 +1246,10 @@ namespace AVIL
                     {
                         if(comparer(array[i], array[i+1]))
                         {
-                            type swap = array[i];
-                            array[i] = array[i+1];
-                            array[i+1] = swap;
+                            swap(array[i], array[i + 1]);
+                            // type swap = array[i];
+                            // array[i] = array[i+1];
+                            // array[i+1] = swap;
                         }
                     }
                 }
@@ -1274,7 +1307,7 @@ namespace AVIL
                     }
                     if (minimalIndex != i)
                     {
-                        swap(array[i], array[minimalIndex]);
+                        std::swap(array[i], array[minimalIndex]);
                     }
                 }
             }
@@ -1293,7 +1326,7 @@ namespace AVIL
                     }
                     if (minimalIndex != i)
                     {
-                        swap(array[i], array[minimalIndex]);
+                        std::swap(array[i], array[minimalIndex]);
                     }
                 }
             }
@@ -1303,7 +1336,7 @@ namespace AVIL
                 for (size_t i = size / 2 - 1; i != 0; i--) heapify(i, size);
                 for (size_t i = size - 1; i > 0; i--)
                 {
-                    swap(array[0], array[i]);
+                    std::swap(array[0], array[i]);
                     heapify(0, i);
                 }
             }
@@ -1313,7 +1346,7 @@ namespace AVIL
                 for (size_t i = size / 2 - 1; i != 0; i--) heapify(i, size, comparer);
                 for (size_t i = size - 1; i > 0; i--)
                 {
-                    swap(array[0], array[i]);
+                    std::swap(array[0], array[i]);
                     heapify(0, i, comparer);
                 }
             }
