@@ -147,6 +147,13 @@ namespace AVIL
                 ++arraySize;
             }
 
+            template<class... arguments>
+            void push(const type &newElement, const size_t &index, arguments... newElements)
+            {
+                push(newElement, index);
+                push(newElements...);
+            }
+
             /**
              * @brief Sums all elements.
              * 
@@ -225,6 +232,21 @@ namespace AVIL
                 //array = newArray;
                 //--arraySize;
                 reduce(1);
+            }
+
+            void pop(vector<size_t> poppedIndexes)
+            {
+                for(size_t index : poppedIndexes)
+                {
+                    pop(index);
+                }
+            }
+
+            template<class... arguments>
+            void pop(const size_t &index, arguments... removedIndexes)
+            {
+                pop(index);
+                pop(removedIndexes...);
             }
 
             /**
