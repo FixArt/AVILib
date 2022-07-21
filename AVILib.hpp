@@ -487,24 +487,24 @@ namespace AVIL
                 return false;
             }
 
-            /**
-             * @brief Composes new vector from all elements which flagged by given function.
-             * 
-             * @param shouldInclude Checks whenever element should be included.
-             * @return vector<type> Returned vector.
-             */
-            vector<type> compose(bool(shouldInclude)(const type&)) const
-            {
-                vector<type> newVector;
-                for(size_t i = 0; i < size; ++i)
-                {
-                    if(shouldInclude(array[i]))
-                    {
-                        newVector.append(array[i]);
-                    }
-                }
-                return newVector;
-            }
+            // /**
+            //  * @brief Composes new vector from all elements which flagged by given function.
+            //  * 
+            //  * @param shouldInclude Checks whenever element should be included.
+            //  * @return vector<type> Returned vector.
+            //  */
+            // vector<type> compose(bool(shouldInclude)(const type&)) const
+            // {
+            //     vector<type> newVector;
+            //     for(size_t i = 0; i < size; ++i)
+            //     {
+            //         if(shouldInclude(array[i]))
+            //         {
+            //             newVector.append(array[i]);
+            //         }
+            //     }
+            //     return newVector;
+            // }
 
             /**
              * @brief Composes new vector from all elements which flagged by given function.
@@ -563,21 +563,21 @@ namespace AVIL
                 return newVector;
             }
 
-            /**
-             * @brief Composes new vector out of elements of old vector which were processed by specific function.
-             *
-             * @param processFunction Function, which changes value.
-             * @return vector<type> Returned vector.
-             */
-            vector<type> process(type(processFunction)(const type&))
-            {
-                vector<type> newVector;
-                for(size_t i = 0; i < size; ++i)
-                {
-                    newVector.append(processFunction(array[i]));
-                }
-                return newVector;
-            }
+            // /**
+            //  * @brief Composes new vector out of elements of old vector which were processed by specific function.
+            //  *
+            //  * @param processFunction Function, which changes value.
+            //  * @return vector<type> Returned vector.
+            //  */
+            // vector<type> process(type(processFunction)(const type&))
+            // {
+            //     vector<type> newVector;
+            //     for(size_t i = 0; i < size; ++i)
+            //     {
+            //         newVector.append(processFunction(array[i]));
+            //     }
+            //     return newVector;
+            // }
 
             /**
              * @brief Composes new vector out of elements of old vector which were processed by specific function.
@@ -640,18 +640,18 @@ namespace AVIL
                 }
             }
 
-            /**
-             * @brief Fills vector through given function.
-             * 
-             * @param processFunction Function which gets position as argument.
-             */
-            void fill(type(processFunction)(const size_t&))
-            {
-                for(size_t i = 0; i < size; ++i)
-                {
-                    array[i] = processFunction(i);
-                }
-            }
+            // /**
+            //  * @brief Fills vector through given function.
+            //  * 
+            //  * @param processFunction Function which gets position as argument.
+            //  */
+            // void fill(type(processFunction)(const size_t&))
+            // {
+            //     for(size_t i = 0; i < size; ++i)
+            //     {
+            //         array[i] = processFunction(i);
+            //     }
+            // }
 
             /**
              * @brief Fills vector through given function.
@@ -666,18 +666,18 @@ namespace AVIL
                 }
             }
 
-            /**
-             * @brief Fills vector through given function.
-             * 
-             * @param processFunction Given function.
-             */
-            void fill(type(processFunction)())
-            {
-                for(size_t i = 0; i < size; ++i)
-                {
-                    array[i] = processFunction();
-                }
-            }
+            // /**
+            //  * @brief Fills vector through given function.
+            //  * 
+            //  * @param processFunction Given function.
+            //  */
+            // void fill(type(processFunction)())
+            // {
+            //     for(size_t i = 0; i < size; ++i)
+            //     {
+            //         array[i] = processFunction();
+            //     }
+            // }
 
             /**
              * @brief Fills vector through given function.
@@ -705,25 +705,25 @@ namespace AVIL
                 return newVector;
             }
 
-            vector<type> order(size_t(processFunction)(const size_t&)) const
-            {
-                vector<type> newVector;
-                for(size_t i = 0; i < size; ++i)
-                {
-                    newVector[processFunction(i)] = array[i];
-                }
-                return newVector;
-            }
+            // vector<type> order(size_t(processFunction)(const size_t&)) const
+            // {
+            //     vector<type> newVector;
+            //     for(size_t i = 0; i < size; ++i)
+            //     {
+            //         newVector[processFunction(i)] = array[i];
+            //     }
+            //     return newVector;
+            // }
 
-            vector<type> order(size_t(processFunction)(const size_t&, const type&)) const
-            {
-                vector<type> newVector;
-                for(size_t i = 0; i < size; ++i)
-                {
-                    newVector[processFunction(i, array[i])] = array[i];
-                }
-                return newVector;
-            }
+            // vector<type> order(size_t(processFunction)(const size_t&, const type&)) const
+            // {
+            //     vector<type> newVector;
+            //     for(size_t i = 0; i < size; ++i)
+            //     {
+            //         newVector[processFunction(i, array[i])] = array[i];
+            //     }
+            //     return newVector;
+            // }
 
             vector<type> order(std::function<size_t(const size_t&)> processFunction) const
             {
@@ -745,40 +745,40 @@ namespace AVIL
                 return newVector;
             }
 
-            bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&)) const
-            {
-                return checkedVector == compose(shouldInclude);
-            }
+            // bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&)) const
+            // {
+            //     return checkedVector == compose(shouldInclude);
+            // }
 
             bool isComposed(const vector<type>& checkedVector, std::function<bool(const type&)> shouldInclude) const
             {
                 return checkedVector == compose(shouldInclude);
             }
 
-            bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&, size_t)) const
-            {
-                return checkedVector == compose(shouldInclude);
-            }
+            // bool isComposed(const vector<type>& checkedVector, bool(shouldInclude)(const type&, size_t)) const
+            // {
+            //     return checkedVector == compose(shouldInclude);
+            // }
 
             bool isComposed(const vector<type>& checkedVector, std::function<bool(const type&, size_t)> shouldInclude) const
             {
                 return checkedVector == compose(shouldInclude);
             }
 
-            bool isProcessed(const vector<type>& checkedVector, bool(processFunction)(const type&)) const
-            {
-                return checkedVector == process(processFunction);
-            }
+            // bool isProcessed(const vector<type>& checkedVector, bool(processFunction)(const type&)) const
+            // {
+            //     return checkedVector == process(processFunction);
+            // }
 
             bool isProcessed(const vector<type>& checkedVector, std::function<bool(const type&)> processFunction) const
             {
                 return checkedVector == process(processFunction);
             }
 
-            bool isProcessed(const vector<type>& checkedVector, bool(processFunction)(const type&, size_t)) const
-            {
-                return checkedVector == process(processFunction);
-            }
+            // bool isProcessed(const vector<type>& checkedVector, bool(processFunction)(const type&, size_t)) const
+            // {
+            //     return checkedVector == process(processFunction);
+            // }
 
             bool isProcessed(const vector<type>& checkedVector, std::function<bool(const type&, size_t)> processFunction) const
             {
@@ -792,12 +792,12 @@ namespace AVIL
                 return *this == newVector.fill(fillValue);
             }
 
-            bool isFilled(bool(processFunction)(const type&)) const
-            {
-                vector<type> newVector;
-                newVector.resize(size);
-                return *this == newVector.fill(processFunction);
-            }
+            // bool isFilled(bool(processFunction)(const type&)) const
+            // {
+            //     vector<type> newVector;
+            //     newVector.resize(size);
+            //     return *this == newVector.fill(processFunction);
+            // }
 
             bool isFilled(std::function<bool(const type&)> processFunction) const
             {
@@ -811,15 +811,15 @@ namespace AVIL
                 return checkedVector == order(map);
             }
 
-            bool isOrdered(const vector<type>& checkedVector, size_t(processFunction)(const size_t&)) const
-            {
-                return checkedVector == order(processFunction);
-            }
+            // bool isOrdered(const vector<type>& checkedVector, size_t(processFunction)(const size_t&)) const
+            // {
+            //     return checkedVector == order(processFunction);
+            // }
 
-            bool isOrdered(const vector<type>& checkedVector, size_t(processFunction)(const size_t&, const type&)) const
-            {
-                return checkedVector == order(processFunction);
-            }
+            // bool isOrdered(const vector<type>& checkedVector, size_t(processFunction)(const size_t&, const type&)) const
+            // {
+            //     return checkedVector == order(processFunction);
+            // }
 
             bool isOrdered(const vector<type>& checkedVector, std::function<size_t(const size_t&)> processFunction) const
             {
