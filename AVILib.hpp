@@ -1456,12 +1456,12 @@ namespace AVIL
 
             size_t unsorted()
             {
-                std::is_sorted_until(begin(), end());
+                return std::is_sorted_until(begin(), end());
             }
 
             size_t unsorted(bool(comparer)(const type&, const type&))
             {
-                std::is_sorted_until(begin(), end(), comparer);
+                return std::is_sorted_until(begin(), end(), comparer);
             }
 
             /**
@@ -1853,7 +1853,7 @@ namespace AVIL
                 if(pointedObject != nullptr) delete pointedObject;
             }
 
-            operator const type*()
+            operator type*()
             {
                 return pointedObject;
             }
