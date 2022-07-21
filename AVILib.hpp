@@ -1830,14 +1830,14 @@ namespace AVIL
                 return *this;
             }
 
-            // operator const type*()
-            // {
-            //     return pointedObject;
-            // }
-
             operator type&()
             {
                 return *pointedObject;
+            }
+
+            operator const type*()
+            {
+                return pointedObject;
             }
 
             ~objptr<type>()
