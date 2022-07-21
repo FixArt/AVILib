@@ -1814,39 +1814,43 @@ namespace AVIL
             objptr<type>(const type& copied)
             {
                 if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = new type{copied};
+                pointedObject = new type;
+                *pointedObject = copied;
             }
 
             objptr<type>(const objptr<type>& copied)
             {
                 if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = new type{copied};
+                pointedObject = new type;
+                *pointedObject = (const type&)copied;
             }
 
-            objptr<type>(type* assigned)
-            {
-                if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = assigned;
-            }
+            // objptr<type>(type* assigned)
+            // {
+            //     if(pointedObject != nullptr) delete pointedObject;
+            //     pointedObject = assigned;
+            // }
 
             objptr<type> operator=(const objptr<type>& copied)
             {
                 if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = new type{copied};
+                pointedObject = new type;
+                *pointedObject = (const type&)copied;
                 return *this;
             }
 
             objptr<type> operator=(const type& copied)
             {
                 if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = new type{copied};
+                pointedObject = new type;
+                *pointedObject = copied;
             }
 
-            objptr<type> operator=(type* assigned)
-            {
-                if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = assigned;
-            }
+            // objptr<type> operator=(type* assigned)
+            // {
+            //     if(pointedObject != nullptr) delete pointedObject;
+            //     pointedObject = assigned;
+            // }
 
             ~objptr<type>()
             {
