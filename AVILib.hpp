@@ -73,11 +73,7 @@ namespace AVIL
             }
         public:
 
-            vector<type>()
-            {
-                array = nullptr;
-                arraySize = 0;
-            }
+            vector<type>() : array{nullptr}, arraySize{0} {}
 
             const size_t &size = arraySize;
 
@@ -1160,10 +1156,10 @@ namespace AVIL
 
             vector<type>(const type* const assignedArray, size_t assignedSize, type newStandart = 0)
             {
-                for(size_t i = 0; i < assignedSize; ++i)
-                {
-                    append(assignedArray[i]);
-                }
+                // for(size_t i = 0; i < assignedSize; ++i)
+                // {
+                //     append(assignedArray[i]);
+                // }
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 resize(assignedSize);
                 std::copy(assignedArray[0], assignedArray[assignedSize], array);
@@ -1802,11 +1798,59 @@ namespace AVIL
         return newVector;
     }
 
+    /**
+     * @brief Simple object pointers.
+     * 
+     * @tparam type Returned type.
+     */
+    template<class type>
+    struct objptr
+    {
+        private:
+            type* pointedObject = nullptr;
+        public:
+            objptr<type>() : pointedObject{nullptr} {}
+
+            objptr<type>(const type& copied)
+            {
+                if(pointedObject != nullptr) delete pointedObject;
+                pointedObject = new type{copied};
+            }
+
+            objptr<type>(const objptr<type>& copied)
+            {
+                if(pointedObject != nullptr) delete pointedObject;
+                pointedObject = copied;
+            }
+
+            objptr<type> operator=(const objptr<type>& copied)
+            {
+                if(pointedObject != nullptr) delete pointedObject;
+                pointedObject = copied;
+                return *this;
+            }
+
+            operator const type*()
+            {
+                return pointedObject;
+            }
+
+            operator type&()
+            {
+                return *pointedObject;
+            }
+
+            ~objptr<type>()
+            {
+                if(pointedObject != nullptr) delete pointedObject;
+            }
+    };
+
     // /**
     //  * @brief Variable without specified type.
     //  * 
     //  */
-    // struct untypized
+    // struct untypizedpod
     // {
     //     private:
     //         void* variable = nullptr;
