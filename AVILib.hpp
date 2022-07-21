@@ -1820,19 +1820,37 @@ namespace AVIL
             objptr<type>(const objptr<type>& copied)
             {
                 if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = copied;
+                pointedObject = new type{copied};
+            }
+
+            objptr<type>(type* assigned)
+            {
+                if(pointedObject != nullptr) delete pointedObject;
+                pointedObject = assigned;
             }
 
             objptr<type> operator=(const objptr<type>& copied)
             {
                 if(pointedObject != nullptr) delete pointedObject;
-                pointedObject = copied;
+                pointedObject = new type{copied};
                 return *this;
             }
 
-            operator type&()
+            objptr<type> operator=(const type& copied)
             {
-                return *pointedObject;
+                if(pointedObject != nullptr) delete pointedObject;
+                pointedObject = new type{copied};
+            }
+
+            objptr<type> operator=(type* assigned)
+            {
+                if(pointedObject != nullptr) delete pointedObject;
+                pointedObject = assigned;
+            }
+
+            ~objptr<type>()
+            {
+                if(pointedObject != nullptr) delete pointedObject;
             }
 
             operator const type*()
@@ -1840,9 +1858,19 @@ namespace AVIL
                 return pointedObject;
             }
 
-            ~objptr<type>()
+            operator type&()
             {
-                if(pointedObject != nullptr) delete pointedObject;
+                return *pointedObject;
+            }
+
+            operator const type* const() const
+            {
+                return pointedObject;
+            }
+
+            operator const type&() const
+            {
+                return *pointedObject;
             }
     };
 
