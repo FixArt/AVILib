@@ -983,6 +983,18 @@ namespace AVIL
             }
 
             /**
+             * @brief Returns copy of a vector. Same operation as if the vector would be just assigned to another vector.
+             * 
+             * @return vector<type> New vector.
+             */
+            vector<type> copy()
+            {
+                vector<type> newVector;
+                newVector = *this;
+                return newVector;
+            }
+
+            /**
              * @brief Reverts vector.
              * 
              */
@@ -1445,7 +1457,7 @@ namespace AVIL
             {
                 std::stable_sort(begin(), end(), comparer);
             }
-            
+
             size_t unsorted()
             {
                 std::is_sorted_until(begin(), end());
