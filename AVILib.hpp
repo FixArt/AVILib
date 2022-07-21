@@ -1867,6 +1867,11 @@ namespace AVIL
                 return *pointedObject;
             }
 
+            type* operator->()
+            {
+                return pointedObject;
+            }
+
             operator const type* const() const
             {
                 return pointedObject;
@@ -1875,6 +1880,26 @@ namespace AVIL
             operator const type&() const
             {
                 return *pointedObject;
+            }
+            
+            const type* begin() const
+            {
+                return pointedObject;
+            }
+
+            const type* end() const
+            {
+                return pointedObject + 1;
+            }
+
+            type* begin()
+            {
+                return pointedObject;
+            }
+
+            type* end()
+            {
+                return pointedObject + 1;
             }
     };
 
