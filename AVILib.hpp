@@ -1903,116 +1903,119 @@ namespace AVIL
             }
     };
 
-    // /**
-    //  * @brief Variable without specified type.
-    //  * 
-    //  */
-    // struct untypizedpod
-    // {
-    //     private:
-    //         void* variable = nullptr;
-    //         size_t capacity = 0;
+    /**
+     * @brief Variable without specified type only for Plain Old Data.
+     * 
+     */
+    struct untypizedpod
+    {
+        private:
+            void* variable = nullptr;
+            size_t capacity = 0;
 
-    //         void resize(const size_t& newCapacity)
-    //         {
-    //             if(newCapacity == capacity) return;
-    //             if(newCapacity == 0)
-    //             {
-    //                 free(variable);
-    //                 variable = nullptr;
-    //                 capacity = 0;
-    //                 return;
-    //             }
+            void resize(const size_t& newCapacity)
+            {
+                if(newCapacity == capacity) return;
+                if(newCapacity == 0)
+                {
+                    free(variable);
+                    variable = nullptr;
+                    capacity = 0;
+                    return;
+                }
 
-    //             if(variable != nullptr)
-    //             {
-    //                 void* newVariable = realloc(variable, newCapacity);
-    //                 if(newVariable == nullptr)
-    //                 {
-    //                     // free(variable);
-    //                     variable = malloc(newCapacity);
-    //                 }
-    //                 else
-    //                 {
-    //                     variable = newVariable;
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 // free(variable);
-    //                 variable = malloc(newCapacity);
-    //             }
-    //             capacity = newCapacity;
-    //         }
-    //     public:
+                if(variable != nullptr)
+                {
+                    void* newVariable = realloc(variable, newCapacity);
+                    if(newVariable == nullptr)
+                    {
+                        // free(variable);
+                        variable = malloc(newCapacity);
+                    }
+                    else
+                    {
+                        variable = newVariable;
+                    }
+                }
+                else
+                {
+                    // free(variable);
+                    variable = malloc(newCapacity);
+                }
+                capacity = newCapacity;
+            }
+        public:
 
-    //         const size_t& size = capacity;
+            const size_t& size = capacity;
             
-    //         untypized()
-    //         {
-    //             capacity = 0;
-    //             variable = nullptr;
-    //             resize(0);
-    //         }
+            untypizedpod()
+            {
+                capacity = 0;
+                variable = nullptr;
+                resize(0);
+            }
 
-    //         template<class type>
-    //         untypized(const type& value)
-    //         {
-    //             resize(sizeof(value));
-    //             *((type*)variable) = (type&)value;
-    //         }
+            template<class type>
+            untypizedpod(const type& value)
+            {
+                if(!std::is_pod<type>().value) throw(EINVAL);
+                resize(sizeof(value));
+                *((type*)variable) = (type&)value;
+            }
 
-    //         untypized(const untypized& value)
-    //         {
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //         }
+            untypizedpod(const untypizedpod& value)
+            {
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+            }
 
-    //         untypized& operator=(const untypized& value)
-    //         {
-    //             if(&value == this) return *this;
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //             return *this;
-    //         }
+            untypizedpod& operator=(const untypizedpod& value)
+            {
+                if(&value == this) return *this;
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+                return *this;
+            }
 
-    //         untypized(const untypized&& value)
-    //         {
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //         }
+            untypizedpod(const untypizedpod&& value)
+            {
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+            }
 
-    //         untypized& operator=(const untypized&& value)
-    //         {
-    //             if(&value == this) return *this;
-    //             resize(value.size);
-    //             if(value.size != 0) *((char*)variable) = (char&)value;
-    //             return *this;
-    //         }
+            untypizedpod& operator=(const untypizedpod&& value)
+            {
+                if(&value == this) return *this;
+                resize(value.size);
+                if(value.size != 0) *((char*)variable) = (char&)value;
+                return *this;
+            }
 
-    //         template<class type>
-    //         untypized& operator=(const type& value)
-    //         {
-    //             resize(sizeof(type));
-    //             *((type*)variable) = value;
-    //             return *this;
-    //         }
+            template<class type>
+            untypizedpod& operator=(const type& value)
+            {
+                if(!std::is_pod<type>().value) throw(EINVAL);
+                resize(sizeof(type));
+                *((type*)variable) = value;
+                return *this;
+            }
 
-    //         template<class type>
-    //         operator type&() const
-    //         {
-    //             return *((type*)variable);
-    //         }
+            template<class type>
+            operator type&() const
+            {
+                if(!std::is_pod<type>().value) throw(EINVAL);
+                return *((type*)variable);
+            }
 
-    //         // template<class type>
-    //         // operator type()
-    //         // {
-    //         //     return *((type*)variable);
-    //         // }
+            // template<class type>
+            // operator type()
+            // {
+            //     return *((type*)variable);
+            // }
 
-    //         ~untypized()
-    //         {
-    //             if(variable != nullptr) free(variable);
-    //         }
-    // };
+            ~untypizedpod()
+            {
+                if(variable != nullptr) free(variable);
+            }
+    };
 };
