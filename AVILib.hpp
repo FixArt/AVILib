@@ -207,11 +207,6 @@ namespace AVIL
              */
             void pop(const size_t &index)
             {
-                if(size - 1 == 0)
-                {
-                    
-                    return;
-                }
                 if(index >= size or size == 0) return;
                 //type* newArray = (type*)malloc((size - 1) * sizeof(type));
                 size_t j = 0;
