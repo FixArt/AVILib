@@ -1809,7 +1809,7 @@ namespace AVIL
         private:
             type* pointedObject = nullptr;
         public:
-            objptr<type>() : pointedObject{nullptr} {}
+            objptr<type>() : pointedObject{new type} {}
 
             objptr<type>(const type& copied)
             {
@@ -1864,10 +1864,19 @@ namespace AVIL
 
             operator type&()
             {
+                if(pointedObject == nullptr)
+                {
+                    pointedObject = new type;
+                }
                 return *pointedObject;
             }
 
             type* operator->()
+            {
+                return pointedObject;
+            }
+
+            const type* const operator->() const
             {
                 return pointedObject;
             }
@@ -1879,6 +1888,10 @@ namespace AVIL
 
             operator const type&() const
             {
+                if(pointedObject == nullptr)
+                {
+                    throw(EFAULT);
+                }
                 return *pointedObject;
             }
             
@@ -1931,6 +1944,7 @@ namespace AVIL
                     {
                         // free(variable);
                         variable = malloc(newCapacity);
+                        if(variable == nullptr) throw(ENOMEM);
                     }
                     else
                     {
@@ -1941,6 +1955,7 @@ namespace AVIL
                 {
                     // free(variable);
                     variable = malloc(newCapacity);
+                    if(variable == nullptr) throw(ENOMEM);
                 }
                 capacity = newCapacity;
             }
