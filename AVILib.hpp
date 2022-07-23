@@ -2194,8 +2194,33 @@ namespace AVIL
     //             return (typeid(processedType).hash_code() == checkedHash)?(true):(availableIteratorHash<additionalType, availableTypes...>(checkedHash));
     //         }
 
+    //         // template<class processedType>
+    //         // void assignIterator(const variant<types...>& copied)
+    //         // {
+    //         //     if(copied.currentHash() == typeid(processedType).hash_code())
+    //         //     {
+    //         //         turnTo<processedType>();
+    //         //         *((processedType*)variable) = (processedType&)copied;
+    //         //     }
+    //         // }
+
+    //         // template<class processedType, class additionalType, class... assignedTypes>
+    //         // void assignIterator(const variant<types...>& copied)
+    //         // {
+    //         //     if(copied.currentHash() == typeid(processedType).hash_code())
+    //         //     {
+    //         //         turnTo<processedType>();
+    //         //         *((processedType*)variable) = (processedType&)copied;
+    //         //     }
+    //         //     else
+    //         //     {
+    //         //         // if(sizeof...(assignedTypes) == 0) return;
+    //         //         assignIterator<additionalType, assignedTypes...>(copied);
+    //         //     }
+    //         // }
+
     //         template<class processedType>
-    //         void assignIterator(const variant<types...>& copied)
+    //         void assignIterator(const variant& copied)
     //         {
     //             if(copied.currentHash() == typeid(processedType).hash_code())
     //             {
@@ -2205,7 +2230,7 @@ namespace AVIL
     //         }
 
     //         template<class processedType, class additionalType, class... assignedTypes>
-    //         void assignIterator(const variant<types...>& copied)
+    //         void assignIterator(const variant& copied)
     //         {
     //             if(copied.currentHash() == typeid(processedType).hash_code())
     //             {
@@ -2219,30 +2244,30 @@ namespace AVIL
     //             }
     //         }
 
-    //         template<class... otherTypes, class processedType>
-    //         void assignIteratorOther(const variant<otherTypes...>& copied)
-    //         {
-    //             if(copied.currentHash() == typeid(processedType).hash_code())
-    //             {
-    //                 turnTo<processedType>();
-    //                 *((processedType*)variable) = (processedType&)copied;
-    //             }
-    //         }
+    //         // template<class... otherTypes, class processedType>
+    //         // void assignIteratorOther(const variant<otherTypes...>& copied)
+    //         // {
+    //         //     if(copied.currentHash() == typeid(processedType).hash_code())
+    //         //     {
+    //         //         turnTo<processedType>();
+    //         //         *((processedType*)variable) = (processedType&)copied;
+    //         //     }
+    //         // }
 
-    //         template<class... otherTypes, class processedType, class additionalType, class... assignedTypes>
-    //         void assignIteratorOther(const variant<otherTypes...>& copied)
-    //         {
-    //             if(copied.currentHash() == typeid(processedType).hash_code())
-    //             {
-    //                 turnTo<processedType>();
-    //                 *((processedType*)variable) = (processedType&)copied;
-    //             }
-    //             else
-    //             {
-    //                 // if(sizeof...(assignedTypes) == 0) return; //So no conflict happened.
-    //                 assignIteratorOther<otherTypes..., additionalType, assignedTypes...>(copied);
-    //             }
-    //         }
+    //         // template<class... otherTypes, class processedType, class additionalType, class... assignedTypes>
+    //         // void assignIteratorOther(const variant<otherTypes...>& copied)
+    //         // {
+    //         //     if(copied.currentHash() == typeid(processedType).hash_code())
+    //         //     {
+    //         //         turnTo<processedType>();
+    //         //         *((processedType*)variable) = (processedType&)copied;
+    //         //     }
+    //         //     else
+    //         //     {
+    //         //         // if(sizeof...(assignedTypes) == 0) return; //So no conflict happened.
+    //         //         assignIteratorOther<otherTypes..., additionalType, assignedTypes...>(copied);
+    //         //     }
+    //         // }
 
     //         template<class processedType>
     //         void cleanIterator()
@@ -2300,24 +2325,35 @@ namespace AVIL
     //             currentType = typeid(type).hash_code();
     //         }
 
-    //         void assign(const variant<types...>& copied)
+    //         // void assign(const variant<types...>& copied)
+    //         // {
+    //         //     if(!isAvailable(copied.currentHash()))
+    //         //     {
+    //         //         throw(EINVAL);
+    //         //     }
+    //         //     assignIterator<types...>(copied);
+    //         //     currentType = copied.currentHash();
+    //         // }
+
+    //         // template<class... otherTypes>
+    //         // void assign(const variant<otherTypes...>& copied)
+    //         // {
+    //         //     if(!isAvailable(copied.currentHash()))
+    //         //     {
+    //         //         throw(EINVAL);
+    //         //     }
+    //         //     // assignIteratorOther<otherTypes..., types...>(copied);
+    //         //     assignIterator<types...>(copied);
+    //         //     currentType = copied.currentHash();
+    //         // }
+
+    //         void assign(const variant& copied)
     //         {
     //             if(!isAvailable(copied.currentHash()))
     //             {
     //                 throw(EINVAL);
     //             }
     //             assignIterator<types...>(copied);
-    //             currentType = copied.currentHash();
-    //         }
-
-    //         template<class... otherTypes>
-    //         void assign(const variant<otherTypes...>& copied)
-    //         {
-    //             if(!isAvailable(copied.currentHash()))
-    //             {
-    //                 throw(EINVAL);
-    //             }
-    //             assignIteratorOther<otherTypes..., types...>(copied);
     //             currentType = copied.currentHash();
     //         }
 
@@ -2350,14 +2386,15 @@ namespace AVIL
     //         template<class... otherTypes>
     //         variant<types...>(const variant<otherTypes...>& copied)
     //         {
-    //             assign<otherTypes...>(copied);
-    //             currentType = copied.currentHash();
+    //             // assign<otherTypes...>(copied);
+    //             assign(copied);
+    //             // currentType = copied.currentHash();
     //         }
 
     //         variant<types...>(const variant<types...>& copied)
     //         {
     //             assign(copied);
-    //             currentType = copied.currentHash();
+    //             // currentType = copied.currentHash();
     //         }
 
     //         template<class type>
@@ -2371,15 +2408,16 @@ namespace AVIL
     //         template<class... otherTypes>
     //         variant<types...> operator=(const variant<otherTypes...>& copied)
     //         {
-    //             assign<otherTypes...>(copied);
-    //             currentType = copied.currentHash();
+    //             // assign<otherTypes...>(copied);
+    //             assign(copied);
+    //             // currentType = copied.currentHash();
     //             return *this;
     //         }
 
     //         variant<types...> operator=(const variant<types...>& copied)
     //         {
     //             assign(copied);
-    //             currentType = copied.currentHash();
+    //             // currentType = copied.currentHash();
     //             return *this;
     //         }
 
