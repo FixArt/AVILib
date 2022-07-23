@@ -2383,15 +2383,21 @@ namespace AVIL
     //             *((type*)variable) = (type&)assigned;
     //         }
 
-    //         template<class... otherTypes>
-    //         variant<types...>(const variant<otherTypes...>& copied)
-    //         {
-    //             // assign<otherTypes...>(copied);
-    //             assign(copied);
-    //             // currentType = copied.currentHash();
-    //         }
+    //         // template<class... otherTypes>
+    //         // variant<types...>(const variant<otherTypes...>& copied)
+    //         // {
+    //         //     // assign<otherTypes...>(copied);
+    //         //     assign(copied);
+    //         //     // currentType = copied.currentHash();
+    //         // }
 
-    //         variant<types...>(const variant<types...>& copied)
+    //         // variant<types...>(const variant<types...>& copied)
+    //         // {
+    //         //     assign(copied);
+    //         //     // currentType = copied.currentHash();
+    //         // }
+
+    //         variant(const variant& copied)
     //         {
     //             assign(copied);
     //             // currentType = copied.currentHash();
@@ -2405,16 +2411,23 @@ namespace AVIL
     //             return *this;
     //         }
 
-    //         template<class... otherTypes>
-    //         variant<types...> operator=(const variant<otherTypes...>& copied)
-    //         {
-    //             // assign<otherTypes...>(copied);
-    //             assign(copied);
-    //             // currentType = copied.currentHash();
-    //             return *this;
-    //         }
+    //         // template<class... otherTypes>
+    //         // variant<types...> operator=(const variant<otherTypes...>& copied)
+    //         // {
+    //         //     // assign<otherTypes...>(copied);
+    //         //     assign(copied);
+    //         //     // currentType = copied.currentHash();
+    //         //     return *this;
+    //         // }
 
-    //         variant<types...> operator=(const variant<types...>& copied)
+    //         // variant<types...> operator=(const variant<types...>& copied)
+    //         // {
+    //         //     assign(copied);
+    //         //     // currentType = copied.currentHash();
+    //         //     return *this;
+    //         // }
+
+    //         variant operator=(const variant& copied)
     //         {
     //             assign(copied);
     //             // currentType = copied.currentHash();
