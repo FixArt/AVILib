@@ -2032,24 +2032,82 @@ namespace AVIL
                 return *this;
             }
 
-            template<class type>
-            operator type&()
+            pair<first, second> operator=(const pair<first, second>& copied)
             {
-                if(currentHash() != typeid(type).hash_code())
+                if(typeid(first).hash_code() != copied.currentHash() and typeid(second).hash_code() != copied.currentHash())
                 {
                     throw(EINVAL);
                 }
-                return *((type*)variable);
+                if(typeid(first).hash_code() == copied.currentHash())
+                {
+                    turnTo<first>();
+                    *((first*)variable) = (first&)copied;
+                }
+                else
+                {
+                    turnTo<second>();
+                    *((second*)variable) = (second&)copied;
+                }
+                currentType = copied.currentHash();
+                return *this;
             }
 
-            template<class type>
-            operator const type&() const
+            // template<class type>
+            // operator type&()
+            // {
+            //     if(currentHash() != typeid(type).hash_code())
+            //     {
+            //         throw(EINVAL);
+            //     }
+            //     return *((type*)variable);
+            // }
+
+            // template<class type>
+            // operator const type&() const
+            // {
+            //     if(currentType != typeid(type).hash_code())
+            //     {
+            //         throw(EINVAL);
+            //     }
+            //     return *((type*)variable);
+            // }
+
+
+
+            operator first&()
             {
-                if(currentType != typeid(type).hash_code())
+                if(currentHash() != typeid(first).hash_code())
                 {
                     throw(EINVAL);
                 }
-                return *((type*)variable);
+                return *((first*)variable);
+            }
+
+            operator const first&() const
+            {
+                if(currentType != typeid(first).hash_code())
+                {
+                    throw(EINVAL);
+                }
+                return *((first*)variable);
+            }
+
+            operator second&()
+            {
+                if(currentHash() != typeid(second).hash_code())
+                {
+                    throw(EINVAL);
+                }
+                return *((second*)variable);
+            }
+
+            operator const second&() const
+            {
+                if(currentType != typeid(second).hash_code())
+                {
+                    throw(EINVAL);
+                }
+                return *((second*)variable);
             }
 
             ~pair<first, second>()
@@ -2070,6 +2128,266 @@ namespace AVIL
                 }
             }
     };
+
+    // template<class... types>
+    // struct variant
+    // {
+    //     private:
+    //         void* variable = nullptr;
+    //         size_t currentType = 0;
+
+    //         template<class checkedType>
+    //         bool availableIterator() const
+    //         {
+    //             return false;
+    //         }
+
+    //         // template<class checkedType, class processedType>
+    //         // bool availableIterator() const
+    //         // {
+    //         //     return typeid(processedType) == typeid(checkedType);
+    //         // }
+
+    //         template<class checkedType, class processedType, class... availableTypes>
+    //         bool availableIterator() const
+    //         {
+    //             if(sizeof...(availableTypes) == 0) return typeid(processedType) == typeid(checkedType);
+    //             return (typeid(processedType) == typeid(checkedType))?(true):(availableIterator<checkedType, availableTypes...>());
+    //         }
+
+    //         // template<>
+    //         // bool availableIteratorHash(const size_t& checkedHash) const
+    //         // {
+    //         //     return false;
+    //         // }
+
+    //         template<class processedType>
+    //         bool availableIteratorHash(const size_t& checkedHash) const
+    //         {
+    //             return typeid(processedType).hash_code() == checkedHash;
+    //         }
+
+    //         template<class processedType, class... availableTypes>
+    //         bool availableIteratorHash(const size_t& checkedHash) const
+    //         {
+    //             if(sizeof...(availableTypes) == 0) return typeid(processedType).hash_code() == checkedHash;
+    //             return (typeid(processedType).hash_code() == checkedHash)?(true):(availableIteratorHash<availableTypes...>());
+    //         }
+
+    //         template<class processedType>
+    //         void assignIterator(const variant<types...>& copied)
+    //         {
+    //             if(copied.currentHash() == typeid(processedType).hash_code())
+    //             {
+    //                 turnTo<processedType>();
+    //                 *((processedType*)variable) = (processedType&)copied;
+    //             }
+    //         }
+
+    //         template<class processedType, class... assignedTypes>
+    //         void assignIterator(const variant<types...>& copied)
+    //         {
+    //             if(copied.currentHash() == typeid(processedType).hash_code())
+    //             {
+    //                 turnTo<processedType>();
+    //                 *((processedType*)variable) = (processedType&)copied;
+    //             }
+    //             else
+    //             {
+    //                 // if(sizeof...(assignedTypes) == 0) return;
+    //                 assignIterator<assignedTypes...>(copied);
+    //             }
+    //         }
+
+    //         template<class processedType, class... otherTypes>
+    //         void assignIteratorOther(const variant<otherTypes...>& copied)
+    //         {
+    //             if(copied.currentHash() == typeid(processedType).hash_code())
+    //             {
+    //                 turnTo<processedType>();
+    //                 *((processedType*)variable) = (processedType&)copied;
+    //             }
+    //         }
+
+    //         template<class processedType, class... assignedTypes, class... otherTypes>
+    //         void assignIteratorOther(const variant<otherTypes...>& copied)
+    //         {
+    //             if(copied.currentHash() == typeid(processedType).hash_code())
+    //             {
+    //                 turnTo<processedType>();
+    //                 *((processedType*)variable) = (processedType&)copied;
+    //             }
+    //             else
+    //             {
+    //                 // if(sizeof...(assignedTypes) == 0) return; //So no conflict happened.
+    //                 assignIteratorOther<assignedTypes..., otherTypes...>(copied);
+    //             }
+    //         }
+
+    //         template<class processedType>
+    //         void cleanIterator()
+    //         {
+    //             if(typeid(processedType) == typeid(currentType))
+    //             {
+    //                 ((processedType*)variable)->~processedType();
+    //             }
+    //         }
+
+    //         template<class processedType, class... cleanedTypes>
+    //         void cleanIterator()
+    //         {
+    //             if(typeid(processedType) == typeid(currentType))
+    //             {
+    //                 ((processedType*)variable)->~processedType();
+    //             }
+    //             else
+    //             {
+    //                 // if(sizeof...(cleanedTypes) == 0) return;
+    //                 cleanIterator<cleanedTypes...>();
+    //             }
+    //         }
+
+    //         void clean()
+    //         {
+    //             if(variable != nullptr)
+    //             {
+    //                 cleanIterator<types...>();
+    //                 free(variable);
+    //                 variable = nullptr;
+    //             }
+    //         }
+
+    //         void resize(const size_t& newSize)
+    //         {
+    //             if(variable != nullptr)
+    //             {
+    //                 clean();
+    //                 if(newSize == 0) return;
+    //             }
+    //             variable = malloc(newSize);
+    //             if(variable == nullptr) throw(ENOMEM);
+    //         }
+
+    //         template<class type>
+    //         void turnTo()
+    //         {
+    //             if(!isAvailable<type>())
+    //             {
+    //                 throw(EINVAL);
+    //             }
+    //             resize(sizeof(type));
+    //             new (&variable) type;
+    //             currentType = typeid(type).hash_code();
+    //         }
+
+    //         void assign(const variant<types...>& copied)
+    //         {
+    //             if(!isAvailable(copied.currentHash()))
+    //             {
+    //                 throw(EINVAL);
+    //             }
+    //             assignIterator<types...>(copied);
+    //             currentType = copied.currentHash();
+    //         }
+
+    //         template<class... otherTypes>
+    //         void assign(const variant<otherTypes...>& copied)
+    //         {
+    //             if(!isAvailable(copied.currentHash()))
+    //             {
+    //                 throw(EINVAL);
+    //             }
+    //             assignIteratorOther<types...>(copied);
+    //             currentType = copied.currentHash();
+    //         }
+
+    //     public:
+    //         template<class type>
+    //         bool isAvailable() const
+    //         {
+    //             return availableIterator<type, types...>();
+    //         }
+
+    //         bool isAvailable(const size_t& checkedHash) const
+    //         {
+    //             return availableIteratorHash<types...>(checkedHash);
+    //         }
+
+    //         variant<types...>() : variable{nullptr}, currentType{0} {}
+
+    //         const size_t& currentHash() const
+    //         {
+    //             return currentType;
+    //         }
+
+    //         template<class type>
+    //         variant<types...>(const type& assigned)
+    //         {
+    //             turnTo<type>();
+    //             *((type*)variable) = (type&)assigned;
+    //         }
+
+    //         template<class... otherTypes>
+    //         variant<types...>(const pair<otherTypes...>& copied)
+    //         {
+    //             assign<otherTypes...>(copied);
+    //             currentType = copied.currentHash();
+    //         }
+
+    //         variant<types...>(const variant<types...>& copied)
+    //         {
+    //             assign(copied);
+    //             currentType = copied.currentHash();
+    //         }
+
+    //         template<class type>
+    //         variant<types...> operator=(const type& assigned)
+    //         {
+    //             turnTo<type>();
+    //             *((type*)variable) = (type&)assigned;
+    //             return *this;
+    //         }
+
+    //         template<class... otherTypes>
+    //         variant<types...> operator=(const pair<otherTypes...>& copied)
+    //         {
+    //             assign<otherTypes...>(copied);
+    //             currentType = copied.currentHash();
+    //             return *this;
+    //         }
+
+    //         variant<types...> operator=(const variant<types...>& copied)
+    //         {
+    //             assign(copied);
+    //             currentType = copied.currentHash();
+    //             return *this;
+    //         }
+
+    //         template<class type>
+    //         operator type&()
+    //         {
+    //             if(currentHash() != typeid(type).hash_code())
+    //             {
+    //                 throw(EINVAL);
+    //             }
+    //             return *((type*)variable);
+    //         }
+
+    //         template<class type>
+    //         operator const type&() const
+    //         {
+    //             if(currentType != typeid(type).hash_code())
+    //             {
+    //                 throw(EINVAL);
+    //             }
+    //             return *((type*)variable);
+    //         }
+
+    //         ~variant<types...>()
+    //         {
+    //             clean();
+    //         }
+    // };
 
     /**
      * @brief Variable without specified type only for Plain Old Data.
