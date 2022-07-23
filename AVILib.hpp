@@ -2142,16 +2142,16 @@ namespace AVIL
     //             return false;
     //         }
 
-    //         // template<class checkedType, class processedType>
-    //         // bool availableIterator() const
-    //         // {
-    //         //     return typeid(processedType) == typeid(checkedType);
-    //         // }
+    //         template<class checkedType, class processedType>
+    //         bool availableIterator() const
+    //         {
+    //             return typeid(processedType) == typeid(checkedType);
+    //         }
 
     //         template<class checkedType, class processedType, class... availableTypes>
     //         bool availableIterator() const
     //         {
-    //             if(sizeof...(availableTypes) == 0) return typeid(processedType) == typeid(checkedType);
+    //             //if(sizeof...(availableTypes) == 0) return typeid(processedType) == typeid(checkedType);
     //             return (typeid(processedType) == typeid(checkedType))?(true):(availableIterator<checkedType, availableTypes...>());
     //         }
 
@@ -2170,7 +2170,7 @@ namespace AVIL
     //         template<class processedType, class... availableTypes>
     //         bool availableIteratorHash(const size_t& checkedHash) const
     //         {
-    //             if(sizeof...(availableTypes) == 0) return typeid(processedType).hash_code() == checkedHash;
+    //             // if(sizeof...(availableTypes) == 0) return typeid(processedType).hash_code() == checkedHash;
     //             return (typeid(processedType).hash_code() == checkedHash)?(true):(availableIteratorHash<availableTypes...>());
     //         }
 
