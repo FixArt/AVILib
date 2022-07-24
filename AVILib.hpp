@@ -2046,12 +2046,7 @@ namespace AVIL
 
             // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
 
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}
-            {
-                pointed = pointer;
-                point = new counter<size_t>{0};
-                if(pointed == nullptr) ++(*point);
-            }
+            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{1}} {}
 
             shared_ptr(shared_ptr& copied)
             {
@@ -2184,12 +2179,7 @@ namespace AVIL
 
             // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
 
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}
-            {
-                pointed = pointer;
-                point = new counter<size_t>{0};
-                if(pointed == nullptr) ++(*point);
-            }
+            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{1}} {}
 
             shared_ptr(shared_ptr& copied)
             {
