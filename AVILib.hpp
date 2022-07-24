@@ -9,7 +9,7 @@
 #include <type_traits>
 
 /**
- * @brief Namespace of Alternative Vector Implementation Library.
+ * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
  * 
  */
 namespace AVIL
@@ -1055,6 +1055,23 @@ namespace AVIL
                 return (const type&)array;
             }
 
+            /**
+             * @brief Returns constant array from itself. Useful for strings printing.
+             * 
+             * @return type* Returned constant array.
+             */
+            operator type*()
+            {
+                if(array == nullptr) throw(EFAULT);
+                return (type*)array;
+            }
+
+            operator type&()
+            {
+                if(array == nullptr) throw(EFAULT);
+                return (type&)array;
+            }
+
             type &operator[](const size_t &index)
             {
                 if(!exists(index))
@@ -1794,6 +1811,193 @@ namespace AVIL
     }
 
     /**
+     * Counter for pointers, which only can be sent by reference. Non explicit copying disallowed.
+     */
+    template<class countType = size_t>
+    class counter
+    {
+        private:
+            countType count = 0;
+
+        public:
+            counter() : count(0) {}
+
+            counter(countType settedCount) : count(settedCount) {}
+
+            counter<countType>(const counter<countType>& copied)
+            {
+                count = copied.count;
+            }
+
+            counter& operator+=(const countType& number)
+            {
+                count += number;
+                return *this;
+            }
+
+            counter& operator-=(const countType& number)
+            {
+                if(std::is_unsigned<countType>() and number >= count) count = 0;
+                else count -= number;
+                count -= number;
+                return *this;
+            }
+
+            counter& operator*=(const countType& number)
+            {
+                count *= number;
+                return *this;
+            }
+
+            counter& operator/=(const countType& number)
+            {
+                count /= number;
+                return *this;
+            }
+
+            counter& operator=(const countType& number)
+            {
+                count = number;
+                return *this;
+            }
+
+            bool operator==(const countType& number)
+            {
+                return count == number;
+            }
+
+            operator countType()
+            {
+                return count;
+            }
+    };
+
+    template<class type>
+    struct unique_ptr
+    {
+        private:
+
+            type* pointed;
+
+        public:
+
+            unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
+
+            unique_ptr(const unique_ptr& copied)
+            {
+                pointed = copied.pointed;
+                copied.pointed = nullptr;
+            }
+
+            type& operator*()
+            {
+                return *pointed;
+            }
+
+            type* operator->()
+            {
+                return pointed;
+            }
+
+            const type& operator*() const
+            {
+                return *pointed;
+            }
+
+            const type* const operator->() const
+            {
+                return pointed;
+            }
+
+            operator const type* const() const
+            {
+                return pointed;
+            }
+
+            operator type*()
+            {
+                return pointed;
+            }
+
+            ~unique_ptr()
+            {
+                --pointed;
+                if(pointed == 0)
+                {
+                    if(pointed != nullptr) delete pointed;
+                }
+            }
+    };
+
+    template<class type>
+    struct shared_ptr
+    {
+        private:
+
+            type* pointed;
+
+            counter<size_t>* point;
+
+        public:
+
+            // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
+
+            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{(pointer == nullptr)?(0):(1)}} {}
+
+            shared_ptr(const shared_ptr& copied)
+            {
+                pointed = copied.pointed;
+                point = copied.point;
+                ++point;
+            }
+
+            type& operator*()
+            {
+                return *pointed;
+            }
+
+            type* operator->()
+            {
+                return pointed;
+            }
+
+            size_t number()
+            {
+                return (size_t)point;
+            }
+
+            const type& operator*() const
+            {
+                return *pointed;
+            }
+
+            const type* const operator->() const
+            {
+                return pointed;
+            }
+
+            operator const type* const() const
+            {
+                return pointed;
+            }
+
+            operator type*()
+            {
+                return pointed;
+            }
+
+            ~shared_ptr()
+            {
+                --pointed;
+                if(pointed == 0)
+                {
+                    if(pointed != nullptr) delete pointed;
+                    delete point;
+                }
+            }
+    };
+
+    /**
      * @brief Simple object pointers.
      * 
      * @tparam type Returned type.
@@ -1863,6 +2067,11 @@ namespace AVIL
                 {
                     pointedObject = new type;
                 }
+                return *pointedObject;
+            }
+
+            type& operator*()
+            {
                 return *pointedObject;
             }
 
@@ -2155,6 +2364,11 @@ namespace AVIL
             }
     };
 
+    // /**
+    //  * @brief Variant implementation.
+    //  * 
+    //  * @tparam types Types of variant.
+    //  */
     // template<class... types>
     // struct variant
     // {
@@ -2225,7 +2439,7 @@ namespace AVIL
     //             if(copied.currentHash() == typeid(processedType).hash_code())
     //             {
     //                 turnTo<processedType>();
-    //                 *((processedType*)variable) = (processedType&)copied;
+    //                 *((processedType*)variable) = (processedType)copied;
     //             }
     //         }
 
@@ -2235,7 +2449,7 @@ namespace AVIL
     //             if(copied.currentHash() == typeid(processedType).hash_code())
     //             {
     //                 turnTo<processedType>();
-    //                 *((processedType*)variable) = (processedType&)copied;
+    //                 *((processedType*)variable) = (processedType)copied;
     //             }
     //             else
     //             {
