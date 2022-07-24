@@ -1866,6 +1866,26 @@ namespace AVIL
                 return count == number;
             }
 
+            counter& operator++()
+            {
+                return ++count;
+            }
+
+            counter& operator++(int)
+            {
+                return count++;
+            }
+
+            counter& operator--()
+            {
+                return --count;
+            }
+
+            counter& operator--(int)
+            {
+                return count--;
+            }
+
             operator countType()
             {
                 return count;
@@ -1942,13 +1962,25 @@ namespace AVIL
 
             // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
 
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{(pointer == nullptr)?(0):(1)}} {}
+            shared_ptr(type* pointer = nullptr) : pointed{pointer}
+            {
+                point = new counter<size_t>;
+                if(pointer == nullptr) ++point;
+            }
 
             shared_ptr(const shared_ptr& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
                 ++point;
+            }
+
+            shared_ptr operator=(const shared_ptr& copied)
+            {
+                pointed = copied.pointed;
+                point = copied.point;
+                ++point;
+                return *this;
             }
 
             type& operator*()
@@ -1997,7 +2029,7 @@ namespace AVIL
             }
     };
 
-template<class type>
+    template<class type>
     struct unique_ptr<type[]>
     {
         private:
@@ -2067,13 +2099,25 @@ template<class type>
 
             // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
 
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{(pointer == nullptr)?(0):(1)}} {}
+            shared_ptr(type* pointer = nullptr) : pointed{pointer}
+            {
+                point = new counter<size_t>;
+                if(pointer == nullptr) ++point;
+            }
 
             shared_ptr(const shared_ptr& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
                 ++point;
+            }
+
+            shared_ptr operator=(const shared_ptr& copied)
+            {
+                pointed = copied.pointed;
+                point = copied.point;
+                ++point;
+                return *this;
             }
 
             type& operator*()
