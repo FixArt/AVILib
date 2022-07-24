@@ -1975,7 +1975,7 @@ namespace AVIL
                 ++point;
             }
 
-            shared_ptr operator=(const shared_ptr& copied)
+            shared_ptr& operator=(const shared_ptr& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
@@ -2112,7 +2112,7 @@ namespace AVIL
                 ++point;
             }
 
-            shared_ptr operator=(const shared_ptr& copied)
+            shared_ptr& operator=(const shared_ptr& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
