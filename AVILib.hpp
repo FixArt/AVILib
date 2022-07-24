@@ -1961,7 +1961,7 @@ namespace AVIL
                 return pointed;
             }
 
-            size_t number()
+            size_t use_count()
             {
                 return (size_t)point;
             }
