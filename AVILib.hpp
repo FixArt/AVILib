@@ -1820,11 +1820,11 @@ namespace AVIL
             countType count = 0;
 
         public:
-            counter() : count(0) {}
+            // counter() : count(0) {}
 
-            counter(countType settedCount) : count(settedCount) {}
+            counter(countType settedCount = 0) : count(settedCount) {}
 
-            counter<countType>(const counter<countType>& copied)
+            explicit counter<countType>(const counter<countType>& copied)
             {
                 count = copied.count;
             }
@@ -1868,25 +1868,25 @@ namespace AVIL
 
             counter& operator++()
             {
-                return ++count;
-            }
-
-            counter& operator++(int)
-            {
-                return count++;
+                ++count;
+                return *this;
             }
 
             counter& operator--()
             {
-                return --count;
+                if(!std::is_unsigned<countType>() or count != 0)
+                {
+                    --count;
+                }
+                return *this;
             }
 
-            counter& operator--(int)
-            {
-                return count--;
-            }
+            // operator countType()
+            // {
+            //     return count;
+            // }
 
-            operator countType()
+            operator const countType&()
             {
                 return count;
             }
@@ -1964,22 +1964,23 @@ namespace AVIL
 
             shared_ptr(type* pointer = nullptr) : pointed{pointer}
             {
-                point = new counter<size_t>;
-                if(pointer == nullptr) ++point;
+                pointed = pointer;
+                point = new counter<size_t>{0};
+                if(pointed == nullptr) ++(*point);
             }
 
-            shared_ptr(const shared_ptr& copied)
+            shared_ptr(shared_ptr& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
                 ++point;
             }
 
-            shared_ptr& operator=(const shared_ptr& copied)
+            shared_ptr& operator=(shared_ptr& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
-                ++point;
+                ++(*point);
                 return *this;
             }
 
@@ -1995,7 +1996,7 @@ namespace AVIL
 
             size_t use_count()
             {
-                return (size_t)point;
+                return (size_t)(*point);
             }
 
             const type& operator*() const
@@ -2003,10 +2004,10 @@ namespace AVIL
                 return *pointed;
             }
 
-            const type* const operator->() const
-            {
-                return pointed;
-            }
+            // const type* const operator->() const
+            // {
+            //     return pointed;
+            // }
 
             operator const type* const() const
             {
@@ -2020,147 +2021,10 @@ namespace AVIL
 
             ~shared_ptr()
             {
-                --pointed;
-                if(pointed == 0)
+                --(*point);
+                if((*point) == (size_t)0)
                 {
                     if(pointed != nullptr) delete pointed;
-                    delete point;
-                }
-            }
-    };
-
-    template<class type>
-    struct unique_ptr<type[]>
-    {
-        private:
-
-            type* pointed;
-
-        public:
-
-            unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
-
-            unique_ptr(const unique_ptr& copied)
-            {
-                pointed = copied.pointed;
-                copied.pointed = nullptr;
-            }
-
-            type& operator*()
-            {
-                return *pointed;
-            }
-
-            type* operator->()
-            {
-                return pointed;
-            }
-
-            const type& operator*() const
-            {
-                return *pointed;
-            }
-
-            const type* const operator->() const
-            {
-                return pointed;
-            }
-
-            operator const type* const() const
-            {
-                return pointed;
-            }
-
-            operator type*()
-            {
-                return pointed;
-            }
-
-            ~unique_ptr()
-            {
-                --pointed;
-                if(pointed == 0)
-                {
-                    if(pointed != nullptr) delete[] pointed;
-                }
-            }
-    };
-
-    template<class type>
-    struct shared_ptr<type[]>
-    {
-        private:
-
-            type* pointed;
-
-            counter<size_t>* point;
-
-        public:
-
-            // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
-
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}
-            {
-                point = new counter<size_t>;
-                if(pointer == nullptr) ++point;
-            }
-
-            shared_ptr(const shared_ptr& copied)
-            {
-                pointed = copied.pointed;
-                point = copied.point;
-                ++point;
-            }
-
-            shared_ptr& operator=(const shared_ptr& copied)
-            {
-                pointed = copied.pointed;
-                point = copied.point;
-                ++point;
-                return *this;
-            }
-
-            type& operator*()
-            {
-                return *pointed;
-            }
-
-            type* operator->()
-            {
-                return pointed;
-            }
-
-            size_t use_count()
-            {
-                return (size_t)point;
-            }
-
-            const type& operator*() const
-            {
-                return *pointed;
-            }
-
-            const type* const operator->() const
-            {
-                return pointed;
-            }
-
-            operator const type* const() const
-            {
-                return pointed;
-            }
-
-            operator type*()
-            {
-                return pointed;
-            }
-
-            ~shared_ptr()
-            {
-                --pointed;
-                if(pointed == 0)
-                {
-                    if(pointed != nullptr) delete[] pointed;
                     delete point;
                 }
             }
