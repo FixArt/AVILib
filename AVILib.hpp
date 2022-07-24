@@ -227,17 +227,33 @@ namespace AVIL
 
             void pop(vector<size_t> poppedIndexes)
             {
+                // for(size_t index : poppedIndexes)
+                // {
+                //     // pop(index);
+                // }
+                size_t found = 0;
                 for(size_t index : poppedIndexes)
                 {
-                    pop(index);
+                    size_t j = 0;
+                    for(size_t i = 0; i < size; ++i)
+                    {
+                        if(index == i)
+                        {
+                            continue;
+                            ++found;
+                        }
+                        array[j] = array[i];
+                        ++j;
+                    }
                 }
+                reduce(found);
             }
 
             template<class... arguments>
             void pop(const size_t &index, arguments... removedIndexes)
             {
-                pop(index);
                 pop(removedIndexes...);
+                pop(index);
             }
 
             /**
