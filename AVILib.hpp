@@ -71,6 +71,14 @@ namespace AVIL
                     heapify(largest, lookedSize);
                 }
             }
+
+            template<class unwrapped, class... arguments>
+            vector<unwrapped> unwrap(arguments... readArguments)
+            {
+                vector<unwrapped> checked;
+                checked.append(readArguments...);
+                return checked;
+            }
         public:
 
             vector<type>() : array{nullptr}, arraySize{0} {}
@@ -225,7 +233,7 @@ namespace AVIL
                 reduce(1);
             }
 
-            void pop(vector<size_t> poppedIndexes)
+            void pop(const vector<size_t>& poppedIndexes)
             {
                 // for(size_t index : poppedIndexes)
                 // {
@@ -239,8 +247,8 @@ namespace AVIL
                     {
                         if(index == i)
                         {
-                            continue;
                             ++found;
+                            continue;
                         }
                         array[j] = array[i];
                         ++j;
@@ -249,11 +257,71 @@ namespace AVIL
                 reduce(found);
             }
 
-            template<class... arguments>
-            void pop(const size_t &index, arguments... removedIndexes)
+            void fpop(vector<size_t> poppedIndexes)
             {
-                pop(removedIndexes...);
-                pop(index);
+                size_t found = 0;
+                poppedIndexes.sort();
+                for(size_t index : poppedIndexes)
+                {
+                    if(index - found >= size - 1 - found) break;
+                    swap(array[index - found], array[size - 1 - found]);
+                    ++found;
+                }
+                reduce(found);
+            }
+
+            void ufpop(vector<size_t> poppedIndexes)
+            {
+                size_t found = 0;
+                for(size_t index : poppedIndexes)
+                {
+                    swap(array[index - found], array[size - 1 - found]);
+                    ++found;
+                }
+                reduce(found);
+            }
+
+            template<class... arguments>
+            void pop(arguments... removedIndexes)
+            {
+                vector<size_t> unwrapped = unwrap<size_t>(removedIndexes...);
+                unwrapped.sort();
+                size_t found = 0;
+                for(size_t index : unwrapped)
+                {
+                    pop(index - found);
+                    ++found;
+                }
+            }
+
+            template<class... arguments>
+            void fpop(arguments... removedIndexes)
+            {
+                // pop(removedIndexes...);
+                // pop(index);
+                vector<size_t> unwrapped = unwrap<size_t>(removedIndexes...);
+                unwrapped.sort();
+                size_t found = 0;
+                for(size_t index : unwrapped)
+                {
+                    if(index - found >= size - 1 - found) break;
+                    swap(array[index - found], array[size - 1 - found]);
+                    ++found;
+                }
+                reduce(found);
+            }
+
+            template<class... arguments>
+            void ufpop(arguments... removedIndexes)
+            {
+                vector<size_t> unwrapped = unwrap<size_t>(removedIndexes...);
+                size_t found = 0;
+                for(size_t index : unwrapped)
+                {
+                    swap(array[index - found], array[size - 1 - found]);
+                    ++found;
+                }
+                reduce(found);
             }
 
             /**
