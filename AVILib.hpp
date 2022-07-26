@@ -1,12 +1,10 @@
 #include <cmath>
-// #include <cstdint>
-// #include <cstdlib>
-// #include <cstring>
 #include <cstring>
 #include <initializer_list>
 #include <functional>
 #include <algorithm>
 #include <type_traits>
+#include <iostream>
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
@@ -1976,271 +1974,251 @@ namespace AVIL
             }
     };
 
-    template<class type>
-    struct unique_ptr
-    {
-        private:
+    // template<class type>
+    // struct unique_ptr
+    // {
+    //     private:
 
-            type* pointed;
+    //         type* pointed;
 
-        public:
+    //     public:
 
-            unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
+    //         unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
 
-            unique_ptr(const unique_ptr& copied)
-            {
-                pointed = copied.pointed;
-                copied.pointed = nullptr;
-            }
+    //         unique_ptr(const unique_ptr& copied)
+    //         {
+    //             pointed = copied.pointed;
+    //             copied.pointed = nullptr;
+    //         }
 
-            type& operator*()
-            {
-                return *pointed;
-            }
+    //         // const type& operator[](size_t index)
+    //         // {
+    //         //     return pointed[index];
+    //         // }
 
-            type* operator->()
-            {
-                return pointed;
-            }
+    //         type& operator*()
+    //         {
+    //             return *pointed;
+    //         }
 
-            const type& operator*() const
-            {
-                return *pointed;
-            }
+    //         type* operator->()
+    //         {
+    //             return pointed;
+    //         }
 
-            const type* const operator->() const
-            {
-                return pointed;
-            }
+    //         const type& operator*() const
+    //         {
+    //             return *pointed;
+    //         }
 
-            operator const type* const() const
-            {
-                return pointed;
-            }
+    //         const type* const operator->() const
+    //         {
+    //             return pointed;
+    //         }
 
-            operator type*()
-            {
-                return pointed;
-            }
+    //         operator bool() const
+    //         {
+    //             return pointed != nullptr;
+    //         }
 
-            ~unique_ptr()
-            {
-                --pointed;
-                if(pointed == 0)
-                {
-                    if(pointed != nullptr) delete pointed;
-                }
-            }
-    };
+    //         operator const type* const() const
+    //         {
+    //             return pointed;
+    //         }
 
-    template<class type>
-    struct shared_ptr
-    {
-        private:
+    //         operator type*()
+    //         {
+    //             return pointed;
+    //         }
 
-            type* pointed;
+    //         ~unique_ptr()
+    //         {
+    //             --pointed;
+    //             if(pointed == 0)
+    //             {
+    //                 if(pointed != nullptr) delete pointed;
+    //             }
+    //         }
+    // };
 
-            counter<size_t>* point;
+    // template<class type>
+    // struct shared_ptr
+    // {
+    //     private:
 
-        public:
+    //         type* pointed;
 
-            // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
+    //         counter<size_t>* point;
 
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{1}} {}
+    //     public:
 
-            shared_ptr(shared_ptr& copied)
-            {
-                pointed = copied.pointed;
-                point = copied.point;
-                ++point;
-            }
+    //         // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{1}} {}
 
-            shared_ptr& operator=(shared_ptr& copied)
-            {
-                pointed = copied.pointed;
-                point = copied.point;
-                ++(*point);
-                return *this;
-            }
+    //         shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>[2]} { ++(point[0]); }
 
-            type& operator*()
-            {
-                return *pointed;
-            }
+    //         shared_ptr(type* pointer, counter<size_t>* otherPoint) : pointed{pointer}, point{otherPoint}
+    //         {
+    //             std::cout << otherPoint << "\n";
+    //             ++(point[0]);
+    //         }
 
-            type* operator->()
-            {
-                return pointed;
-            }
+    //         shared_ptr<type>(shared_ptr<type>& copied)
+    //         {
+    //             pointed = copied.pointed;
+    //             point = copied.point;
+    //             ++(point[0]);
+    //         }
 
-            size_t use_count()
-            {
-                return (size_t)(*point);
-            }
+    //         shared_ptr& operator=(shared_ptr& copied)
+    //         {
+    //             std::cout << point << " - copying\n";
+    //             --(point[0]);
+    //             if((point[0]) == (size_t)0)
+    //             {
+    //                 if(pointed != nullptr) delete pointed;
+    //                 if((point[1]) == (size_t)0) delete[] point;
+    //             }
+    //             pointed = copied.pointed;
+    //             point = copied.point;
+    //             ++(point[0]);
+    //             return *this;
+    //         }
 
-            const type& operator*() const
-            {
-                return *pointed;
-            }
+    //         bool unique()
+    //         {
+    //             return use_count() == 1;
+    //         }
 
-            // const type* const operator->() const
-            // {
-            //     return pointed;
-            // }
+    //         // const type& operator[](size_t index)
+    //         // {
+    //         //     return pointed[index];
+    //         // }
 
-            operator const type* const() const
-            {
-                return pointed;
-            }
+    //         shared_ptr& operator=(type* copied)
+    //         {
+    //             --(point[0]);
+    //             if((point[0]) == (size_t)0)
+    //             {
+    //                 if(pointed != nullptr) delete pointed;
+    //                 if((point[1]) == (size_t)0) delete[] point;
+    //             }
+    //             pointed = copied;
+    //             point = new counter<size_t>[2];
+    //             ++(point[0]);
+    //             return *this;
+    //         }
 
-            operator type*()
-            {
-                return pointed;
-            }
+    //         operator bool() const
+    //         {
+    //             return pointed != nullptr;
+    //         }
 
-            ~shared_ptr()
-            {
-                --(*point);
-                if((*point) == (size_t)0)
-                {
-                    if(pointed != nullptr) delete pointed;
-                    delete point;
-                }
-            }
-    };
+    //         type& operator*()
+    //         {
+    //             return *pointed;
+    //         }
 
-    template<class type>
-    struct unique_ptr<type[]>
-    {
-        private:
+    //         type* operator->()
+    //         {
+    //             return pointed;
+    //         }
 
-            type* pointed;
+    //         size_t use_count()
+    //         {
+    //             return (size_t)(point[0]);
+    //         }
 
-        public:
+    //         counter<size_t>* getCounter()
+    //         {
+    //             return point;
+    //         }
 
-            unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
+    //         const type& operator*() const
+    //         {
+    //             return *pointed;
+    //         }
 
-            unique_ptr(const unique_ptr& copied)
-            {
-                pointed = copied.pointed;
-                copied.pointed = nullptr;
-            }
+    //         // const type* const operator->() const
+    //         // {
+    //         //     return pointed;
+    //         // }
 
-            type& operator*()
-            {
-                return *pointed;
-            }
+    //         operator const type* const() const
+    //         {
+    //             return pointed;
+    //         }
 
-            type* operator->()
-            {
-                return pointed;
-            }
+    //         operator type*()
+    //         {
+    //             return pointed;
+    //         }
 
-            const type& operator*() const
-            {
-                return *pointed;
-            }
+    //         ~shared_ptr()
+    //         {
+    //             --(point[0]);
+    //             if((point[0]) == (size_t)0)
+    //             {
+    //                 if(pointed != nullptr) delete pointed;
+    //                 if((point[1]) == (size_t)0) delete[] point;
+    //             }
+    //         }
+    // };
 
-            const type* const operator->() const
-            {
-                return pointed;
-            }
+    // template<class type>
+    // struct weak_ptr
+    // {
+    //     private:
+    //         type* stored;
 
-            operator const type* const() const
-            {
-                return pointed;
-            }
+    //         counter<size_t>* point;
 
-            operator type*()
-            {
-                return pointed;
-            }
+    //     public:
+    //         weak_ptr(shared_ptr<type>& store) : stored{(type*)store}, point{store.getCounter()} { ++(point[1]); }
 
-            ~unique_ptr()
-            {
-                --pointed;
-                if(pointed == 0)
-                {
-                    if(pointed != nullptr) delete[] pointed;
-                }
-            }
-    };
+    //         weak_ptr(shared_ptr<type>* store) : stored{(type*)(*store)}, point{store->getCounter()} { ++(point[1]); }
 
-    template<class type>
-    struct shared_ptr<type[]>
-    {
-        private:
+    //         weak_ptr(weak_ptr<type>& store) : stored{store.stored}, point{store.point} { ++(point[1]); }
 
-            type* pointed;
+    //         weak_ptr(weak_ptr<type>* store) : stored{store->stored}, point{store->point} { ++(point[1]); }
 
-            counter<size_t>* point;
+    //         bool expired()
+    //         {
+    //             return point[0] == (size_t)0;
+    //         }
 
-        public:
+    //         shared_ptr<type> lock()
+    //         {
+    //             // return expired() ? shared_ptr<type>{} : shared_ptr<type>{stored};
+    //             //return (expired()) ? (shared_ptr<type>{nullptr}) : (shared_ptr<type>{stored, point});
+    //             if(expired())
+    //             {
+    //                 return {};
+    //             }
+    //             else
+    //             {
+    //                 return {stored, point};
+    //             }
+    //         }
 
-            // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{0}} {}
+    //         counter<size_t>* getCounter()
+    //         {
+    //             return point;
+    //         }
 
-            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>{1}} {}
+    //         size_t use_count()
+    //         {
+    //             return (size_t)(point[0]);
+    //         }
 
-            shared_ptr(shared_ptr& copied)
-            {
-                pointed = copied.pointed;
-                point = copied.point;
-                ++point;
-            }
-
-            shared_ptr& operator=(shared_ptr& copied)
-            {
-                pointed = copied.pointed;
-                point = copied.point;
-                ++(*point);
-                return *this;
-            }
-
-            type& operator*()
-            {
-                return *pointed;
-            }
-
-            type* operator->()
-            {
-                return pointed;
-            }
-
-            size_t use_count()
-            {
-                return (size_t)(*point);
-            }
-
-            const type& operator*() const
-            {
-                return *pointed;
-            }
-
-            // const type* const operator->() const
-            // {
-            //     return pointed;
-            // }
-
-            operator const type* const() const
-            {
-                return pointed;
-            }
-
-            operator type*()
-            {
-                return pointed;
-            }
-
-            ~shared_ptr()
-            {
-                --(*point);
-                if((*point) == (size_t)0)
-                {
-                    if(pointed != nullptr) delete[] pointed;
-                    delete point;
-                }
-            }
-    };
+    //         ~weak_ptr()
+    //         {
+    //             --(point[1]);
+    //             if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+    //             {
+    //                 delete[] point;
+    //             }
+    //         }
+    // };
 
     /**
      * @brief Simple object pointers.
