@@ -1,5 +1,4 @@
 #include <cmath>
-#include <cstring>
 #include <initializer_list>
 #include <functional>
 #include <algorithm>
@@ -1247,7 +1246,7 @@ namespace AVIL
                 //return *this;
             }
 
-            vector<type>(const type* const assignedArray, size_t assignedSize, type newStandart = 0)
+            vector<type>(const type* const assignedArray, size_t assignedSize)
             {
                 // for(size_t i = 0; i < assignedSize; ++i)
                 // {
@@ -1256,6 +1255,18 @@ namespace AVIL
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 resize(assignedSize);
                 std::copy(assignedArray[0], assignedArray[assignedSize], array);
+            }
+
+            vector<type>& createFrom(const type* const assignedArray, size_t assignedSize)
+            {
+                // for(size_t i = 0; i < assignedSize; ++i)
+                // {
+                //     append(assignedArray[i]);
+                // }
+                // memcpy(array, assignedArray, assignedSize * sizeof(type));
+                resize(assignedSize);
+                std::copy(assignedArray[0], assignedArray[assignedSize], array);
+                return *this;
             }
 
             void resize(const size_t &newSize)
