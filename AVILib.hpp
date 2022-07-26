@@ -1254,7 +1254,7 @@ namespace AVIL
                 // }
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 resize(assignedSize);
-                std::copy(assignedArray[0], assignedArray[assignedSize], array);
+                std::copy((const type* const)assignedArray[0], (const type* const)assignedArray[assignedSize], begin());
             }
 
             vector<type>& createFrom(const type* const assignedArray, size_t assignedSize)
@@ -1265,7 +1265,7 @@ namespace AVIL
                 // }
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 resize(assignedSize);
-                std::copy(assignedArray[0], assignedArray[assignedSize], array);
+                std::copy((const type* const)assignedArray[0], (const type* const)assignedArray[assignedSize], begin());
                 return *this;
             }
 
