@@ -88,7 +88,7 @@ namespace AVIL
                 //     append(newElement);
                 // }
                 resize(initializationArray.size());
-                std::copy(initializationArray.begin(), initializationArray.end(), (*this).begin());
+                std::copy(initializationArray.begin(), initializationArray.end(), begin());
                 return *this;
             }
 
@@ -99,7 +99,7 @@ namespace AVIL
                 //     append(newElement);
                 // }
                 resize(initializationArray.size());
-                std::copy(initializationArray.begin(), initializationArray.end(), (*this).begin());
+                std::copy(initializationArray.begin(), initializationArray.end(), begin());
             }
 
             /**
@@ -1254,7 +1254,7 @@ namespace AVIL
                 // }
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 resize(assignedSize);
-                std::copy((const type* const)assignedArray[0], (const type* const)assignedArray[assignedSize], begin());
+                std::copy(&(assignedArray[0]), &(assignedArray[assignedSize]), begin());
             }
 
             vector<type>& createFrom(const type* const assignedArray, size_t assignedSize)
@@ -1265,7 +1265,7 @@ namespace AVIL
                 // }
                 // memcpy(array, assignedArray, assignedSize * sizeof(type));
                 resize(assignedSize);
-                std::copy((const type* const)assignedArray[0], (const type* const)assignedArray[assignedSize], begin());
+                std::copy(&(assignedArray[0]), &(assignedArray[assignedSize]), begin());
                 return *this;
             }
 
