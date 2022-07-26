@@ -4,7 +4,6 @@
 #include <functional>
 #include <algorithm>
 #include <type_traits>
-#include <iostream>
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
@@ -2056,11 +2055,7 @@ namespace AVIL
 
             shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>[2]} { ++(point[0]); }
 
-            shared_ptr(type* pointer, counter<size_t>* otherPoint) : pointed{pointer}, point{otherPoint}
-            {
-                std::cout << otherPoint << "\n";
-                ++(point[0]);
-            }
+            shared_ptr(type* pointer, counter<size_t>* otherPoint) : pointed{pointer}, point{otherPoint} { ++(point[0]); }
 
             shared_ptr<type>(const shared_ptr<type>& copied)
             {
@@ -2071,7 +2066,7 @@ namespace AVIL
 
             shared_ptr& operator=(shared_ptr& copied)
             {
-                std::cout << point << " - copying\n";
+                if(copied == *this) return *this;
                 --(point[0]);
                 if((point[0]) == (size_t)0)
                 {
