@@ -2032,11 +2032,7 @@ namespace AVIL
 
             ~unique_ptr()
             {
-                --pointed;
-                if(pointed == 0)
-                {
-                    if(pointed != nullptr) delete pointed;
-                }
+                if(pointed != nullptr) delete pointed;
             }
     };
 
