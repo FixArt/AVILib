@@ -283,6 +283,18 @@ namespace AVIL
                 reduce(1);
             }
 
+            /**
+             * @brief Exclude element from array by index
+             * 
+             * @param index Index, at which element will be excluded from array.
+             */
+            void fpop(const size_t &index)
+            {
+                if(index >= size or size == 0) return;
+                swap(array[index], array[size - 1]);
+                reduce(1);
+            }
+
             void pop(const vector<size_t>& poppedIndexes)
             {
                 // for(size_t index : poppedIndexes)
@@ -462,6 +474,48 @@ namespace AVIL
             {
                 remove(shouldRemove);
                 remove(removalFunctions...);
+            }
+
+            /**
+             * @brief Remove all instances which equal to given.
+             * 
+             * @param checkedElement Element searched.
+             */
+            void fremove(const type& checkedElement)
+            {
+                if(size == 0)
+                {
+                    return;
+                }
+                size_t counted = 0;
+                while(where(checkedElement) != size)
+                {
+                    //fpop(where(checkedElement));
+                    swap(array[where(checkedElement)], array[size - 1 - counted]);
+                    ++counted;
+                }
+                reduce(counted);
+            }
+
+            /**
+             * @brief Remove all instances which marked by given function without preserving ordering.
+             * 
+             * @param shouldRemove Function to check whenever element should be removed.
+             */
+            void fremove(bool(shouldRemove)(const type&))
+            {
+                if(size == 0)
+                {
+                    return;
+                }
+                size_t counted = 0;
+                while(where(shouldRemove) != size)
+                {
+                    //fpop(where(shouldRemove));
+                    swap(array[where(shouldRemove)], array[size - 1 - counted]);
+                    ++counted;
+                }
+                reduce(counted);
             }
 
             /**
