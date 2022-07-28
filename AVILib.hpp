@@ -2891,7 +2891,7 @@ namespace AVIL
     };
 
     /**
-     * @brief Variable without specified type only for Plain Old Data.
+     * @brief Variable without specified type only for trivial types. (even better than Plain Old Data)
      * 
      */
     struct untypizedpod
@@ -2947,7 +2947,7 @@ namespace AVIL
             template<class type>
             untypizedpod(const type& value)
             {
-                if(!std::is_pod<type>().value) throw(EINVAL);
+                if(!std::is_trivial<type>().value) throw(EINVAL);
                 resize(sizeof(value));
                 *((type*)variable) = (type&)value;
             }
@@ -2983,7 +2983,7 @@ namespace AVIL
             template<class type>
             untypizedpod& operator=(const type& value)
             {
-                if(!std::is_pod<type>().value) throw(EINVAL);
+                if(!std::is_trivial<type>().value) throw(EINVAL);
                 resize(sizeof(type));
                 *((type*)variable) = value;
                 return *this;
@@ -2992,7 +2992,7 @@ namespace AVIL
             template<class type>
             operator type&() const
             {
-                if(!std::is_pod<type>().value) throw(EINVAL);
+                if(!std::is_trivial<type>().value) throw(EINVAL);
                 return *((type*)variable);
             }
 
