@@ -155,6 +155,60 @@ namespace AVIL
             }
 
             /**
+             * @brief Function, which places vector at index.
+             * 
+             * @param pushedVector Vector which will be placed at index.
+             * @param index Index at which vector will be placed.
+             */
+            void push(vector<type> pushedVector, size_t index = 0)
+            {
+                if(index > size) return;
+                for(size_t i = 0; i < pushedVector.size; ++i)
+                {
+                    push(pushedVector[i], i + index);
+                }
+            }
+
+            /**
+             * @brief Add element to vector by index without preserving order.
+             * 
+             * @param newElement Element itself.
+             * @param index Index at which it will be placed.
+             */
+            void fpush(const type &newElement, const size_t &index)
+            {
+                if(index > size) return;
+                resize(size + 1);
+                swap(array[index], array[arraySize - 1]);
+                array[index] = newElement;
+            }
+
+            template<class... arguments>
+            void fpush(const type &newElement, const size_t &index, arguments... newElements)
+            {
+                fpush(newElement, index);
+                fpush(newElements...);
+            }
+
+            /**
+             * @brief Function, which places vector at index without preserving order.
+             * 
+             * @param pushedVector Vector which will be placed at index.
+             * @param index Index at which vector will be placed.
+             */
+            void fpush(vector<type> pushedVector, size_t index = 0)
+            {
+                if(index > size) return;
+                resize(arraySize + pushedVector.size);
+                for(size_t i = 0; i < pushedVector.size; ++i)
+                {
+                    // fpush(pushedVector[i], i + index);
+                    swap(array[index + i], array[arraySize - pushedVector.size + i]);
+                    array[index + i] = pushedVector[i];
+                }
+            }
+
+            /**
              * @brief Sums all elements.
              * 
              * @return type Sum of all elements.
@@ -1099,21 +1153,6 @@ namespace AVIL
             }
 
             /**
-             * @brief Function, which places vector at index.
-             * 
-             * @param pushedVector Vector which will be placed at index.
-             * @param index Index at which vector will be placed.
-             */
-            void push(vector<type> pushedVector, size_t index = 0)
-            {
-                if(index > size) return;
-                for(size_t i = 0; i < pushedVector.size; ++i)
-                {
-                    push(pushedVector[i], i + index);
-                }
-            }
-
-            /**
              * @brief Returns constant array from itself. Useful for strings printing.
              * 
              * @return type* Returned constant array.
@@ -1208,6 +1247,16 @@ namespace AVIL
                 push(appendedVector, size);
             }
 
+            /**
+             * @brief Appends vector.
+             * 
+             * @param appendedVector Vector to append.
+             */
+            void fappend(const vector<type>& appendedVector)
+            {
+                fpush(appendedVector, size);
+            }
+
             template<class... arguments>
             void append(const type& newElement, arguments... appendedElements)
             {
@@ -1220,6 +1269,13 @@ namespace AVIL
             {
                 append(newElement);
                 append(appendedElements...);
+            }
+
+            template<class... arguments>
+            void fappend(const vector<type>& newElement, arguments... appendedElements)
+            {
+                fappend(newElement);
+                fappend(appendedElements...);
             }
 
             vector<type>& operator=(const vector<type>& assignedVector)
