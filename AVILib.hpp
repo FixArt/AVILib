@@ -2891,10 +2891,10 @@ namespace AVIL
     };
 
     /**
-     * @brief Variable without specified type only for trivial types. (even better than Plain Old Data)
+     * @brief Variable without specified type only for trivial types.
      * 
      */
-    struct untypizedpod
+    struct untypizedtrivial
     {
         private:
             void* variable = nullptr;
@@ -2937,7 +2937,7 @@ namespace AVIL
 
             const size_t& size = capacity;
             
-            untypizedpod()
+            untypizedtrivial()
             {
                 capacity = 0;
                 variable = nullptr;
@@ -2945,20 +2945,20 @@ namespace AVIL
             }
 
             template<class type>
-            untypizedpod(const type& value)
+            untypizedtrivial(const type& value)
             {
                 if(!std::is_trivial<type>().value) throw(EINVAL);
                 resize(sizeof(value));
                 *((type*)variable) = (type&)value;
             }
 
-            untypizedpod(const untypizedpod& value)
+            untypizedtrivial(const untypizedtrivial& value)
             {
                 resize(value.size);
                 if(value.size != 0) *((char*)variable) = (char&)value;
             }
 
-            untypizedpod& operator=(const untypizedpod& value)
+            untypizedtrivial& operator=(const untypizedtrivial& value)
             {
                 if(&value == this) return *this;
                 resize(value.size);
@@ -2966,13 +2966,13 @@ namespace AVIL
                 return *this;
             }
 
-            untypizedpod(const untypizedpod&& value)
+            untypizedtrivial(const untypizedtrivial&& value)
             {
                 resize(value.size);
                 if(value.size != 0) *((char*)variable) = (char&)value;
             }
 
-            untypizedpod& operator=(const untypizedpod&& value)
+            untypizedtrivial& operator=(const untypizedtrivial&& value)
             {
                 if(&value == this) return *this;
                 resize(value.size);
@@ -2981,7 +2981,7 @@ namespace AVIL
             }
 
             template<class type>
-            untypizedpod& operator=(const type& value)
+            untypizedtrivial& operator=(const type& value)
             {
                 if(!std::is_trivial<type>().value) throw(EINVAL);
                 resize(sizeof(type));
@@ -3002,7 +3002,7 @@ namespace AVIL
             //     return *((type*)variable);
             // }
 
-            ~untypizedpod()
+            ~untypizedtrivial()
             {
                 if(variable != nullptr) free(variable);
             }
