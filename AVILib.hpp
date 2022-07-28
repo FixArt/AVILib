@@ -2120,7 +2120,13 @@ namespace AVIL
 
             unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
 
-            unique_ptr(const unique_ptr& copied)
+            unique_ptr(unique_ptr& copied)
+            {
+                pointed = copied.pointed;
+                copied.pointed = nullptr;
+            }
+
+            unique_ptr(unique_ptr&& copied)
             {
                 pointed = copied.pointed;
                 copied.pointed = nullptr;
@@ -2194,6 +2200,15 @@ namespace AVIL
                 pointed = copied.pointed;
                 point = copied.point;
                 ++(point[0]);
+            }
+
+            shared_ptr<type>(shared_ptr<type>&& copied)
+            {
+                pointed = copied.pointed;
+                point = copied.point;
+                copied.pointed = nullptr;
+                copied.point = new counter<size_t>[2];
+                ++(copied.point[0]);
             }
 
             shared_ptr& operator=(shared_ptr& copied)
