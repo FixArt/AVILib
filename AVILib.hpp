@@ -1365,9 +1365,9 @@ namespace AVIL
                 //std::move(assignedVector.begin(), assignedVector.end(), (*this).begin());
                 //assignedVector.clear();
                 array = assignedVector.array;
-                size = assignedVector.size;
+                arraySize = assignedVector.arraySize;
                 assignedVector.array = nullptr;
-                assignedVector.size = 0;
+                assignedVector.arraySize = 0;
                 //return *this;
             }
 
