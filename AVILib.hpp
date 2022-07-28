@@ -385,11 +385,10 @@ namespace AVIL
                 {
                     return;
                 }
-                if(size - 1 == 0)
-                {
-                    
-                    return;
-                }
+                // if(size - 1 == 0)
+                // {
+                //     return;
+                // }
                 //type* newArray = (type*)malloc((size - 1) * sizeof(type));
                 size_t j = 0;
                 size_t allFound = 0;
@@ -420,11 +419,10 @@ namespace AVIL
                 {
                     return;
                 }
-                if(size - 1 == 0)
-                {
-                    
-                    return;
-                }
+                // if(size - 1 == 0)
+                // {
+                //     return;
+                // }
                 //type* newArray = (type*)malloc((size - 1) * sizeof(type));
                 size_t j = 0;
                 size_t allFound = 0;
