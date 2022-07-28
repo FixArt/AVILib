@@ -1354,16 +1354,18 @@ namespace AVIL
                 //return *this;
             }
 
-            vector<type>(const vector<type>&& assignedVector)
+            vector<type>(vector<type>&& assignedVector)
             {
                 // for(size_t i = 0; i < assignedVector.size; ++i)
                 // {
                 //     append(assignedVector[i]);
                 // }
                 // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
-                resize(assignedVector.size);
-                std::move(assignedVector.begin(), assignedVector.end(), (*this).begin());
+                //resize(assignedVector.size);
+                //std::move(assignedVector.begin(), assignedVector.end(), (*this).begin());
                 //assignedVector.clear();
+                array = assignedVector.array;
+                size = assignedVector.size;
                 assignedVector.array = nullptr;
                 assignedVector.size = 0;
                 //return *this;
@@ -2486,6 +2488,26 @@ namespace AVIL
                 if(variable == nullptr) throw(ENOMEM);
             }
 
+            void clean()
+            {
+                if(variable != nullptr)
+                {
+                    if(currentType == typeid(first).hash_code())
+                    {
+                        ((first*)variable)->~first();
+                        // free((first*)variable);
+                    }
+                    else
+                    {
+                        ((second*)variable)->~second();
+                        // free((second*)variable);
+                    }
+                    free(variable);
+                    variable = nullptr;
+                    currentType = 0;
+                }
+            }
+
             template<class type>
             void turnTo()
             {
@@ -2956,6 +2978,17 @@ namespace AVIL
                 // currentType = copied.currentHash();
             }
 
+            variant(variant&& assigned)
+            {
+                // assign(assigned);
+                // assigned.clean();
+                // currentType = copied.currentHash();
+                variable = assigned.variable;
+                currentType = assigned.currentType;
+                assigned.variable = nullptr;
+                assigned.currentType = 0;
+            }
+
             template<class type>
             variant<types...> operator=(const type& assigned)
             {
@@ -3079,6 +3112,14 @@ namespace AVIL
             {
                 resize(value.size);
                 if(value.size != 0) *((char*)variable) = (char&)value;
+            }
+
+            untypizedtrivial(untypizedtrivial&& value)
+            {
+                variable = value.variable;
+                capacity = value.capacity;
+                value.variable = nullptr;
+                value.capacity = 0;
             }
 
             untypizedtrivial& operator=(const untypizedtrivial& value)
