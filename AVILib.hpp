@@ -2992,7 +2992,7 @@ namespace AVIL
             template<class type>
             operator type&() const
             {
-                if(!std::is_trivial<type>().value) throw(EINVAL);
+                if(!std::is_trivial<type>().value or (sizeof(type) != capacity)) throw(EINVAL);
                 return *((type*)variable);
             }
 
