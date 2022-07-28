@@ -3007,4 +3007,10 @@ namespace AVIL
                 if(variable != nullptr) free(variable);
             }
     };
+
+    /**
+     * @brief Due to the compatibility with POD. (any POD type is also trivial type)
+     * 
+     */
+    typedef untypizedtrivial untypizedpod;
 };
