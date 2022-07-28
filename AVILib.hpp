@@ -1354,6 +1354,21 @@ namespace AVIL
                 //return *this;
             }
 
+            vector<type>(const vector<type>&& assignedVector)
+            {
+                // for(size_t i = 0; i < assignedVector.size; ++i)
+                // {
+                //     append(assignedVector[i]);
+                // }
+                // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
+                resize(assignedVector.size);
+                std::move(assignedVector.begin(), assignedVector.end(), (*this).begin());
+                //assignedVector.clear();
+                assignedVector.array = nullptr;
+                assignedVector.size = 0;
+                //return *this;
+            }
+
             vector<type>(const type* const assignedArray, size_t assignedSize)
             {
                 // for(size_t i = 0; i < assignedSize; ++i)
