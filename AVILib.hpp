@@ -2134,7 +2134,12 @@ namespace AVIL
             //     return pointed[index];
             // }
 
-            type& operator*()
+            // type& operator*()
+            // {
+            //     return *pointed;
+            // }
+
+            type& get()
             {
                 return *pointed;
             }
@@ -2144,7 +2149,12 @@ namespace AVIL
                 return pointed;
             }
 
-            const type& operator*() const
+            // const type& operator*() const
+            // {
+            //     return *pointed;
+            // }
+
+            const type& get() const
             {
                 return *pointed;
             }
@@ -2252,7 +2262,12 @@ namespace AVIL
                 return pointed != nullptr;
             }
 
-            type& operator*()
+            // type& operator*()
+            // {
+            //     return *pointed;
+            // }
+
+            type& get()
             {
                 return *pointed;
             }
@@ -2272,7 +2287,12 @@ namespace AVIL
                 return point;
             }
 
-            const type& operator*() const
+            // const type& operator*() const
+            // {
+            //     return *pointed;
+            // }
+
+            const type& get() const
             {
                 return *pointed;
             }
@@ -2423,7 +2443,17 @@ namespace AVIL
                 return *pointedObject;
             }
 
-            type& operator*()
+            // type& operator*()
+            // {
+            //     return *pointedObject;
+            // }
+
+            type& get()
+            {
+                return *pointedObject;
+            }
+
+            const type& get() const
             {
                 return *pointedObject;
             }
