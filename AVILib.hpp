@@ -3239,4 +3239,107 @@ namespace AVIL
      * 
      */
     typedef untypizedtrivial untypizedpod;
+
+    // /**
+    //  * @brief Store any type here.
+    //  *
+    //  */
+    // struct any
+    // {
+    //     private:
+
+    //     /**
+    //      * @brief Data stored.
+    //      *
+    //      */
+    //     void* data = nullptr;
+
+    //     /**
+    //      * @brief Current type.
+    //      *
+    //      */
+    //     const std::type_info&(*current)() = nullptr;
+
+    //     void*(*copy)(void* other) = nullptr;
+
+    //     void*(*move)(void* other) = nullptr;
+
+    //     void(*destroy)(void* data) = nullptr;
+
+    //     public:
+    //     any() : data{nullptr}, copy{nullptr}, move{nullptr}, destroy{nullptr}, current{nullptr} {}
+
+    //     template<class type>
+    //     any(const type& variable)
+    //     {
+    //         *((type*)data) = new type{variable};
+    //         copy = [](void* data){ return new type{*((type*)data)}; };
+    //         move = [](void* data){ return new type{std::move(*((type*)data))}; };
+    //         destroy = [](void* data){ delete ((type*)data); };
+    //         current = [](){ return typeid(type); };
+    //     }
+
+    //     template<class type>
+    //     any(type&& variable)
+    //     {
+    //         *((type*)data) = new type{std::move(variable)};
+    //         copy = [](void* data){ return new type{*((type*)data)}; };
+    //         move = [](void* data){ return new type{std::move(*((type*)data))}; };
+    //         destroy = [](void* data){ delete ((type*)data); };
+    //         current = [](){ return typeid(type); };
+    //     }
+
+    //     any(const any& other) : copy{other.copy}, move{other.move}, current{other.current}
+    //     {
+    //         if(destroy != nullptr) destroy(data);
+    //         destroy = other.destroy;
+    //         data = other.copy(other.data);
+    //     }
+
+    //     any& operator=(const any& other)
+    //     {
+    //         copy = other.copy;
+    //         move = other.move;
+    //         current = other.current;
+    //         if(destroy != nullptr) destroy(data);
+    //         destroy = other.destroy;
+    //         data = other.copy(other.data);
+    //         return *this;
+    //     }
+
+    //     any(any&& other) : copy{other.copy}, move{other.move}, current{other.current}
+    //     {
+    //         if(destroy != nullptr) destroy(data);
+    //         destroy = other.destroy;
+    //         data = other.move(other.data);
+    //         other.data = nullptr;
+    //         other.clean(); // Invoke cleaning.
+    //     }
+
+    //     void clean()
+    //     {
+    //         if(destroy != nullptr and data != nullptr) destroy(data);
+    //         data = nullptr;
+
+    //         copy = nullptr;
+    //         move = nullptr;
+    //         destroy = nullptr;
+    //         current = nullptr;
+    //     }
+
+    //     template<class type>
+    //     operator type&()
+    //     {
+    //         if(data == nullptr or typeid(type) != current())
+    //         {
+    //             throw(EINVAL);
+    //         }
+    //         return *((type*)data);
+    //     }
+
+    //     ~any()
+    //     {
+    //         if(destroy != nullptr and data != nullptr) destroy(data);
+    //     }
+    // };
 };
