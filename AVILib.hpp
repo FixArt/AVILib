@@ -3156,6 +3156,14 @@ namespace AVIL
                 *((type*)variable) = (type&)value;
             }
 
+            template<class type>
+            untypizedtrivial(type&& value)
+            {
+                if(!std::is_trivial<type>().value) throw(EINVAL);
+                resize(sizeof(value));
+                *((type*)variable) = std::move(value);
+            }
+
             untypizedtrivial(const untypizedtrivial& value)
             {
                 resize(value.size);
