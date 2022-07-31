@@ -3318,6 +3318,12 @@ namespace AVIL
         public:
         untypized() : data{nullptr}, copy{nullptr}, move{nullptr}, destroy{nullptr}, current{nullptr} {}
 
+        const std::type_info& id()
+        {
+            if(current == nullptr) return typeid(void);
+            return current();
+        }
+
         template<class type>
         untypized(const type& variable)
         {
