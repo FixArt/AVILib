@@ -92,6 +92,18 @@ namespace AVIL
                 return *this;
             }
 
+            vector<type>(const vector<type>& assignedVector)
+            {
+                // for(size_t i = 0; i < assignedVector.size; ++i)
+                // {
+                //     append(assignedVector[i]);
+                // }
+                // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
+                resize(assignedVector.size);
+                std::copy(assignedVector.begin(), assignedVector.end(), (*this).begin());
+                //return *this;
+            }
+
             vector<type>(std::initializer_list<type> initializationArray)
             {
                 // for(type newElement : initializationArray)
@@ -1215,16 +1227,16 @@ namespace AVIL
                 return (const type* const)array;
             }
 
-            /**
-             * @brief Returns constant array from itself. Useful for strings printing.
-             * 
-             * @return type& Returned constant array.
-             */
-            operator const type&() const
-            {
-                if(array == nullptr) throw(EFAULT);
-                return (const type&)array;
-            }
+            // /**
+            //  * @brief Returns constant array from itself. Useful for strings printing.
+            //  * 
+            //  * @return type& Returned constant array.
+            //  */
+            // operator const type&() const
+            // {
+            //     if(array == nullptr) throw(EFAULT);
+            //     return (const type&)array;
+            // }
 
             /**
              * @brief Returns constant array from itself. Useful for strings printing.
@@ -1237,11 +1249,11 @@ namespace AVIL
                 return (type*)array;
             }
 
-            operator type&()
-            {
-                if(array == nullptr) throw(EFAULT);
-                return *array;
-            }
+            // operator type&()
+            // {
+            //     if(array == nullptr) throw(EFAULT);
+            //     return *array;
+            // }
 
             type &operator[](const size_t &index)
             {
@@ -1340,18 +1352,6 @@ namespace AVIL
                 resize(assignedVector.size);
                 std::copy(assignedVector.begin(), assignedVector.end(), (*this).begin());
                 return *this;
-            }
-
-            vector<type>(const vector<type>& assignedVector)
-            {
-                // for(size_t i = 0; i < assignedVector.size; ++i)
-                // {
-                //     append(assignedVector[i]);
-                // }
-                // memcpy(array, assignedVector, assignedVector.size * sizeof(type));
-                resize(assignedVector.size);
-                std::copy(assignedVector.begin(), assignedVector.end(), (*this).begin());
-                //return *this;
             }
 
             vector<type>(vector<type>&& assignedVector) : array{assignedVector.array}, arraySize{assignedVector.arraySize}
@@ -3240,106 +3240,106 @@ namespace AVIL
      */
     typedef untypizedtrivial untypizedpod;
 
-    // /**
-    //  * @brief Store any type here.
-    //  *
-    //  */
-    // struct any
-    // {
-    //     private:
+    /**
+     * @brief Store any type here.
+     *
+     */
+    struct untypized
+    {
+        private:
 
-    //     /**
-    //      * @brief Data stored.
-    //      *
-    //      */
-    //     void* data = nullptr;
+        /**
+         * @brief Data stored.
+         *
+         */
+        void* data = nullptr;
 
-    //     /**
-    //      * @brief Current type.
-    //      *
-    //      */
-    //     const std::type_info&(*current)() = nullptr;
+        /**
+         * @brief Current type.
+         *
+         */
+        const std::type_info& (*current)() = nullptr;
 
-    //     void*(*copy)(void* other) = nullptr;
+        void*(*copy)(void* other) = nullptr;
 
-    //     void*(*move)(void* other) = nullptr;
+        void*(*move)(void* other) = nullptr;
 
-    //     void(*destroy)(void* data) = nullptr;
+        void(*destroy)(void* data) = nullptr;
 
-    //     public:
-    //     any() : data{nullptr}, copy{nullptr}, move{nullptr}, destroy{nullptr}, current{nullptr} {}
+        public:
+        untypized() : data{nullptr}, copy{nullptr}, move{nullptr}, destroy{nullptr}, current{nullptr} {}
 
-    //     template<class type>
-    //     any(const type& variable)
-    //     {
-    //         *((type*)data) = new type{variable};
-    //         copy = [](void* data){ return new type{*((type*)data)}; };
-    //         move = [](void* data){ return new type{std::move(*((type*)data))}; };
-    //         destroy = [](void* data){ delete ((type*)data); };
-    //         current = [](){ return typeid(type); };
-    //     }
+        template<class type>
+        untypized(const type& variable)
+        {
+            data = (void*)(new type{variable});
+            copy = [](void* data){ return (void*)(new type{*((type*)data)}); };
+            move = [](void* data){ return (void*)(new type{std::move(*((type*)data))}); };
+            destroy = [](void* data){ delete ((type*)data); };
+            current = []() -> const std::type_info& { return typeid(type); };
+        }
 
-    //     template<class type>
-    //     any(type&& variable)
-    //     {
-    //         *((type*)data) = new type{std::move(variable)};
-    //         copy = [](void* data){ return new type{*((type*)data)}; };
-    //         move = [](void* data){ return new type{std::move(*((type*)data))}; };
-    //         destroy = [](void* data){ delete ((type*)data); };
-    //         current = [](){ return typeid(type); };
-    //     }
+        template<class type>
+        untypized(type&& variable)
+        {
+            data = (void*)(new type{std::move(variable)});
+            copy = [](void* data){ return (void*)(new type{*((type*)data)}); };
+            move = [](void* data){ return (void*)(new type{std::move(*((type*)data))}); };
+            destroy = [](void* data){ delete ((type*)data); };
+            current = []() -> const std::type_info& { return typeid(type); };
+        }
 
-    //     any(const any& other) : copy{other.copy}, move{other.move}, current{other.current}
-    //     {
-    //         if(destroy != nullptr) destroy(data);
-    //         destroy = other.destroy;
-    //         data = other.copy(other.data);
-    //     }
+        untypized(const untypized& other) : copy{other.copy}, move{other.move}, current{other.current}
+        {
+            if(destroy != nullptr) destroy(data);
+            destroy = other.destroy;
+            data = other.copy(other.data);
+        }
 
-    //     any& operator=(const any& other)
-    //     {
-    //         copy = other.copy;
-    //         move = other.move;
-    //         current = other.current;
-    //         if(destroy != nullptr) destroy(data);
-    //         destroy = other.destroy;
-    //         data = other.copy(other.data);
-    //         return *this;
-    //     }
+        untypized& operator=(const untypized& other)
+        {
+            copy = other.copy;
+            move = other.move;
+            current = other.current;
+            if(destroy != nullptr) destroy(data);
+            destroy = other.destroy;
+            data = other.copy(other.data);
+            return *this;
+        }
 
-    //     any(any&& other) : copy{other.copy}, move{other.move}, current{other.current}
-    //     {
-    //         if(destroy != nullptr) destroy(data);
-    //         destroy = other.destroy;
-    //         data = other.move(other.data);
-    //         other.data = nullptr;
-    //         other.clean(); // Invoke cleaning.
-    //     }
+        untypized(untypized&& other) : copy{other.copy}, move{other.move}, current{other.current}
+        {
+            if(destroy != nullptr) destroy(data);
+            destroy = other.destroy;
+            data = other.move(other.data);
+            other.data = nullptr;
+            other.clean(); // Invoke cleaning.
+        }
 
-    //     void clean()
-    //     {
-    //         if(destroy != nullptr and data != nullptr) destroy(data);
-    //         data = nullptr;
+        void clean()
+        {
+            if(destroy != nullptr and data != nullptr) destroy(data);
+            data = nullptr;
 
-    //         copy = nullptr;
-    //         move = nullptr;
-    //         destroy = nullptr;
-    //         current = nullptr;
-    //     }
+            copy = nullptr;
+            move = nullptr;
+            destroy = nullptr;
+            current = nullptr;
+        }
 
-    //     template<class type>
-    //     operator type&()
-    //     {
-    //         if(data == nullptr or typeid(type) != current())
-    //         {
-    //             throw(EINVAL);
-    //         }
-    //         return *((type*)data);
-    //     }
+        template<class type>
+        operator type&()
+        {
+            if(data == nullptr or typeid(type) != current())
+            {
+                throw(EINVAL);
+            }
+            return *((type*)data);
+        }
 
-    //     ~any()
-    //     {
-    //         if(destroy != nullptr and data != nullptr) destroy(data);
-    //     }
-    // };
+        ~untypized()
+        {
+            if(destroy != nullptr and data != nullptr) destroy(data);
+        }
+    };
 };
