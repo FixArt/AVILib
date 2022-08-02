@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_PAIR
 #pragma once 
 
 #include <cmath>
@@ -276,3 +277,5 @@ namespace AVIL
             }
     };
 };
+#define AVILIB_USED_PAIR 1
+#endif

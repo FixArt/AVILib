@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_COUNTER
 #pragma once 
 
 #include <cmath>
@@ -94,3 +95,5 @@ namespace AVIL
             }
     };
 }; 
+#define AVILIB_USED_COUNTER 1
+#endif

@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_BOOLBYTE
 #pragma once 
 
 #include <cmath>
@@ -79,3 +80,5 @@ namespace AVIL
         }
     };
 };
+#define AVILIB_USED_BOOLBYTE 1
+#endif

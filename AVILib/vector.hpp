@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_VECTOR
 #pragma once 
 
 #include <cmath>
@@ -2026,3 +2027,5 @@ namespace AVIL
         return newVector;
     }
 }; 
+#define AVILIB_USED_VECTOR 1
+#endif

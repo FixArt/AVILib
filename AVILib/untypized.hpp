@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_UNTYPIZED
 #pragma once 
 
 #include <cmath>
@@ -267,3 +268,5 @@ namespace AVIL
         }
     };
 };
+#define AVILIB_USED_UNTYPIZED 1
+#endif

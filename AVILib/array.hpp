@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_ARRAY
 #pragma once 
 
 #include <cmath>
@@ -61,3 +62,5 @@ namespace AVIL
         }
     };
 }; 
+#define AVILIB_USED_ARRAY 1
+#endif

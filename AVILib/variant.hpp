@@ -1,3 +1,4 @@
+#ifndef AVILIB_USED_VARIANT
 #pragma once 
 
 #include <cmath>
@@ -339,3 +340,5 @@ namespace AVIL
             }
     };
 };
+#define AVILIB_USED_VARIANT 1
+#endif
