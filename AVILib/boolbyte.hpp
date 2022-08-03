@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <type_traits>
 
+#include "array.hpp"
+
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
  * 
@@ -25,11 +27,13 @@ namespace AVIL
         bool b7 : 1;
         bool b8 : 1;
         public:
-        boolbyte() : b1{}, b2{}, b3{}, b4{}, b5{}, b6{}, b7{}, b8{} {}
+        boolbyte() = default;
 
         boolbyte(const bool* const boolArray) : b1{boolArray[0]}, b2{boolArray[1]}, b3{boolArray[2]}, b4{boolArray[3]}, b5{boolArray[4]}, b6{boolArray[5]}, b7{boolArray[6]}, b8{boolArray[7]} {}
 
-        boolbyte(const boolbyte& copied) : b1{copied[0]}, b2{copied[1]}, b3{copied[2]}, b4{copied[3]}, b5{copied[4]}, b6{copied[5]}, b7{copied[6]}, b8{copied[7]} {}
+        boolbyte(const boolbyte& copied) = default;
+
+        boolbyte(boolbyte&& copied) = default;
 
         bool get(const unsigned char& index, const bool& value)
         {
@@ -78,6 +82,14 @@ namespace AVIL
                 case 7: return b8;
             }
         }
+
+        // #ifdef AVILIB_USED_ARRAY
+        operator AVIL::array<bool, 8>()
+        {
+            AVIL::array<bool, 8> returned{b1, b2, b3, b4, b5, b6, b7, b8};
+            return returned;
+        }
+        // #endif
     };
 };
 #define AVILIB_USED_BOOLBYTE 1

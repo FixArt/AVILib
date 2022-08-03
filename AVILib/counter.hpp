@@ -20,17 +20,22 @@ namespace AVIL
     class counter
     {
         private:
-            countType count = 0;
+            // countType count = 0;
+            countType count;
 
         public:
-            // counter() : count(0) {}
+            counter() : count{0} {}
 
-            counter(countType settedCount = 0) : count(settedCount) {}
+            counter(countType settedCount) : count(settedCount) {}
 
-            explicit counter<countType>(const counter<countType>& copied)
-            {
-                count = copied.count;
-            }
+            // explicit counter<countType>(const counter<countType>& copied)
+            // {
+            //     count = copied.count;
+            // }
+
+            counter<countType>(const counter<countType>& copied) = default;
+
+            counter<countType>(counter<countType>&& copied) = default;
 
             counter& operator+=(const countType& number)
             {

@@ -22,7 +22,7 @@ namespace AVIL
 
         public:
 
-        array(){}
+        array() = default;
 
         array(std::initializer_list<type> from)
         {
@@ -30,10 +30,14 @@ namespace AVIL
             std::copy(from.begin(), from.end(), begin());
         }
 
-        array(const array& copied)
-        {
-            std::copy(copied.begin(), copied.end(), begin());
-        }
+        // array(const array& copied)
+        // {
+        //     std::copy(copied.begin(), copied.end(), begin());
+        // }
+
+        array(const array& copied) = default;
+
+        array(array&& copied) = default;
 
         type& operator[](const size_t& index)
         {
