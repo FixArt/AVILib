@@ -33,9 +33,11 @@ namespace AVIL
 
         boolbyte(const boolbyte& copied) = default;
 
+        boolbyte(const AVIL::array<bool, 8>& copied) : b1{copied[0]}, b2{copied[1]}, b3{copied[2]}, b4{copied[3]}, b5{copied[4]}, b6{copied[5]}, b7{copied[6]}, b8{copied[7]} {}
+
         boolbyte(boolbyte&& copied) = default;
 
-        bool get(const unsigned char& index, const bool& value)
+        bool get(const unsigned char& index, const bool& value) const
         {
             switch(index)
             {

@@ -1,3 +1,4 @@
+#include <cstddef>
 #ifndef AVILIB_USED_VECTOR
 #pragma once 
 
@@ -6,6 +7,8 @@
 #include <functional>
 #include <algorithm>
 #include <type_traits>
+
+#include "array.hpp"
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
@@ -81,6 +84,13 @@ namespace AVIL
         public:
 
             vector<type>() : array{nullptr}, arraySize{0} {}
+
+            template<size_t theSize>
+            vector<type>(const AVIL::array<type, theSize>& copied)
+            {
+                resize(theSize);
+                std::copy(copied[0], copied[theSize], array[0]);
+            }
 
             const size_t &size = arraySize;
 
@@ -2017,7 +2027,20 @@ namespace AVIL
             {
                 return &array[arraySize];
             }
+
+            // size_t max_size()
+            // {
+            //     return std::numeric_limits<type>::max();
+            // }
     };
+    
+    template<class unwrapped, class... arguments>
+    vector<unwrapped> unwrap(arguments... readArguments)
+    {
+        vector<unwrapped> checked;
+        checked.append(readArguments...);
+        return checked;
+    }
 
     template<class type>
     inline vector<type> range(type first, type last)

@@ -44,6 +44,12 @@ namespace AVIL
             if(index >= size) throw(EINVAL);
             return itself[index];
         }
+
+        const type& operator[](const size_t& index) const
+        {
+            if(index >= size) throw(EINVAL);
+            return itself[index];
+        }
             
         const type* begin() const
         {
