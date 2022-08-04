@@ -526,7 +526,7 @@ namespace AVIL
                     //std::swap(array[where(checkedElement)], array[size - 1 - counted]);
                     ++counted;
                 }
-                reduce(counted);
+                // reduce(counted);
             }
 
             /**
