@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <iterator>
 #ifndef AVILIB_USED_VECTOR
 #pragma once 
 
@@ -316,7 +317,7 @@ namespace AVIL
             void fpop(const size_t &index)
             {
                 if(index >= size or size == 0) return;
-                swap(array[index], array[size - 1]);
+                std::swap(array[index], array[size - 1]);
                 reduce(1);
             }
 
@@ -495,7 +496,7 @@ namespace AVIL
             }
 
             template<class... arguments>
-            void remove(bool(shouldRemove)(const type&), arguments... removalFunctions)
+            void remove(std::function<bool(const type&)> shouldRemove, arguments... removalFunctions)
             {
                 remove(shouldRemove);
                 remove(removalFunctions...);
@@ -527,7 +528,7 @@ namespace AVIL
              * 
              * @param shouldRemove Function to check whenever element should be removed.
              */
-            void fremove(bool(shouldRemove)(const type&))
+            void fremove(std::function<bool(const type&)> shouldRemove)
             {
                 if(size == 0)
                 {
@@ -536,11 +537,12 @@ namespace AVIL
                 size_t counted = 0;
                 while(where(shouldRemove) != size)
                 {
-                    //fpop(where(shouldRemove));
-                    swap(array[where(shouldRemove)], array[size - 1 - counted]);
+                    fpop(where(shouldRemove));
+                    //if(size > 1) std::swap(array[where(shouldRemove)], array[size - 1 - counted]);
+                    //if(size > 1) std::swap(array[where(shouldRemove)], array[size - 1 - counted]);
                     ++counted;
                 }
-                reduce(counted);
+                // reduce(counted);
             }
 
             /**
@@ -605,7 +607,7 @@ namespace AVIL
              * @param shouldCount Function which defines which element we searching.
              * @return size_t Placement. Size of vector, if no such element found.
              */
-            size_t where(bool(shouldCount)(const type&)) const
+            size_t where(std::function<bool(const type&)> shouldCount) const
             {
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -1268,7 +1270,7 @@ namespace AVIL
             //     return *array;
             // }
 
-            type &operator[](const size_t &index)
+            type& at(const size_t &index)
             {
                 if(!exists(index))
                 {
@@ -1277,13 +1279,23 @@ namespace AVIL
                 return array[index];
             }
 
-            const type& operator[](const size_t &index) const
+            const type& at(const size_t &index) const
             {
                 if(!exists(index))
                 {
                     throw(EFAULT);
                 }
                 return array[index];
+            }
+
+            type &operator[](const size_t &index)
+            {
+                return at(index);
+            }
+
+            const type& operator[](const size_t &index) const
+            {
+                return at(index);
             }
 
             void clear()
@@ -2026,6 +2038,46 @@ namespace AVIL
             type* end()
             {
                 return &array[arraySize];
+            }
+            
+            const type* rbegin() const
+            {
+                return &array[arraySize - 1];
+            }
+
+            const type* rend() const
+            {
+                return &array[-1];
+            }
+
+            type* rbegin()
+            {
+                return &array[arraySize - 1];
+            }
+
+            type* rend()
+            {
+                return &array[-1];
+            }
+            
+            const type* cbegin() const
+            {
+                return &array[0];
+            }
+
+            const type* cend() const
+            {
+                return &array[arraySize];
+            }
+            
+            const type* crbegin() const
+            {
+                return &array[arraySize - 1];
+            }
+
+            const type* crend() const
+            {
+                return &array[-1];
             }
 
             // size_t max_size()

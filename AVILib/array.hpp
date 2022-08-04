@@ -70,6 +70,46 @@ namespace AVIL
         {
             return itself + size;
         }
+            
+        const type* rbegin() const
+        {
+            return &itself[size - 1];
+        }
+
+        const type* rend() const
+        {
+            return itself - 1;
+        }
+
+        type* rbegin()
+        {
+            return &itself[size - 1];
+        }
+
+        type* rend()
+        {
+            return itself - 1;
+        }
+            
+        const type* cbegin() const
+        {
+            return itself;
+        }
+
+        const type* cend() const
+        {
+            return itself + size;
+        }
+            
+        const type* crbegin() const
+        {
+            return &itself[size - 1];
+        }
+
+        const type* crend() const
+        {
+            return itself - 1;
+        }
     };
 }; 
 #define AVILIB_USED_ARRAY 1
