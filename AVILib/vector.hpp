@@ -522,8 +522,8 @@ namespace AVIL
                 size_t counted = 0;
                 while(where(checkedElement) != size)
                 {
-                    //fpop(where(checkedElement));
-                    swap(array[where(checkedElement)], array[size - 1 - counted]);
+                    fpop(where(checkedElement));
+                    //std::swap(array[where(checkedElement)], array[size - 1 - counted]);
                     ++counted;
                 }
                 reduce(counted);
