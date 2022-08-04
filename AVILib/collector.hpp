@@ -207,7 +207,7 @@ namespace AVIL
      * @brief Default garbage collector.
      * 
      */
-    AVIL::collector standart;
+    AVIL::collector default_collector;
 
     /**
      * @brief Malloc for default garbage collector.
@@ -217,7 +217,7 @@ namespace AVIL
      */
     inline void* cmalloc(size_t size)
     {
-        return standart.cmalloc(size);
+        return default_collector.cmalloc(size);
     }
 
     /**
@@ -229,7 +229,7 @@ namespace AVIL
      */
     inline void* ccalloc(size_t member, size_t size)
     {
-        return standart.ccalloc(member, size);
+        return default_collector.ccalloc(member, size);
     }
 
     /**
@@ -241,7 +241,7 @@ namespace AVIL
      */
     inline void* crealloc(void* reallocated, size_t newSize)
     {
-        return standart.crealloc(reallocated, newSize);
+        return default_collector.crealloc(reallocated, newSize);
     }
 
     /**
@@ -251,7 +251,7 @@ namespace AVIL
      */
     inline void cfree(void* freed)
     {
-        standart.cfree(freed);
+        default_collector.cfree(freed);
     }
 
     /**
@@ -262,7 +262,7 @@ namespace AVIL
      */
     inline void* regain(const size_t& index)
     {
-        return standart.regain(index);
+        return default_collector.regain(index);
     }
 }; 
 #define AVILIB_USED_COLLECTOR 1
