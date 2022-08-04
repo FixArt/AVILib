@@ -1,5 +1,3 @@
-#include <cstddef>
-#include <iterator>
 #ifndef AVILIB_USED_VECTOR
 #pragma once 
 
@@ -91,6 +89,14 @@ namespace AVIL
             {
                 resize(theSize);
                 std::copy(copied[0], copied[theSize], array[0]);
+            }
+
+            template<size_t theSize>
+            vector<type>& operator=(const AVIL::array<type, theSize>& copied)
+            {
+                resize(theSize);
+                std::copy(copied[0], copied[theSize], array[0]);
+                return *this;
             }
 
             const size_t &size = arraySize;
@@ -1383,6 +1389,15 @@ namespace AVIL
             {
                 assignedVector.array = nullptr;
                 assignedVector.arraySize = 0;
+            }
+
+            vector<type>& operator=(vector<type>&& assignedVector)
+            {
+                array = assignedVector.array;
+                arraySize = assignedVector.arraySize;
+                assignedVector.array = nullptr;
+                assignedVector.arraySize = 0;
+                return *this;
             }
 
             // vector<type>(vector<type>&& assignedVector)
