@@ -1,4 +1,4 @@
-#ifndef AVILIB_USED_ARRAY
+#ifndef AVILIB_USED_COLLECTOR
 // #include <type_traits>
 #pragma once
 #include <cstdint>
@@ -265,5 +265,5 @@ namespace AVIL
         return standart.regain(index);
     }
 }; 
-#define AVILIB_USED_ARRAY 1
+#define AVILIB_USED_COLLECTOR 1
 #endif
