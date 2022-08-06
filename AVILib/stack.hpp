@@ -24,12 +24,12 @@ namespace AVIL
      * @tparam type 
      */
     template<class type>
-    struct heap
+    struct stack
     {
         private:
         AVIL::vector<type> itself;
         public:
-        heap() : itself{} {}
+        stack() : itself{} {}
 
         /**
          * @brief Delete elements from stack.
@@ -96,7 +96,7 @@ namespace AVIL
             itself.append(placed);
         }
 
-        ~heap(){ /*Nothing must be done, vector will do everything itself.*/ }
+        ~stack(){ /*Nothing must be done, vector will do everything itself.*/ }
 
         operator type&()
         {
