@@ -60,31 +60,31 @@ namespace AVIL
     };
 
     template<class keytype, class valuetype>
-    struct unordered_map
+    struct unordered_set
     {
         private:
         AVIL::vector<map_pair<keytype, valuetype>> itself;
 
         public:
 
-        unordered_map(){}
+        unordered_set(){}
 
-        unordered_map(const unordered_map& copied)
+        unordered_set(const unordered_set& copied)
         {
             itself = copied.itself;
         }
 
-        unordered_map(unordered_map&& moved)
+        unordered_set(unordered_set&& moved)
         {
             itself = std::move(moved.itself);
         }
 
-        unordered_map(std::initializer_list<map_pair<keytype, valuetype>> copied)
+        unordered_set(std::initializer_list<map_pair<keytype, valuetype>> copied)
         {
             itself = copied;
         }
 
-        unordered_map operator=(const std::initializer_list<map_pair<keytype, valuetype>>& copied)
+        unordered_set operator=(const std::initializer_list<map_pair<keytype, valuetype>>& copied)
         {
             itself = copied;
         }
@@ -154,7 +154,7 @@ namespace AVIL
             size_t placement = where(key);
             if(placement == itself.size)
             {
-                append(key);
+                throw(EINVAL);
             }
             return itself[placement].value;
         }
