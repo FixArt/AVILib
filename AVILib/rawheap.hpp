@@ -28,6 +28,21 @@ namespace AVIL
         public:
         rawheap() : managed{nullptr}, size{0} {}
 
+        rawheap(const rawheap& copied)
+        {
+            resize(copied.size);
+            if(copied.managed != nullptr)
+            {
+                memcpy(managed, copied.managed, (copied.size > size)?(size):(copied.size));
+            }
+        }
+
+        rawheap(rawheap&& moved) : managed{moved.managed}, size{moved.size}
+        {
+            moved.managed = nullptr;
+            moved.size = 0;
+        }
+
         void resize(size_t newSize)
         {
             if(newSize == 0)
