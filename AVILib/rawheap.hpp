@@ -7,6 +7,8 @@
 // #include <algorithm>
 // #include <type_traits>
 #include <cstring>
+#include <cstdlib>
+#include <errno.h>
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
