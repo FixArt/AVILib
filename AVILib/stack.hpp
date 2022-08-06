@@ -1,5 +1,6 @@
+#include <initializer_list>
 #ifndef AVILIB_USED_STACK
-#pragma once 
+#pragma once
 
 // #include <cmath>
 // #include <initializer_list>
@@ -14,14 +15,14 @@
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
- * 
+ *
  */
 namespace AVIL
 {
     /**
      * @brief Stack realization based on vector.
-     * 
-     * @tparam type 
+     *
+     * @tparam type
      */
     template<class type>
     struct stack
@@ -31,9 +32,13 @@ namespace AVIL
         public:
         stack() : itself{} {}
 
+        stack(const AVIL::vector<type>& copied) : itself{copied} {}
+
+        stack(const std::initializer_list<type>& copied) : itself{copied} {}
+
         /**
          * @brief Delete elements from stack.
-         * 
+         *
          * @param pushedSize How much elements to delete.
          */
         void push(size_t pushedSize = 1)
@@ -43,7 +48,7 @@ namespace AVIL
 
         /**
          * @brief Gives you control over current last element in stack;
-         * 
+         *
          * @return type& Last variable reference.
          */
         type& get()
@@ -54,7 +59,7 @@ namespace AVIL
 
         /**
          * @brief Gives you variable and removes it from stack.
-         * 
+         *
          * @return type Variable returned.
          */
         type possess()
@@ -67,7 +72,7 @@ namespace AVIL
 
         /**
          * @brief Get unchangeable reference to variable.
-         * 
+         *
          * @return const type& The reference.
          */
         const type& get() const
@@ -78,8 +83,8 @@ namespace AVIL
 
         /**
          * @brief Gets current size of stack.
-         * 
-         * @return size_t 
+         *
+         * @return size_t
          */
         size_t size()
         {
@@ -88,7 +93,7 @@ namespace AVIL
 
         /**
          * @brief Put element on stack.
-         * 
+         *
          * @param placed Element placed on stack.
          */
         void put(const type& placed)
@@ -107,7 +112,12 @@ namespace AVIL
         {
             return get();
         }
+
+        operator AVIL::vector<type>()
+        {
+            return itself;
+        }
     };
 };
 #define AVILIB_USED_STACK 1
-#endif 
+#endif
