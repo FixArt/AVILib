@@ -15,57 +15,6 @@ namespace AVIL
     class collector
     {
         private:
-            // void** allocated = nullptr;
-            // size_t allocated.size = 0;
-            
-            // template<class type>
-            // void addToList(type* &list, size_t size, type newElement)
-            // {
-            //     type* extendedList = (type*)malloc(sizeof(type) * (size + 1));
-            //     for(size_t i = 0; i < size; ++i)
-            //     {
-            //         extendedList[i] = list[i];
-            //     }
-            //     free(list);
-            //     extendedList[size] = newElement;
-            //     list = extendedList;
-            // }
-
-            // template<class type>
-            // void deleteFromList(type* &list, size_t size, type deletedElement)
-            // {
-            //     if(size == 0) return;
-            //     if(size == 1)
-            //     {
-            //         if(list[0] == deletedElement)
-            //         {
-            //             free(list);
-            //             list = nullptr;
-            //         }
-            //         return;
-            //     }
-            //     size_t j = 0;
-            //     for(size_t i = 0; i < size; ++i)
-            //     {
-            //         if(deletedElement == list[i])
-            //         {
-            //             continue;
-            //         }
-            //         list[j] = list[i];
-            //         ++j;
-            //     }
-            //     type* checkedList = (type*)realloc(list, sizeof(type) * (size - 1));
-            //     if(checkedList == nullptr)
-            //     {
-            //         checkedList = (type*)malloc(sizeof(type) * (size - 1));
-            //         for(size_t i = 0; i < size; ++i)
-            //         {
-            //             checkedList[i] = list[i];
-            //         }
-            //         free(list);
-            //     }
-            //     list = checkedList;
-            // }
             AVIL::vector<void*> allocated;
         public:
 
@@ -127,7 +76,7 @@ namespace AVIL
                     return nullptr;
                 }
                 allocated.append(processed);
-                return allocated[allocated.size - 1];
+                return processed;
             }
 
             /**
@@ -151,7 +100,7 @@ namespace AVIL
                     return nullptr;
                 }
                 allocated.append(processed);
-                return allocated[allocated.size - 1];
+                return processed;
             }
 
             /**
