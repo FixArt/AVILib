@@ -24,12 +24,12 @@ namespace AVIL
      * @tparam type 
      */
     template<class type>
-    struct stack
+    struct heap
     {
         private:
         AVIL::vector<type> itself;
         public:
-        stack() : itself{} {}
+        heap() : itself{} {}
 
         /**
          * @brief Delete elements from stack.
@@ -77,6 +77,16 @@ namespace AVIL
         }
 
         /**
+         * @brief Gets current size of stack.
+         * 
+         * @return size_t 
+         */
+        size_t size()
+        {
+            return itself.size;
+        }
+
+        /**
          * @brief Put element on stack.
          * 
          * @param placed Element placed on stack.
@@ -86,7 +96,17 @@ namespace AVIL
             itself.append(placed);
         }
 
-        ~stack(){ /*Nothing must be done, vector will do everything itself.*/ }
+        ~heap(){ /*Nothing must be done, vector will do everything itself.*/ }
+
+        operator type&()
+        {
+            return get();
+        }
+
+        operator const type&() const
+        {
+            return get();
+        }
     };
 };
 #define AVILIB_USED_STACK 1
