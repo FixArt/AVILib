@@ -8,8 +8,6 @@
 // #include <type_traits>
 #include <cstring>
 
-#include "array.hpp"
-
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
  * 
