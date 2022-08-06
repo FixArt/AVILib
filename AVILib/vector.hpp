@@ -664,6 +664,18 @@ namespace AVIL
                 return false;
             }
 
+            bool contains(const type* const checkedAddress) const
+            {
+                for(size_t i = 0; i < size; ++i)
+                {
+                    if(checkedAddress == (array + i))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             bool contains(bool(shouldCount)(const type&)) const
             {
                 for(size_t i = 0; i < size; ++i)
