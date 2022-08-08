@@ -70,7 +70,7 @@ namespace AVIL
             template<class type>
             untypizedtrivial(const type& value)
             {
-                if(!std::is_trivial<type>().value) throw(EINVAL);
+                if(!std::is_trivially_copyable<type>().value) throw(EINVAL);
                 resize(sizeof(value));
                 *((type*)variable) = (type&)value;
             }
@@ -78,7 +78,7 @@ namespace AVIL
             template<class type>
             untypizedtrivial(type&& value)
             {
-                if(!std::is_trivial<type>().value) throw(EINVAL);
+                if(!std::is_trivially_copyable<type>().value) throw(EINVAL);
                 resize(sizeof(value));
                 *((type*)variable) = std::move(value);
             }
@@ -128,7 +128,7 @@ namespace AVIL
             template<class type>
             untypizedtrivial& operator=(const type& value)
             {
-                if(!std::is_trivial<type>().value) throw(EINVAL);
+                if(!std::is_trivially_copyable<type>().value) throw(EINVAL);
                 resize(sizeof(type));
                 *((type*)variable) = value;
                 return *this;
@@ -137,7 +137,7 @@ namespace AVIL
             template<class type>
             operator type&() const
             {
-                if(!std::is_trivial<type>().value or (sizeof(type) != capacity)) throw(EINVAL);
+                if(!std::is_trivially_copyable<type>().value or (sizeof(type) != capacity)) throw(EINVAL);
                 return *((type*)variable);
             }
 
