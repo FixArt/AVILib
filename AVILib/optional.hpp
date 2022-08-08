@@ -1,4 +1,4 @@
-#ifndef AVILIB_USED_UNTYPIZED
+#ifndef AVILIB_USED_OPTIONAL
 #pragma once 
 
 #include <utility>
@@ -18,7 +18,7 @@ namespace AVIL
         type value;
         bool present : 1;
         public:
-        optional() : present{false} {}
+        optional() noexcept : present{false} {}
 
         optional(const type& copied) : value{copied}, present{true} {}
 
@@ -36,7 +36,7 @@ namespace AVIL
             return *this;
         }
 
-        bool exists() const
+        bool exists() const noexcept
         {
             return present;
         }
@@ -101,5 +101,5 @@ namespace AVIL
         }
     };
 };
-#define AVILIB_USED_UNTYPIZED 1
+#define AVILIB_USED_OPTIONAL 1
 #endif
