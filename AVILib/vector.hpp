@@ -1573,7 +1573,7 @@ namespace AVIL
                 else
                 {
                     size_t writteni = 0;
-                    for(size_t i = std::abs(choosedOffset); i < arraySize - std::abs(choosedOffset); ++i)
+                    for(size_t i = std::abs(choosedOffset); i < arraySize; ++i)
                     {
                         array[writteni] = array[i];
                         ++writteni;

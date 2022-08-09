@@ -42,8 +42,19 @@ namespace AVIL
          */
         void push(size_t pushedSize = 1)
         {
-            itself.reduce(pushedSize); // All bound checks done in function, no need to twice checking.
+            // while(pushedSize > 0 or itself.size() != 0)
+            // {
+            //     itself.pop(0);
+            //     --pushedSize;
+            // }
+            // itself.reduce(pushedSize);
+            itself.offset(-((intmax_t)pushedSize)); // All bound checks done in function, no need to twice checking.
         }
+
+        // void push()
+        // {
+        //     itself.pop(0);
+        // }
 
         /**
          * @brief Gives you control over current last element in heap;
@@ -117,6 +128,36 @@ namespace AVIL
             return itself;
         }
     };
+
+    // /**
+    //  * @brief Circular heap.
+    //  * 
+    //  * @tparam type Type of elements.
+    //  */
+    // template<class type>
+    // struct cheap
+    // {
+    //     private:
+    //     AVIL::vector<type> itself;
+    //     public:
+    //     cheap() : itself{} {}
+
+    //     cheap(const AVIL::vector<type>& copied) : itself{copied} {}
+
+    //     cheap(const std::initializer_list<type>& copied) : itself{copied} {}
+
+    //     ~cheap(){ /*Nothing must be done, vector will do everything itself.*/ }
+
+    //     // operator type&()
+    //     // {
+    //     //     return get();
+    //     // }
+
+    //     // operator const type&() const
+    //     // {
+    //     //     return get();
+    //     // }
+    // };
 };
 #define AVILIB_USED_HEAP 1
 #endif 
