@@ -17,6 +17,11 @@
  */
 namespace AVIL
 {
+    /**
+     * @brief Unsigned numeric type of any size of bits. Recommended to not use on numbers smaller than 9 bits.
+     * 
+     * @tparam size Number of bits.
+     */
     template<size_t size = 128>
     struct auint_t
     {
