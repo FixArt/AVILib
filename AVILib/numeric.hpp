@@ -567,6 +567,16 @@ namespace AVIL
         }
 
         ~auint_t() = default;
+
+        bool isEven() const
+        {
+            return !itself[0];
+        }
+
+        bool isOdd() const
+        {
+            return itself[0];
+        }
     };
 
     template<size_t size>
