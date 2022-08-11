@@ -245,7 +245,25 @@ namespace AVIL
 
         auint_t operator~()
         {
-            return itself.flip();
+            return ~itself;
+        }
+
+        auint_t operator&=(const auint_t& processed)
+        {
+            itself &= processed.itself;
+            return *this;
+        }
+
+        auint_t operator|=(const auint_t& processed)
+        {
+            itself |= processed.itself;
+            return *this;
+        }
+
+        auint_t operator^=(const auint_t& processed)
+        {
+            itself ^= processed.itself;
+            return *this;
         }
 
         auint_t& operator+=(auint_t processed)
