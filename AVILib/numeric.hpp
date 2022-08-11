@@ -142,6 +142,16 @@ namespace AVIL
             }
         }
 
+        template<size_t bits>
+        auint_t& operator=(const auint_t<bits>& copied)
+        {
+            for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            {
+                itself[i] = ((std::bitset<bits>)copied)[i];
+            }
+            return *this;
+        }
+
         auint_t(const auint_t&) = default;
 
         auint_t(auint_t&&) = default;
