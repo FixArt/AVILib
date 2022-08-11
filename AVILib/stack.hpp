@@ -1,4 +1,3 @@
-#include <initializer_list>
 #ifndef AVILIB_USED_STACK
 #pragma once
 
@@ -10,6 +9,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <errno.h>
+#include <initializer_list>
 
 #include "vector.hpp"
 
