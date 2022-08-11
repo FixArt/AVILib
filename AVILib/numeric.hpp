@@ -128,7 +128,7 @@ namespace AVIL
 
         auint_t(const std::bitset<size>& copied) : itself{copied} {}
 
-        auint_t(const auint_t& copied) = default;
+        auint_t(const auint_t&) = default;
 
         auint_t(auint_t&&) = default;
 
@@ -315,37 +315,83 @@ namespace AVIL
             return *this;
         }
 
-        auint_t& operator/=(auint_t processed)
+        inline auint_t distance(auint_t number)
         {
-            // std::bitset<size> temporary{0};
-            // intmax_t dividedSize = processed.highestSet();
-            // if(dividedSize < 0) throw(EINVAL);
-            // intmax_t bit;
-            // while((bit = highestSet()) >= dividedSize)
+            // if(*this > number)
             // {
-            //     temporary.set(bit - dividedSize, true);
-            //     itself ^= processed.itself << (bit - dividedSize);
+            //     return *this - number;
             // }
-            // itself = temporary;
-            if(processed == 1)
+            // else
+            // {
+            //     return number - *this;
+            // }
+            return (*this > number)?(*this - number):(number - *this);
+        }
+
+        auint_t& operator/=(const auint_t& processed)
+        {
+            if(processed == 0)
             {
-                return *this;
+                throw(EINVAL);
             }
-            auint_t<size> quotient = 0;
-            for(auint_t<size> remainder{itself}; remainder >= processed; remainder -= processed)
+            auint_t quotient = 0;
+            auint_t temporaryProcessed = processed;
+
+            while(true)
             {
-                ++quotient;
+                auint_t temporaryQuotient = 1;
+                if (temporaryProcessed == *this)
+                {
+                    quotient += 1;
+                    break;
+                }
+                else if (*this < temporaryProcessed)
+                {
+                    break;
+                }
+                while ((temporaryProcessed << 1) <= *this)
+                {
+                    temporaryProcessed <<= 1;
+                    temporaryQuotient <<= 1;
+                }
+
+                *this -= temporaryProcessed;
+                temporaryProcessed = processed;
+                quotient += temporaryQuotient;
             }
+
             itself = quotient.itself;
+            
             return *this;
         }
 
         auint_t& operator%=(auint_t processed)
         {
-            auint_t<size> remainder;
-            for(remainder = itself; remainder >= processed; remainder -= processed) {}
-            itself = remainder.itself;
-            // for(itself; itself >= processed; itself -= processed) {}
+            // auint_t<size> remainder;
+            // for(remainder = itself; remainder >= processed; remainder -= processed) {}
+            // itself = remainder.itself;
+            const size_t first = highestSet();
+            const size_t second = processed.highestSet();
+            if(second > first) return *this;
+            if(second == first && (*this < processed)) return *this;
+
+            const size_t shift = first - second;
+            processed <<= shift;
+
+            for(size_t i = 0; i <= shift; ++i)
+            {
+                if(*this == processed)
+                {
+                    itself = 0;
+                    return *this;
+                }
+                if(*this > processed)
+                {
+                    *this -= processed;
+                }
+                processed >>= 1;
+            }
+
             return *this;
         }
 
@@ -437,6 +483,20 @@ namespace AVIL
             return *this;
         }
 
+        auint_t operator>>(size_t number)
+        {
+            auint_t<size> returned = *this;
+            returned >>= number;
+            return returned;
+        }
+
+        auint_t operator<<(size_t number)
+        {
+            auint_t<size> returned = *this;
+            returned <<= number;
+            return returned;
+        }
+
         // operator std::bitset<size>() const
         // {
         //     return itself;
@@ -476,6 +536,17 @@ namespace AVIL
             // *this /= 2;
         }
 
+        auint_t& operator=(const std::string& copied)
+        {
+            *this = 0;
+            for(size_t i = 0; i < copied.size(); ++i)
+            {
+                *this += (auint_t<size>{10}).pow(copied.size() - i - 1) * auint_t<size>{characterToDigit(copied[i])};
+            }
+            // *this /= 2;
+            return *this;
+        }
+
         operator std::string() const
         {
             if(*this == 0)
@@ -490,9 +561,9 @@ namespace AVIL
             return returned;
         }
 
-        explicit operator bool()
+        explicit inline operator bool()
         {
-            return itself.any();
+            return !(itself.none());
         }
 
         ~auint_t() = default;

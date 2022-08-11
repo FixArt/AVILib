@@ -5,6 +5,7 @@
  * 
  */
 #ifndef AVILIB_USED
+#include "AVILib/numeric.hpp"
 #include "AVILib/collector.hpp"
 #include "AVILib/array.hpp"
 #include "AVILib/vector.hpp"

@@ -1405,6 +1405,7 @@ namespace AVIL
 
             vector<type>& operator=(vector<type>&& assignedVector)
             {
+                clear();
                 array = assignedVector.array;
                 arraySize = assignedVector.arraySize;
                 assignedVector.array = nullptr;
