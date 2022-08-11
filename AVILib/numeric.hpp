@@ -632,7 +632,8 @@ namespace AVIL
     auint_t<size> maxauint_t()
     {
         std::bitset<size> returned;
-        returned.set();
+        // returned.set();
+        for(size_t i = 0; i < size; ++i) returned[i] = true;
         return {returned};
     }
     
@@ -640,7 +641,8 @@ namespace AVIL
     auint_t<size> minauint_t()
     {
         std::bitset<size> returned;
-        returned.reset();
+        // returned.reset();
+        for(size_t i = 0; i < size; ++i) returned[i] = false;
         return {returned};
     }
 };
