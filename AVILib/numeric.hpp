@@ -128,6 +128,15 @@ namespace AVIL
 
         auint_t(const std::bitset<size>& copied) : itself{copied} {}
 
+        template<size_t bits>
+        auint_t(const auint_t<bits>& copied)
+        {
+            for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            {
+                itself[i] = copied.itself[i];
+            }
+        }
+
         auint_t(const auint_t&) = default;
 
         auint_t(auint_t&&) = default;
@@ -576,6 +585,17 @@ namespace AVIL
         bool isOdd() const
         {
             return itself[0];
+        }
+
+        template<size_t bits>
+        operator auint_t<bits>()
+        {
+            auint_t<bits> returned;
+            for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            {
+                returned.itself[i] = itself[i];
+            }
+            return returned;
         }
     };
 
