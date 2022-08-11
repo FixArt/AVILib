@@ -138,7 +138,7 @@ namespace AVIL
         {
             for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
             {
-                itself[i] = copied.itself[i];
+                itself[i] = ((std::bitset<bits>)copied)[i];
             }
         }
 
@@ -613,12 +613,12 @@ namespace AVIL
         template<size_t bits>
         operator auint_t<bits>()
         {
-            auint_t<bits> returned;
+            std::bitset<bits> returned;
             for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
             {
-                returned.itself[i] = itself[i];
+                returned[i] = itself[i];
             }
-            return returned;
+            return {returned};
         }
     };
 
