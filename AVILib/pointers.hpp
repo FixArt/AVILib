@@ -512,6 +512,54 @@ namespace AVIL
 
             weak_ptr(weak_ptr<type>* store) : stored{store->stored}, point{store->point} { ++(point[1]); }
 
+            weak_ptr& operator=(weak_ptr& copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = copied.stored;
+                point = copied.point;
+                return *this;
+            }
+
+            weak_ptr& operator=(shared_ptr<type>& copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = (type*)copied;
+                point = copied.getCounter();
+                return *this;
+            }
+
+            weak_ptr& operator=(weak_ptr* copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = copied->stored;
+                point = copied->point;
+                return *this;
+            }
+
+            weak_ptr& operator=(shared_ptr<type>* copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = (type*)(*copied);
+                point = copied->getCounter();
+                return *this;
+            }
+
             bool expired()
             {
                 return point[0] == (size_t)0;
@@ -551,13 +599,61 @@ namespace AVIL
             counter<size_t>* point;
 
         public:
-            weak_ptr(shared_ptr<type>& store) : stored{(type*)store}, point{store.getCounter()} { ++(point[1]); }
+            weak_ptr(shared_ptr<type[]>& store) : stored{(type*)store}, point{store.getCounter()} { ++(point[1]); }
 
-            weak_ptr(shared_ptr<type>* store) : stored{(type*)(*store)}, point{store->getCounter()} { ++(point[1]); }
+            weak_ptr(shared_ptr<type[]>* store) : stored{(type*)(*store)}, point{store->getCounter()} { ++(point[1]); }
 
-            weak_ptr(weak_ptr<type>& store) : stored{store.stored}, point{store.point} { ++(point[1]); }
+            weak_ptr(weak_ptr<type[]>& store) : stored{store.stored}, point{store.point} { ++(point[1]); }
 
-            weak_ptr(weak_ptr<type>* store) : stored{store->stored}, point{store->point} { ++(point[1]); }
+            weak_ptr(weak_ptr<type[]>* store) : stored{store->stored}, point{store->point} { ++(point[1]); }
+
+            weak_ptr& operator=(weak_ptr& copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = copied.stored;
+                point = copied.point;
+                return *this;
+            }
+
+            weak_ptr& operator=(shared_ptr<type[]>& copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = (type*)copied;
+                point = copied.getCounter();
+                return *this;
+            }
+
+            weak_ptr& operator=(weak_ptr* copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = copied->stored;
+                point = copied->point;
+                return *this;
+            }
+
+            weak_ptr& operator=(shared_ptr<type[]>* copied)
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+                stored = (type*)(*copied);
+                point = copied->getCounter();
+                return *this;
+            }
 
             bool expired()
             {
