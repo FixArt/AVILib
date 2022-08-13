@@ -734,6 +734,12 @@ namespace AVIL
         return new type{};
     }
 
+    template<class type>
+    unique_ptr<type> make_unique(const type& copied)
+    {
+        return new type{copied};
+    }
+
     template<class type, class... arguments>
     unique_ptr<type> make_unique(arguments... constructor_arguments)
     {
@@ -744,6 +750,12 @@ namespace AVIL
     shared_ptr<type> make_shared()
     {
         return new type{};
+    }
+
+    template<class type>
+    shared_ptr<type> make_shared(const type& copied)
+    {
+        return new type{copied};
     }
 
     template<class type, class... arguments>
