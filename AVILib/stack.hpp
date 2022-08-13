@@ -65,7 +65,8 @@ namespace AVIL
         type possess()
         {
             if(itself.size == 0) throw(EINVAL);
-            type returned = std::move(itself[itself.size - 1]);
+            // type returned = std::move(itself[itself.size - 1]);
+            type returned = itself[itself.size - 1];
             itself.reduce(1);
             return returned;
         }
@@ -99,6 +100,13 @@ namespace AVIL
         void put(const type& placed)
         {
             itself.append(placed);
+        }
+
+        template<class... arguments>
+        void put(const type& placed, arguments... other)
+        {
+            itself.append(placed);
+            put(other...);
         }
 
         ~stack(){ /*Nothing must be done, vector will do everything itself.*/ }

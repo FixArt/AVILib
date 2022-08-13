@@ -1,9 +1,9 @@
 #ifndef AVILIB_USED_POINTERS
 #pragma once 
 
-#include <cmath>
-#include <initializer_list>
-#include <functional>
+// #include <cmath>
+// #include <initializer_list>
+// #include <functional>
 #include <algorithm>
 #include <type_traits>
 
@@ -26,16 +26,24 @@ namespace AVIL
 
             unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
 
-            unique_ptr(unique_ptr& copied)
-            {
-                pointed = copied.pointed;
-                copied.pointed = nullptr;
-            }
+            // unique_ptr(unique_ptr& copied)
+            // {
+            //     pointed = copied.pointed;
+            //     copied.pointed = nullptr;
+            // }
 
             unique_ptr(unique_ptr&& copied)
             {
                 pointed = copied.pointed;
-                copied.pointed = nullptr;
+                // copied.pointed = nullptr;
+            }
+
+            unique_ptr& operator=(unique_ptr&& copied)
+            {
+                if(pointed != nullptr) delete pointed;
+                pointed = copied.pointed;
+                // copied.pointed = nullptr;
+                return *this;
             }
 
             // const type& operator[](size_t index)
@@ -48,17 +56,12 @@ namespace AVIL
                 return *pointed;
             }
 
-            type& get()
+            const type& operator*() const
             {
                 return *pointed;
             }
 
-            type* operator->()
-            {
-                return pointed;
-            }
-
-            const type& operator*() const
+            type& get()
             {
                 return *pointed;
             }
@@ -66,6 +69,11 @@ namespace AVIL
             const type& get() const
             {
                 return *pointed;
+            }
+
+            type* operator->()
+            {
+                return pointed;
             }
 
             const type* const operator->() const
@@ -86,6 +94,11 @@ namespace AVIL
             operator type*()
             {
                 return pointed;
+            }
+
+            operator unique_ptr<type[]>()
+            {
+                return new type[1]{*pointed};
             }
 
             ~unique_ptr()
@@ -122,14 +135,14 @@ namespace AVIL
             {
                 pointed = copied.pointed;
                 point = copied.point;
-                copied.pointed = nullptr;
-                copied.point = new counter<size_t>[2];
+                // copied.pointed = nullptr;
+                // copied.point = new counter<size_t>[2];
                 ++(copied.point[0]);
             }
 
-            shared_ptr& operator=(shared_ptr& copied)
+            shared_ptr& operator=(const shared_ptr& copied)
             {
-                if(copied == *this) return *this;
+                if(&copied == this) return *this;
                 --(point[0]);
                 if((point[0]) == (size_t)0)
                 {
@@ -180,8 +193,18 @@ namespace AVIL
             {
                 return *pointed;
             }
+            
+            const type& get() const
+            {
+                return *pointed;
+            }
 
             type* operator->()
+            {
+                return pointed;
+            }
+
+            const type* const operator->() const
             {
                 return pointed;
             }
@@ -201,15 +224,107 @@ namespace AVIL
                 return *pointed;
             }
 
+            operator const type* const() const
+            {
+                return pointed;
+            }
+
+            operator type*()
+            {
+                return pointed;
+            }
+
+            operator shared_ptr<type[]>()
+            {
+                return new type[1]{*pointed};
+            }
+
+            ~shared_ptr()
+            {
+                --(point[0]);
+                if((point[0]) == (size_t)0)
+                {
+                    if(pointed != nullptr) delete pointed;
+                    if((point[1]) == (size_t)0) delete[] point;
+                }
+            }
+    };
+    
+    template<class type>
+    struct unique_ptr<type[]>
+    {
+        private:
+
+            type* pointed;
+
+        public:
+
+            unique_ptr(type* pointer = nullptr) : pointed{pointer} {}
+
+            // unique_ptr(unique_ptr& copied)
+            // {
+            //     pointed = copied.pointed;
+            //     copied.pointed = nullptr;
+            // }
+
+            unique_ptr(unique_ptr&& copied)
+            {
+                pointed = copied.pointed;
+                // copied.pointed = nullptr;
+            }
+
+            unique_ptr& operator=(unique_ptr&& copied)
+            {
+                if(pointed != nullptr) delete[] pointed;
+                pointed = copied.pointed;
+                // copied.pointed = nullptr;
+                return *this;
+            }
+
+            const type& operator[](const size_t& index) const
+            {
+                return pointed[index];
+            }
+
+            type& operator[](const size_t& index)
+            {
+                return pointed[index];
+            }
+
+            type& operator*()
+            {
+                return *pointed;
+            }
+
+            const type& operator*() const
+            {
+                return *pointed;
+            }
+
+            type& get()
+            {
+                return *pointed;
+            }
+
             const type& get() const
             {
                 return *pointed;
             }
 
-            // const type* const operator->() const
-            // {
-            //     return pointed;
-            // }
+            type* operator->()
+            {
+                return pointed;
+            }
+
+            const type* const operator->() const
+            {
+                return pointed;
+            }
+
+            operator bool() const
+            {
+                return pointed != nullptr;
+            }
 
             operator const type* const() const
             {
@@ -221,12 +336,160 @@ namespace AVIL
                 return pointed;
             }
 
+            operator unique_ptr<type>()
+            {
+                return new type{pointed[0]};
+            }
+
+            ~unique_ptr()
+            {
+                if(pointed != nullptr) delete[] pointed;
+            }
+    };
+
+    template<class type>
+    struct shared_ptr<type[]>
+    {
+        private:
+
+            type* pointed;
+
+            counter<size_t>* point;
+
+        public:
+
+            // shared_ptr() : pointed{nullptr}, point{new counter<size_t>{1}} {}
+
+            shared_ptr(type* pointer = nullptr) : pointed{pointer}, point{new counter<size_t>[2]} { ++(point[0]); }
+
+            shared_ptr(type* pointer, counter<size_t>* otherPoint) : pointed{pointer}, point{otherPoint} { ++(point[0]); }
+
+            shared_ptr<type>(const shared_ptr<type>& copied)
+            {
+                pointed = copied.pointed;
+                point = copied.point;
+                ++(point[0]);
+            }
+
+            shared_ptr<type>(shared_ptr<type>&& copied)
+            {
+                pointed = copied.pointed;
+                point = copied.point;
+                // copied.pointed = nullptr;
+                // copied.point = new counter<size_t>[2];
+                ++(copied.point[0]);
+            }
+
+            shared_ptr& operator=(const shared_ptr& copied)
+            {
+                if(&copied == this) return *this;
+                --(point[0]);
+                if((point[0]) == (size_t)0)
+                {
+                    if(pointed != nullptr) delete[] pointed;
+                    if((point[1]) == (size_t)0) delete[] point;
+                }
+                pointed = copied.pointed;
+                point = copied.point;
+                ++(point[0]);
+                return *this;
+            }
+
+            bool unique()
+            {
+                return use_count() == 1;
+            }
+
+            const type& operator[](const size_t& index) const
+            {
+                return pointed[index];
+            }
+
+            type& operator[](const size_t& index)
+            {
+                return pointed[index];
+            }
+
+            shared_ptr& operator=(type* copied)
+            {
+                --(point[0]);
+                if((point[0]) == (size_t)0)
+                {
+                    if(pointed != nullptr) delete[] pointed;
+                    if((point[1]) == (size_t)0) delete[] point;
+                }
+                pointed = copied;
+                point = new counter<size_t>[2];
+                ++(point[0]);
+                return *this;
+            }
+
+            operator bool() const
+            {
+                return pointed != nullptr;
+            }
+
+            type& operator*()
+            {
+                return *pointed;
+            }
+
+            type& get()
+            {
+                return *pointed;
+            }
+            
+            const type& get() const
+            {
+                return *pointed;
+            }
+
+            type* operator->()
+            {
+                return pointed;
+            }
+
+            const type* const operator->() const
+            {
+                return pointed;
+            }
+
+            size_t use_count()
+            {
+                return (size_t)(point[0]);
+            }
+
+            counter<size_t>* getCounter()
+            {
+                return point;
+            }
+
+            const type& operator*() const
+            {
+                return *pointed;
+            }
+
+            operator const type* const() const
+            {
+                return pointed;
+            }
+
+            operator type*()
+            {
+                return pointed;
+            }
+
+            operator shared_ptr<type>()
+            {
+                return new type{pointed[0]};
+            }
+
             ~shared_ptr()
             {
                 --(point[0]);
                 if((point[0]) == (size_t)0)
                 {
-                    if(pointed != nullptr) delete pointed;
+                    if(pointed != nullptr) delete[] pointed;
                     if((point[1]) == (size_t)0) delete[] point;
                 }
             }
@@ -257,6 +520,53 @@ namespace AVIL
             shared_ptr<type> lock()
             {
                 return expired() ? shared_ptr<type>{} : shared_ptr<type>{stored, point};
+            }
+
+            counter<size_t>* getCounter()
+            {
+                return point;
+            }
+
+            size_t use_count()
+            {
+                return (size_t)(point[0]);
+            }
+
+            ~weak_ptr()
+            {
+                --(point[1]);
+                if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
+                {
+                    delete[] point;
+                }
+            }
+    };
+
+    template<class type>
+    struct weak_ptr<type[]>
+    {
+        private:
+            type* stored;
+
+            counter<size_t>* point;
+
+        public:
+            weak_ptr(shared_ptr<type>& store) : stored{(type*)store}, point{store.getCounter()} { ++(point[1]); }
+
+            weak_ptr(shared_ptr<type>* store) : stored{(type*)(*store)}, point{store->getCounter()} { ++(point[1]); }
+
+            weak_ptr(weak_ptr<type>& store) : stored{store.stored}, point{store.point} { ++(point[1]); }
+
+            weak_ptr(weak_ptr<type>* store) : stored{store->stored}, point{store->point} { ++(point[1]); }
+
+            bool expired()
+            {
+                return point[0] == (size_t)0;
+            }
+
+            shared_ptr<type> lock()
+            {
+                return expired() ? shared_ptr<type[]>{} : shared_ptr<type[]>{stored, point};
             }
 
             counter<size_t>* getCounter()
@@ -417,6 +727,66 @@ namespace AVIL
                 return pointedObject + 1;
             }
     };
+
+    template<class type>
+    unique_ptr<type> make_unique()
+    {
+        return new type{};
+    }
+
+    template<class type, class... arguments>
+    unique_ptr<type> make_unique(arguments... constructor_arguments)
+    {
+        return new type{constructor_arguments...};
+    }
+
+    template<class type>
+    shared_ptr<type> make_shared()
+    {
+        return new type{};
+    }
+
+    template<class type, class... arguments>
+    shared_ptr<type> make_shared(arguments... constructor_arguments)
+    {
+        return new type{constructor_arguments...};
+    }
+
+    // template<class type>
+    // unique_ptr<type[]> make_unique()
+    // {
+    //     return new type[1];
+    // }
+
+    template<class type>
+    unique_ptr<type[]> make_unique(const size_t& size)
+    {
+        return new type[size];
+    }
+
+    // template<class type, class... arguments>
+    // unique_ptr<type[]> make_unique(size_t size, arguments... constructor_arguments)
+    // {
+    //     return new type[size]{constructor_arguments...};
+    // }
+
+    // template<class type>
+    // shared_ptr<type[]> make_shared()
+    // {
+    //     return new type[1];
+    // }
+
+    template<class type>
+    shared_ptr<type[]> make_shared(const size_t& size)
+    {
+        return new type[size];
+    }
+
+    // template<class type, class... arguments>
+    // shared_ptr<type[]> make_shared(size_t size, arguments... constructor_arguments)
+    // {
+    //     return new type[size]{constructor_arguments...};
+    // }
 };
 #define AVILIB_USED_POINTERS 1
 #endif
