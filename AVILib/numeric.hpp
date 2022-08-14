@@ -29,7 +29,7 @@ namespace AVIL
 
         std::bitset<size> itself;
 
-        void invert()
+        constexpr void invert()
         {
             for(std::size_t i = 0; i < size/2; ++i)
             {
@@ -39,7 +39,7 @@ namespace AVIL
             }
         }
 
-        size_t highestSet() const
+        constexpr size_t highestSet() const
         {
             size_t i = 0;
             for(i = size; i > 0; --i)
@@ -49,12 +49,12 @@ namespace AVIL
             return i;
         }
 
-        static char digitToCharacter(const unsigned short digit)
+        constexpr inline static char digitToCharacter(const unsigned short& digit)
         {
             return '0' + digit;
         }
 
-        static unsigned short characterToDigit(const char& character)
+        constexpr inline static unsigned short characterToDigit(const char& character)
         {
             return (short)(character - '0');
         }
@@ -62,7 +62,7 @@ namespace AVIL
         public:
         auint_t() = default;
 
-        size_t digits() const
+        constexpr size_t digits() const
         {
             if(*this == 0) return 1;
             size_t count = 0;
@@ -81,7 +81,7 @@ namespace AVIL
          * @param index Placement of digit.
          * @return unsigned short Digit itself. 
          */
-        unsigned short digitrl(size_t index) const
+        constexpr unsigned short digitrl(const size_t& index) const
         {
             auint_t<size> newNumber = *this;
             for(size_t i = 0; i < index; ++i)
@@ -98,7 +98,7 @@ namespace AVIL
          * @param index Placement of digit.
          * @return unsigned short Digit itself. 
          */
-        unsigned short digitlr(size_t index) const
+        constexpr inline unsigned short digitlr(const size_t& index) const
         {
             return digitrl(digits() - index);
         }
@@ -117,13 +117,13 @@ namespace AVIL
         //     return returned;
         // }
 
-        auint_t(const unsigned long long& copied) : itself{copied}
+        constexpr inline auint_t(const unsigned long long& copied) : itself{copied}
         {
             //invert();
             //itself <<= (size - (sizeof(unsigned long long) * 8));
         }
 
-        auint_t& operator=(const unsigned long long& copied)
+        constexpr auint_t& operator=(const unsigned long long& copied)
         {
             itself = {copied};
             //invert();
@@ -134,7 +134,7 @@ namespace AVIL
         auint_t(const std::bitset<size>& copied) : itself{copied} {}
 
         template<size_t bits>
-        auint_t(const auint_t<bits>& copied)
+        constexpr auint_t(const auint_t<bits>& copied)
         {
             for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
             {
@@ -143,7 +143,7 @@ namespace AVIL
         }
 
         template<size_t bits>
-        auint_t& operator=(const auint_t<bits>& copied)
+        constexpr auint_t& operator=(const auint_t<bits>& copied)
         {
             for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
             {
@@ -160,17 +160,17 @@ namespace AVIL
 
         auint_t& operator=(auint_t&&) = default;
 
-        bool operator==(const auint_t& compared) const
+        constexpr bool operator==(const auint_t& compared) const
         {
             return itself == compared.itself;
         }
 
-        bool operator!=(const auint_t& compared) const
+        constexpr bool operator!=(const auint_t& compared) const
         {
             return itself != compared.itself;
         }
 
-        bool operator>(const auint_t& compared) const
+        constexpr bool operator>(const auint_t& compared) const
         {
             //for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -187,7 +187,7 @@ namespace AVIL
             return false;
         }
 
-        bool operator<(const auint_t& compared) const
+        constexpr bool operator<(const auint_t& compared) const
         {
             // for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -204,7 +204,7 @@ namespace AVIL
             return false;
         }
 
-        bool operator>=(const auint_t& compared) const
+        constexpr bool operator>=(const auint_t& compared) const
         {
             // for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -221,7 +221,7 @@ namespace AVIL
             return true;
         }
 
-        bool operator<=(const auint_t& compared) const
+        constexpr bool operator<=(const auint_t& compared) const
         {
             // for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -238,50 +238,50 @@ namespace AVIL
             return true;
         }
 
-        auint_t operator+()
+        constexpr auint_t operator+()
         {
             return {itself};
         }
 
-        auint_t operator&(const auint_t& processed)
+        constexpr auint_t operator&(const auint_t& processed)
         {
             return itself & processed.itself;
         }
 
-        auint_t operator|(const auint_t& processed)
+        constexpr auint_t operator|(const auint_t& processed)
         {
             return itself | processed.itself;
         }
 
-        auint_t operator^(const auint_t& processed)
+        constexpr auint_t operator^(const auint_t& processed)
         {
             return itself ^ processed.itself;
         }
 
-        auint_t operator~()
+        constexpr auint_t operator~()
         {
             return ~itself;
         }
 
-        auint_t operator&=(const auint_t& processed)
+        constexpr auint_t operator&=(const auint_t& processed)
         {
             itself &= processed.itself;
             return *this;
         }
 
-        auint_t operator|=(const auint_t& processed)
+        constexpr auint_t operator|=(const auint_t& processed)
         {
             itself |= processed.itself;
             return *this;
         }
 
-        auint_t operator^=(const auint_t& processed)
+        constexpr auint_t operator^=(const auint_t& processed)
         {
             itself ^= processed.itself;
             return *this;
         }
 
-        auint_t& operator+=(auint_t processed)
+        constexpr auint_t& operator+=(auint_t processed)
         {
             size_t more = 0;
             // for(size_t i = size - 1; i > 0; --i)
@@ -301,7 +301,7 @@ namespace AVIL
             return *this;
         }
 
-        auint_t& operator-=(auint_t processed)
+        constexpr auint_t& operator-=(auint_t processed)
         {
             size_t more = 0;
             //for(size_t i = size - 1; i > 0; --i)
@@ -318,7 +318,7 @@ namespace AVIL
             return *this;
         }
 
-        auint_t& operator*=(auint_t processed)
+        constexpr auint_t& operator*=(auint_t processed)
         {
             std::bitset<size> temporary = itself;
             itself.reset();
@@ -357,7 +357,7 @@ namespace AVIL
             return *this;
         }
 
-        inline auint_t distance(auint_t number)
+        constexpr inline auint_t distance(auint_t number)
         {
             // if(*this > number)
             // {
@@ -407,7 +407,7 @@ namespace AVIL
         //     return *this;
         // }
 
-        auint_t& operator/=(const auint_t& processed)
+        constexpr auint_t& operator/=(const auint_t& processed)
         {
             if(processed == 0)
             {
@@ -445,7 +445,7 @@ namespace AVIL
             return *this;
         }
 
-        auint_t& operator%=(auint_t processed)
+        constexpr auint_t& operator%=(auint_t processed)
         {
             // auint_t<size> remainder;
             // for(remainder = itself; remainder >= processed; remainder -= processed) {}
@@ -475,35 +475,35 @@ namespace AVIL
             return *this;
         }
 
-        auint_t operator+(const auint_t& processed)
+        constexpr inline auint_t operator+(const auint_t& processed)
         {
             auint_t<size> returned = *this;
             returned += processed;
             return returned;
         }
 
-        auint_t operator-(const auint_t& processed)
+        constexpr inline auint_t operator-(const auint_t& processed)
         {
             auint_t<size> returned = *this;
             returned -= processed;
             return returned;
         }
 
-        auint_t operator*(const auint_t& processed)
+        constexpr inline auint_t operator*(const auint_t& processed)
         {
             auint_t<size> returned = *this;
             returned *= processed;
             return returned;
         }
 
-        auint_t operator/(const auint_t& processed)
+        constexpr inline auint_t operator/(const auint_t& processed)
         {
             auint_t<size> returned = *this;
             returned /= processed;
             return returned;
         }
 
-        auint_t pow(const auint_t& power)
+        constexpr auint_t pow(const auint_t& power)
         {
             auint_t<size> additional = *this;
             auint_t<size> resolution = 1;
@@ -522,55 +522,55 @@ namespace AVIL
             return resolution;
         }
 
-        auint_t operator%(const auint_t& processed)
+        constexpr inline auint_t operator%(const auint_t& processed)
         {
             auint_t<size> returned = *this;
             returned %= processed;
             return returned;
         }
 
-        auint_t& operator++()
+        constexpr inline auint_t& operator++()
         {
             return *this += 1;
         }
 
-        auint_t& operator--()
+        constexpr inline auint_t& operator--()
         {
             return *this -= 1;
         }
 
-        auint_t operator++(int)
+        constexpr inline auint_t operator++(int)
         {
             *this += 1;
             return *this + 1;
         }
 
-        auint_t operator--(int)
+        constexpr inline auint_t operator--(int)
         {
             *this -= 1;
             return *this - 1;
         }
 
-        auint_t& operator>>=(size_t number)
+        constexpr inline auint_t& operator>>=(size_t number)
         {
             itself >>= number;
             return *this;
         }
 
-        auint_t& operator<<=(size_t number)
+        constexpr inline auint_t& operator<<=(size_t number)
         {
             itself <<= number;
             return *this;
         }
 
-        auint_t operator>>(size_t number)
+        constexpr inline auint_t operator>>(size_t number)
         {
             auint_t<size> returned = *this;
             returned >>= number;
             return returned;
         }
 
-        auint_t operator<<(size_t number)
+        constexpr inline auint_t operator<<(size_t number)
         {
             auint_t<size> returned = *this;
             returned <<= number;
@@ -582,7 +582,7 @@ namespace AVIL
         //     return itself;
         // }
 
-        explicit operator std::bitset<size>&()
+        constexpr inline explicit operator std::bitset<size>&()
         {
             return itself;
         }
@@ -598,7 +598,7 @@ namespace AVIL
         //     return itself;
         // }
 
-        explicit operator const std::bitset<size>&() const
+        constexpr inline explicit operator const std::bitset<size>&() const
         {
             return itself;
         }
@@ -612,7 +612,7 @@ namespace AVIL
         //     }
         // }
 
-        auint_t(const std::string& copied)
+        constexpr auint_t(const std::string& copied)
         {
             *this = 0;
             for(size_t i = 0; i < copied.size(); ++i)
@@ -622,7 +622,7 @@ namespace AVIL
             // *this /= 2;
         }
 
-        auint_t& operator=(const std::string& copied)
+        constexpr auint_t& operator=(const std::string& copied)
         {
             *this = 0;
             for(size_t i = 0; i < copied.size(); ++i)
@@ -650,25 +650,25 @@ namespace AVIL
             return {returned.rbegin(), returned.rend()};
         }
 
-        explicit inline operator bool()
+        constexpr explicit inline operator bool()
         {
             return !(itself.none());
         }
 
         ~auint_t() = default;
 
-        bool isEven() const
+        constexpr inline bool isEven() const
         {
             return !itself[0];
         }
 
-        bool isOdd() const
+        constexpr inline bool isOdd() const
         {
             return itself[0];
         }
 
         template<size_t bits>
-        operator auint_t<bits>()
+        constexpr operator auint_t<bits>()
         {
             std::bitset<bits> returned;
             for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
@@ -680,13 +680,13 @@ namespace AVIL
     };
 
     template<size_t size>
-    auint_t<size> pow(const auint_t<size>& base, const auint_t<size>& power)
+    constexpr inline auint_t<size> pow(const auint_t<size>& base, const auint_t<size>& power)
     {
         return base.pow(power);
     }
 
     template<size_t size>
-    auint_t<size> maxauint_t()
+    constexpr auint_t<size> maxauint_t()
     {
         std::bitset<size> returned;
         // returned.set();
@@ -695,7 +695,7 @@ namespace AVIL
     }
     
     template<size_t size>
-    auint_t<size> minauint_t()
+    constexpr auint_t<size> minauint_t()
     {
         std::bitset<size> returned;
         // returned.reset();
