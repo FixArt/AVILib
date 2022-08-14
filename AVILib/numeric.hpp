@@ -370,6 +370,43 @@ namespace AVIL
             return (*this > number)?(*this - number):(number - *this);
         }
 
+        // auint_t& operator/=(const auint_t& processed)
+        // {
+        //     if(processed == 0)
+        //     {
+        //         throw(EINVAL);
+        //     }
+        //     auint_t quotient = 0;
+        //     auint_t temporaryProcessed = processed;
+
+        //     while(true)
+        //     {
+        //         auint_t temporaryQuotient = 1;
+        //         if (temporaryProcessed == *this)
+        //         {
+        //             quotient += 1;
+        //             break;
+        //         }
+        //         else if (*this < temporaryProcessed)
+        //         {
+        //             break;
+        //         }
+        //         while ((temporaryProcessed << 1) <= *this)
+        //         {
+        //             temporaryProcessed <<= 1;
+        //             temporaryQuotient <<= 1;
+        //         }
+
+        //         *this -= temporaryProcessed;
+        //         temporaryProcessed = processed;
+        //         quotient += temporaryQuotient;
+        //     }
+
+        //     itself = quotient.itself;
+            
+        //     return *this;
+        // }
+
         auint_t& operator/=(const auint_t& processed)
         {
             if(processed == 0)
@@ -377,7 +414,7 @@ namespace AVIL
                 throw(EINVAL);
             }
             auint_t quotient = 0;
-            auint_t temporaryProcessed = processed;
+            auint_t<size + 1> temporaryProcessed = processed;
 
             while(true)
             {
@@ -403,6 +440,7 @@ namespace AVIL
             }
 
             itself = quotient.itself;
+            // itself = (std::bitset<size>)((auint_t<size>)quotient);
             
             return *this;
         }
@@ -554,6 +592,12 @@ namespace AVIL
         //     return itself.to_ullong();
         // }
 
+        // template<size_t bits>
+        // explicit operator std::bitset<bits>() const
+        // {
+        //     return itself;
+        // }
+
         explicit operator const std::bitset<size>&() const
         {
             return itself;
@@ -596,11 +640,14 @@ namespace AVIL
                 return "0";
             }
             std::string returned; returned.resize(digits());
-            for(size_t i = 0; i < digits(); ++i)
+            auint_t<size> worked = itself;
+            for(size_t i = 0; worked != 0; ++i)
             {
-                returned[i] = digitToCharacter((unsigned short)digitlr(i + 1));
+                returned[i] = digitToCharacter(((worked % 10).itself.to_ulong()));
+                worked /= 10;
             }
-            return returned;
+            // return returned;
+            return {returned.rbegin(), returned.rend()};
         }
 
         explicit inline operator bool()
@@ -643,7 +690,7 @@ namespace AVIL
     {
         std::bitset<size> returned;
         // returned.set();
-        for(size_t i = 0; i < size; ++i) returned[i] = true;
+        for(size_t i = 0; i < size; ++i) returned.set(i, true); // returned[i] = true;
         return {returned};
     }
     
@@ -652,8 +699,21 @@ namespace AVIL
     {
         std::bitset<size> returned;
         // returned.reset();
-        for(size_t i = 0; i < size; ++i) returned[i] = false;
+        for(size_t i = 0; i < size; ++i) returned.set(i, false); // returned[i] = false;
         return {returned};
+    }
+
+    template<size_t size>
+    std::string bitauint_t(const auint_t<size>& processed)
+    {
+        std::string returned;
+        returned.resize(size);
+        for(size_t i = 0; i < size; ++i)
+        {
+            returned[i] = (((std::bitset<size>)processed)[size - i - 1])?('1'):('0');
+            
+        }
+        return returned;
     }
 };
 #define AVILIB_USED_NUMERIC 1
