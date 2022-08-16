@@ -364,14 +364,14 @@ namespace AVIL
 
             shared_ptr(type* pointer, counter<size_t>* otherPoint) : pointed{pointer}, point{otherPoint} { ++(point[0]); }
 
-            shared_ptr<type>(const shared_ptr<type>& copied)
+            shared_ptr<type[]>(const shared_ptr<type[]>& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;
                 ++(point[0]);
             }
 
-            shared_ptr<type>(shared_ptr<type>&& copied)
+            shared_ptr<type[]>(shared_ptr<type[]>&& copied)
             {
                 pointed = copied.pointed;
                 point = copied.point;

@@ -18,7 +18,7 @@
 namespace AVIL
 {
     /**
-     * @brief Unsigned numeric type of any size of bits. Recommended to not use on numbers smaller than 9 bits.
+     * @brief Unsigned numeric type of any size of bits.
      * 
      * @tparam size Number of bits.
      */
@@ -64,7 +64,7 @@ namespace AVIL
 
         constexpr size_t digits() const
         {
-            if(*this == 0) return 1;
+            if(*this == 0 || size < 4) return 1;
             size_t count = 0;
             auint_t<size> checkedNumber = *this;
             while(checkedNumber != 0)
@@ -83,8 +83,23 @@ namespace AVIL
          */
         constexpr unsigned short digitrl(const size_t& index) const
         {
+            if(size < 4)
+            {
+                const unsigned short tested = itself.to_ulong();
+                switch(tested)
+                {
+                    default: return 0;
+                    case 1: return 1;
+                    case 2: return 2;
+                    case 3: return 3;
+                    case 4: return 4;
+                    case 5: return 5;
+                    case 6: return 6;
+                    case 7: return 7;
+                }
+            }
             auint_t<size> newNumber = *this;
-            for(size_t i = 0; i < index; ++i)
+            for(size_t i = 0; i < (index + 1); ++i)
             {
                 newNumber /= 10;
             }
@@ -100,7 +115,7 @@ namespace AVIL
          */
         constexpr inline unsigned short digitlr(const size_t& index) const
         {
-            return digitrl(digits() - index);
+            return digitrl(digits() - 1 - index);
         }
 
         // std::bitset<size> max() const
@@ -238,6 +253,26 @@ namespace AVIL
             return true;
         }
 
+        constexpr inline bool operator>(const intmax_t& compared) const
+        {
+            return (compared < 0)?(true):(*this > ((auint_t)compared));
+        }
+
+        constexpr inline bool operator<(const intmax_t& compared) const
+        {
+            return (compared < 0)?(false):(*this < ((auint_t)compared));
+        }
+
+        constexpr inline bool operator>=(const intmax_t& compared) const
+        {
+            return (compared < 0)?(true):(*this >= ((auint_t)compared));
+        }
+
+        constexpr inline bool operator<=(const intmax_t& compared) const
+        {
+            return (compared < 0)?(false):(*this <= ((auint_t)compared));
+        }
+
         constexpr auint_t operator+()
         {
             return {itself};
@@ -320,6 +355,11 @@ namespace AVIL
 
         constexpr auint_t& operator*=(auint_t processed)
         {
+            if(processed == 10)
+            {
+                *this = (*this << 3) + (*this << 1);
+                return *this;
+            }
             std::bitset<size> temporary = itself;
             itself.reset();
             if(temporary.count() < processed.itself.count())
@@ -475,36 +515,124 @@ namespace AVIL
             return *this;
         }
 
-        constexpr inline auint_t operator+(const auint_t& processed)
+        constexpr inline auint_t<size> mod(const auint_t<size>& number) const
+        {
+            return *this % number;
+        }
+
+        constexpr inline auint_t<size> mod2() const
+        {
+            return (itself[0])?(1):(0);
+        }
+
+        constexpr inline auint_t<size> mod10() const
+        {
+            return *this % 10;
+        }
+
+        constexpr auint_t<size> log(const auint_t<size>& previous)
+        {
+            // if(*this == 1)
+            // {
+            //     return (previous == 1)?(1):(0);
+            // }
+            // if(previous > *this)
+            // {
+            //     throw(EINVAL);
+            // }
+            // // auint_t<size> returned = 1;
+            // auint_t<size> returned = 1;
+            // bool beforeLast = (previous.pow(returned) > *this)?(true):(false);
+            // bool lastOperation = beforeLast;
+            // while(previous.pow(returned) != *this)
+            // {
+            //     if(previous.pow(returned) > *this)
+            //     {
+            //         --returned;
+            //         if(lastOperation && !beforeLast) break;
+            //         beforeLast = lastOperation;
+            //         lastOperation = false;
+            //     }
+            //     else
+            //     {
+            //         ++returned;
+            //         if(!lastOperation && beforeLast) break;
+            //         beforeLast = lastOperation;
+            //         lastOperation = true;
+            //     }
+            // }
+            // return returned;
+            if(*this == 1)
+            {
+                return (previous == 1)?(1):(0);
+            }
+            if(previous > *this)
+            {
+                return 0;
+            }
+            auint_t high, low;
+            low = 1;
+            high = *this >> 1;
+            // high = sqrt(); // May be too slow.
+            auint_t guess = (low + high) >> 1;
+            while(previous.pow(guess) != *this)
+            {
+                if(previous.pow(guess) > *this)
+                {
+                    if(high == guess) break;
+                    high = guess;
+                }
+                else
+                {
+                    if(low == guess) break;
+                    low = guess;
+                }
+                guess = (low + high) >> 1;
+            }
+            return guess;
+        }
+
+        constexpr inline auint_t log2()
+        {
+            return log(2);
+        }
+
+        constexpr inline auint_t log10()
+        {
+            return log(10);
+        }
+
+        constexpr inline auint_t operator+(const auint_t& processed) const
         {
             auint_t<size> returned = *this;
             returned += processed;
             return returned;
         }
 
-        constexpr inline auint_t operator-(const auint_t& processed)
+        constexpr inline auint_t operator-(const auint_t& processed) const
         {
             auint_t<size> returned = *this;
             returned -= processed;
             return returned;
         }
 
-        constexpr inline auint_t operator*(const auint_t& processed)
+        constexpr inline auint_t operator*(const auint_t& processed) const
         {
             auint_t<size> returned = *this;
             returned *= processed;
             return returned;
         }
 
-        constexpr inline auint_t operator/(const auint_t& processed)
+        constexpr inline auint_t operator/(const auint_t& processed) const
         {
             auint_t<size> returned = *this;
             returned /= processed;
             return returned;
         }
 
-        constexpr auint_t pow(const auint_t& power)
+        constexpr auint_t pow(const auint_t& power) const
         {
+            if(power == 0) return 1;
             auint_t<size> additional = *this;
             auint_t<size> resolution = 1;
             auint_t copiedPower = power;
@@ -522,7 +650,81 @@ namespace AVIL
             return resolution;
         }
 
-        constexpr inline auint_t operator%(const auint_t& processed)
+        constexpr auint_t sqrt() const
+        {
+            auint_t<size> temporary, returned, preturned;
+            preturned.itself.set(0, (returned.itself[0])?(false):(true));
+            returned = *this >> 1;
+            temporary = 0;
+            while(returned != temporary && preturned != returned)
+            {
+                temporary = returned;
+                // auint_t calculation = (*this / temporary + temporary) >> 1;
+                // if(calculation == temporary) break;
+                // returned = calculation;
+                // if(returned == (*this / temporary + temporary) / 2) break;
+                if(returned.itself[0]) preturned = returned;
+                returned = (*this / temporary + temporary) >> 1;
+            }
+            return returned;
+        }
+
+        constexpr auint_t root(auint_t<size> power) const
+        {
+            if(power == 2) return sqrt();
+            // auint_t<size> low, high, plow, phigh;
+            auint_t<size> low, high;
+            low = (*this == 0)?(0):(1);
+            high = (*this == 0)?(1):(*this);
+
+            // // Any fast operation, which will make them differ. (initialization of all values is unneeded)
+            // plow.itself.set(0, (low.itself[0])?(false):(true));
+            // phigh.itself.set(0, (high.itself[0])?(false):(true));
+
+            auint_t<size> guess = (low + high) >> 1;
+            // while((guess.pow(power) - *this) > 0 and (high != phigh && low != plow))
+            while((guess.pow(power) - *this) > 0)
+            {
+                if(guess.pow(power) > *this)
+                {
+                    // phigh = high;
+                    if(high == guess) break;
+                    high = guess;
+                }
+                else
+                {
+                    // plow = low;
+                    if(low == guess) break;
+                    low = guess;
+                }
+                guess = (low + high) >> 1;
+            }
+
+            return guess;
+        }
+
+        // /**
+        //  * @brief Very broken exponent function.
+        //  * 
+        //  * @return constexpr auint_t Returned value.
+        //  */
+        // constexpr inline auint_t exp()
+        // {
+        //     auint_t<(size > 15)?(size):(16)> e = 27183;
+        //     return (auint_t<size>)(e.pow((auint_t<(size > 15)?(size):(16)>)*this) / (((auint_t<(size > 15)?(size):(16)>)10000).pow((auint_t<(size > 15)?(size):(16)>)*this)));
+        // }
+
+        constexpr auint_t factorial() const
+        {
+            auint_t returned = 1;
+            for(auint_t i = 2; i <= *this; ++i)
+            {
+                returned *= i;
+            }
+            return returned;
+        }
+
+        constexpr inline auint_t operator%(const auint_t& processed) const
         {
             auint_t<size> returned = *this;
             returned %= processed;
@@ -563,14 +765,14 @@ namespace AVIL
             return *this;
         }
 
-        constexpr inline auint_t operator>>(size_t number)
+        constexpr inline auint_t operator>>(size_t number) const
         {
             auint_t<size> returned = *this;
             returned >>= number;
             return returned;
         }
 
-        constexpr inline auint_t operator<<(size_t number)
+        constexpr inline auint_t operator<<(size_t number) const
         {
             auint_t<size> returned = *this;
             returned <<= number;
@@ -587,6 +789,11 @@ namespace AVIL
             return itself;
         }
 
+        constexpr inline explicit operator const std::bitset<size>&() const
+        {
+            return itself;
+        }
+
         // operator unsigned long long()
         // {
         //     return itself.to_ullong();
@@ -597,11 +804,6 @@ namespace AVIL
         // {
         //     return itself;
         // }
-
-        constexpr inline explicit operator const std::bitset<size>&() const
-        {
-            return itself;
-        }
 
         // explicit auint_t(const char* const copied)
         // {
@@ -639,6 +841,10 @@ namespace AVIL
             {
                 return "0";
             }
+            if(size < 4)
+            {
+                return {digitToCharacter(digitrl(0))};
+            }
             std::string returned; returned.resize(digits());
             auint_t<size> worked = itself;
             for(size_t i = 0; worked != 0; ++i)
@@ -667,6 +873,41 @@ namespace AVIL
             return itself[0];
         }
 
+        constexpr bool isPrime() const
+        {
+            if(*this == 2) return true;
+            if(*this < 2)
+            {
+                return false;
+            }
+            if(isEven()) return false;
+            for(auint_t<size> i = 2; i <= sqrt(); ++i)
+            {
+                if(*this % i == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        constexpr bool isPowerOf2() const
+        {
+            bool found = false;
+            for(bool checked : itself)
+            {
+                if(checked)
+                {
+                    if(found)
+                    {
+                        return false;
+                    }
+                    found = true;
+                }
+            }
+            return found;
+        }
+
         template<size_t bits>
         constexpr operator auint_t<bits>()
         {
@@ -677,12 +918,92 @@ namespace AVIL
             }
             return {returned};
         }
+
+        constexpr bool isAdditionOverflow(const auint_t& processed) const
+        {
+            return *this > (auint_t(std::bitset<size>{}.set()) - processed);
+        }
+
+        constexpr bool isSubtractionOverflow(const auint_t& processed) const
+        {
+            return *this < processed;
+        }
+
+        constexpr bool isMultiplicationOverflow(const auint_t& processed) const
+        {
+            return (processed > 1) && (*this > (auint_t(std::bitset<size>{}.set()) / processed));
+        }
+
+        constexpr bool isFactorialOverflow(const auint_t& processed) const
+        {
+            auint_t returned = 1;
+            for(auint_t i = 2; i <= *this; ++i)
+            {
+                if(returned.isMultiplicationOverflow(i)) return true;
+                returned *= i;
+            }
+            return false;
+        }
+
+        /**
+         * @brief Fills number with digits of Euler's number.
+         * 
+         */
+        constexpr auint_t& e()
+        {
+            // itself = 2;
+            // auint_t currentFactorial = 2;
+            // auint_t currentMultiplicator = 1;
+            // for(auint_t i = 3; (!currentFactorial.isMultiplicationOverflow(i)) && (!isAdditionOverflow((currentMultiplicator / currentFactorial))); ++i)
+            // {
+            //     while(currentFactorial > currentMultiplicator)
+            //     {
+            //         currentMultiplicator *= 10;
+            //         *this *= 10;
+            //     }
+            //     *this += (currentMultiplicator / currentFactorial);
+            //     std::cout << " += " << (std::string)currentMultiplicator << "/" << (std::string)currentFactorial << " = " << (std::string)(currentMultiplicator / currentFactorial) << "\n";
+            //     currentFactorial *= i;
+            // }
+            // return *this;
+            auint_t currentMultiplicator = 1;
+            for(itself = 2; !isMultiplicationOverflow(10); *this *= 10) { currentMultiplicator *= 10; }
+            auint_t currentFactorial = 2;
+            for(auint_t i = 3; (!currentFactorial.isMultiplicationOverflow(i)) && (!isAdditionOverflow((currentMultiplicator / currentFactorial))); ++i)
+            {
+                *this += (currentMultiplicator / currentFactorial);
+                currentFactorial *= i;
+            }
+            return *this;
+        }
     };
+
+    template<> struct auint_t<0> {};
+
+    // typedef auint;
 
     template<size_t size>
     constexpr inline auint_t<size> pow(const auint_t<size>& base, const auint_t<size>& power)
     {
         return base.pow(power);
+    }
+
+    template<size_t size>
+    constexpr auint_t<size> randomauint_t(unsigned seed = 1)
+    {
+        srand(seed);
+        std::bitset<size> returned;
+        for(size_t processed = 0; processed < size; processed += sizeof(int))
+        {
+            std::bitset<sizeof(unsigned int)> current{(unsigned int)rand()};
+            // returned.set(processed, current);
+            for(size_t index = 0; index < sizeof(unsigned int) && (index + processed) < size; ++index)
+            {
+                returned.set(processed + index, current[index]);
+            }
+        }
+        // size_t processed = 0;
+        return returned;
     }
 
     template<size_t size>
@@ -714,6 +1035,12 @@ namespace AVIL
             
         }
         return returned;
+    }
+
+    template<size_t size>
+    constexpr inline auint_t<size> powbase2(const size_t& power)
+    {
+        return ((auint_t<size>)2) << power;
     }
 };
 #define AVILIB_USED_NUMERIC 1
