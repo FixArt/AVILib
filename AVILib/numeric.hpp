@@ -485,6 +485,46 @@ namespace AVIL
             return *this;
         }
 
+        constexpr auint_t& divideWithRemainder(const auint_t& processed, auint_t& remainder)
+        {
+            if(processed == 0)
+            {
+                throw(EINVAL);
+            }
+            auint_t quotient = 0;
+            auint_t<size + 1> temporaryProcessed = processed;
+
+            while(true)
+            {
+                auint_t temporaryQuotient = 1;
+                if (temporaryProcessed == *this)
+                {
+                    remainder = 0;
+                    quotient += 1;
+                    break;
+                }
+                else if (*this < temporaryProcessed)
+                {
+                    remainder = *this;
+                    break;
+                }
+                while ((temporaryProcessed << 1) <= *this)
+                {
+                    temporaryProcessed <<= 1;
+                    temporaryQuotient <<= 1;
+                }
+
+                *this -= temporaryProcessed;
+                temporaryProcessed = processed;
+                quotient += temporaryQuotient;
+            }
+
+            itself = quotient.itself;
+            // itself = (std::bitset<size>)((auint_t<size>)quotient);
+            
+            return *this;
+        }
+
         constexpr auint_t& operator%=(auint_t processed)
         {
             // auint_t<size> remainder;
@@ -837,6 +877,22 @@ namespace AVIL
 
         operator std::string() const
         {
+            // if(*this == 0)
+            // {
+            //     return "0";
+            // }
+            // if(size < 4)
+            // {
+            //     return {digitToCharacter(digitrl(0))};
+            // }
+            // std::string returned; returned.resize(digits());
+            // auint_t<size> worked = itself;
+            // for(size_t i = 0; worked != 0; ++i)
+            // {
+            //     returned[i] = digitToCharacter(((worked % 10).itself.to_ulong()));
+            //     worked /= 10;
+            // }
+            // return {returned.rbegin(), returned.rend()};
             if(*this == 0)
             {
                 return "0";
@@ -845,16 +901,32 @@ namespace AVIL
             {
                 return {digitToCharacter(digitrl(0))};
             }
-            std::string returned; returned.resize(digits());
-            auint_t<size> worked = itself;
-            for(size_t i = 0; worked != 0; ++i)
+            else if(size < 64)
             {
-                returned[i] = digitToCharacter(((worked % 10).itself.to_ulong()));
-                worked /= 10;
+                std::string returned; returned.resize(digits());
+                auint_t<size> worked = itself;
+                for(size_t i = 0; worked != 0; ++i)
+                {
+                    returned[i] = digitToCharacter(((worked % 10).itself.to_ulong()));
+                    worked /= 10;
+                }
+                return {returned.rbegin(), returned.rend()};
             }
-            // return returned;
-            return {returned.rbegin(), returned.rend()};
-        }
+            else
+            {
+                std::string returned; // returned.resize(numberSize);
+                auint_t<size> worked = itself;
+                for(size_t i = 0; worked != 0; i += 19)
+                {
+                    // returned.insert(0, std::to_string((worked % 10000000000000000000ULL).itself.to_ullong()));
+                    // worked /= 10000000000000000000ULL;
+                    auint_t<size> numbers;
+                    worked.divideWithRemainder(10000000000000000000ULL, numbers);
+                    returned.insert(0, std::to_string(numbers.itself.to_ullong()));
+                }
+                return returned;
+            }
+            }
 
         constexpr explicit inline operator bool() const
         {
@@ -1243,6 +1315,35 @@ namespace AVIL
             checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
             
             const std::string symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+            returned[written] = symbols[checked.to_ulong()];
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == '0')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    template<size_t size>
+    std::string geohashauint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 5)
+        {
+            std::bitset<5> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+            checked.set(3, (i + 3 < size)?(current[i + 3]):(false));
+            checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
+            
+            const std::string symbols = "0123456789bcdefghjkmnpqrstuvwxyz";
             returned[written] = symbols[checked.to_ulong()];
 
             ++written;
