@@ -1075,6 +1075,12 @@ namespace AVIL
     }
 
     template<size_t size>
+    std::string base10auint_t(const auint_t<size>& processed)
+    {
+        return (std::string)processed;
+    }
+
+    template<size_t size>
     std::string base16auint_t(const auint_t<size>& processed)
     {
         std::bitset<size> current = (std::bitset<size>)processed;
@@ -1125,6 +1131,93 @@ namespace AVIL
         return returned;
     }
 
+    template<size_t size>
+    std::string base32auint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 5)
+        {
+            std::bitset<5> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+            checked.set(3, (i + 3 < size)?(current[i + 3]):(false));
+            checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
+            
+            const std::string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+            returned[written] = symbols[checked.to_ulong()];
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == 'A')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    template<size_t size>
+    std::string zbase32auint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 5)
+        {
+            std::bitset<5> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+            checked.set(3, (i + 3 < size)?(current[i + 3]):(false));
+            checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
+            
+            const std::string symbols = "ybndrfg8ejkmcpqxot1uwisza345h769";
+            returned[written] = symbols[checked.to_ulong()];
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == 'y')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    template<size_t size>
+    std::string base32hexauint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 5)
+        {
+            std::bitset<5> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+            checked.set(3, (i + 3 < size)?(current[i + 3]):(false));
+            checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
+            
+            const std::string symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+            returned[written] = symbols[checked.to_ulong()];
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == '0')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
     /**
      * @brief Non base64 specification compliant conversion to base64 of number.
      * 
@@ -1149,29 +1242,6 @@ namespace AVIL
             checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
             checked.set(5, (i + 5 < size)?(current[i + 5]):(false));
 
-            // switch(checked.to_ulong())
-            // {
-            //     default: returned[written] = ' '; break;
-            //     case 0: returned[written] = '0'; break;
-            //     case 1: returned[written] = '1'; break;
-            //     case 2: returned[written] = '2'; break;
-            //     case 3: returned[written] = '3'; break;
-            //     case 4: returned[written] = '4'; break;
-            //     case 5: returned[written] = '5'; break;
-            //     case 6: returned[written] = '6'; break;
-            //     case 7: returned[written] = '7'; break;
-            // }
-            // if(checked.to_ullong() < 10) returned[written] = '0' + (char)checked.to_ullong();
-            // else switch(checked.to_ulong())
-            // {
-            //     default: returned[written] = ' '; break;
-            //     case 10: returned[written] = 'A'; break;
-            //     case 11: returned[written] = 'B'; break;
-            //     case 12: returned[written] = 'C'; break;
-            //     case 13: returned[written] = 'D'; break;
-            //     case 14: returned[written] = 'E'; break;
-            //     case 15: returned[written] = 'F'; break;
-            // };
             const std::string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
             returned[written] = symbols[checked.to_ulong()];
 
@@ -1183,12 +1253,6 @@ namespace AVIL
             returned.erase(0, 1);
         }
         return returned;
-    }
-
-    template<size_t size>
-    std::string base10auint_t(const auint_t<size>& processed)
-    {
-        return (std::string)processed;
     }
 
     template<size_t size>
