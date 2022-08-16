@@ -856,7 +856,7 @@ namespace AVIL
             return {returned.rbegin(), returned.rend()};
         }
 
-        constexpr explicit inline operator bool()
+        constexpr explicit inline operator bool() const
         {
             return !(itself.none());
         }
@@ -1025,16 +1025,170 @@ namespace AVIL
     }
 
     template<size_t size>
-    std::string bitauint_t(const auint_t<size>& processed)
+    std::string base2auint_t(const auint_t<size>& processed)
     {
         std::string returned;
         returned.resize(size);
         for(size_t i = 0; i < size; ++i)
         {
             returned[i] = (((std::bitset<size>)processed)[size - i - 1])?('1'):('0');
-            
         }
         return returned;
+    }
+
+    template<size_t size>
+    std::string base8auint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 3 + ((size % 3 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 3)
+        {
+            std::bitset<3> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+
+            // switch(checked.to_ulong())
+            // {
+            //     default: returned[written] = ' '; break;
+            //     case 0: returned[written] = '0'; break;
+            //     case 1: returned[written] = '1'; break;
+            //     case 2: returned[written] = '2'; break;
+            //     case 3: returned[written] = '3'; break;
+            //     case 4: returned[written] = '4'; break;
+            //     case 5: returned[written] = '5'; break;
+            //     case 6: returned[written] = '6'; break;
+            //     case 7: returned[written] = '7'; break;
+            // }
+            returned[written] = '0' + (char)checked.to_ullong();
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == '0')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    template<size_t size>
+    std::string base16auint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 4 + ((size % 4 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 4)
+        {
+            std::bitset<4> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+            checked.set(3, (i + 3 < size)?(current[i + 3]):(false));
+
+            // switch(checked.to_ulong())
+            // {
+            //     default: returned[written] = ' '; break;
+            //     case 0: returned[written] = '0'; break;
+            //     case 1: returned[written] = '1'; break;
+            //     case 2: returned[written] = '2'; break;
+            //     case 3: returned[written] = '3'; break;
+            //     case 4: returned[written] = '4'; break;
+            //     case 5: returned[written] = '5'; break;
+            //     case 6: returned[written] = '6'; break;
+            //     case 7: returned[written] = '7'; break;
+            // }
+            // if(checked.to_ullong() < 10) returned[written] = '0' + (char)checked.to_ullong();
+            // else switch(checked.to_ulong())
+            // {
+            //     default: returned[written] = ' '; break;
+            //     case 10: returned[written] = 'A'; break;
+            //     case 11: returned[written] = 'B'; break;
+            //     case 12: returned[written] = 'C'; break;
+            //     case 13: returned[written] = 'D'; break;
+            //     case 14: returned[written] = 'E'; break;
+            //     case 15: returned[written] = 'F'; break;
+            // };
+            const std::string symbols = "0123456789ABCDEF";
+            returned[written] = symbols[checked.to_ulong()];
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == '0')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    /**
+     * @brief Non base64 specification compliant conversion to base64 of number.
+     * 
+     * @tparam size Size of auint_t in bits.
+     * @param processed Processed number.
+     * @return std::string Returned string.
+     */
+    template<size_t size>
+    std::string base64auint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 6 + ((size % 6 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 6)
+        {
+            std::bitset<6> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+            checked.set(2, (i + 2 < size)?(current[i + 2]):(false));
+            checked.set(3, (i + 3 < size)?(current[i + 3]):(false));
+            checked.set(4, (i + 4 < size)?(current[i + 4]):(false));
+            checked.set(5, (i + 5 < size)?(current[i + 5]):(false));
+
+            // switch(checked.to_ulong())
+            // {
+            //     default: returned[written] = ' '; break;
+            //     case 0: returned[written] = '0'; break;
+            //     case 1: returned[written] = '1'; break;
+            //     case 2: returned[written] = '2'; break;
+            //     case 3: returned[written] = '3'; break;
+            //     case 4: returned[written] = '4'; break;
+            //     case 5: returned[written] = '5'; break;
+            //     case 6: returned[written] = '6'; break;
+            //     case 7: returned[written] = '7'; break;
+            // }
+            // if(checked.to_ullong() < 10) returned[written] = '0' + (char)checked.to_ullong();
+            // else switch(checked.to_ulong())
+            // {
+            //     default: returned[written] = ' '; break;
+            //     case 10: returned[written] = 'A'; break;
+            //     case 11: returned[written] = 'B'; break;
+            //     case 12: returned[written] = 'C'; break;
+            //     case 13: returned[written] = 'D'; break;
+            //     case 14: returned[written] = 'E'; break;
+            //     case 15: returned[written] = 'F'; break;
+            // };
+            const std::string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            returned[written] = symbols[checked.to_ulong()];
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == 'A')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    template<size_t size>
+    std::string base10auint_t(const auint_t<size>& processed)
+    {
+        return (std::string)processed;
     }
 
     template<size_t size>
