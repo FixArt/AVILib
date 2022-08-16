@@ -1037,6 +1037,43 @@ namespace AVIL
     }
 
     template<size_t size>
+    std::string base4auint_t(const auint_t<size>& processed)
+    {
+        std::bitset<size> current = (std::bitset<size>)processed;
+        std::string returned;
+        returned.resize(size / 2 + ((size % 2 != 0)?(1):(0)));
+        size_t written = 0;
+        for(size_t i = 0; i < size; i += 2)
+        {
+            std::bitset<3> checked;
+            checked.set(0, current[i]);
+            checked.set(1, (i + 1 < size)?(current[i + 1]):(false));
+
+            // switch(checked.to_ulong())
+            // {
+            //     default: returned[written] = ' '; break;
+            //     case 0: returned[written] = '0'; break;
+            //     case 1: returned[written] = '1'; break;
+            //     case 2: returned[written] = '2'; break;
+            //     case 3: returned[written] = '3'; break;
+            //     case 4: returned[written] = '4'; break;
+            //     case 5: returned[written] = '5'; break;
+            //     case 6: returned[written] = '6'; break;
+            //     case 7: returned[written] = '7'; break;
+            // }
+            returned[written] = '0' + (char)checked.to_ullong();
+
+            ++written;
+        }
+        returned = {returned.rbegin(), returned.rend()};
+        while(returned[0] == '0')
+        {
+            returned.erase(0, 1);
+        }
+        return returned;
+    }
+
+    template<size_t size>
     std::string base8auint_t(const auint_t<size>& processed)
     {
         std::bitset<size> current = (std::bitset<size>)processed;
