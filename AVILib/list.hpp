@@ -145,7 +145,7 @@ namespace AVIL
             // {
             //     if(next != nullptr)
             //     {
-            //         next->value = current->value;
+            //         next->stored = current->stored;
             //     }
             //     else
             //     {
@@ -158,7 +158,7 @@ namespace AVIL
             {
                 if(processed != nullptr)
                 {
-                    processed->value = current->value;
+                    processed->stored = current->stored;
                 }
                 else
                 {
@@ -504,7 +504,7 @@ namespace AVIL
             {
                 if(next != nullptr)
                 {
-                    next->value = current->value;
+                    next->stored = current->stored;
                 }
                 else
                 {
@@ -516,7 +516,7 @@ namespace AVIL
             // {
             //     if(next != nullptr)
             //     {
-            //         next->value = current->value;
+            //         next->stored = current->stored;
             //     }
             //     else
             //     {
@@ -529,7 +529,7 @@ namespace AVIL
             {
                 if(processed->next != nullptr)
                 {
-                    processed->next->value = current->value;
+                    processed->next->stored = current->stored;
                 }
                 else
                 {
