@@ -1,3 +1,4 @@
+#include <cmath>
 #ifndef AVILIB_USED_NUMERIC
 #pragma once 
 
@@ -151,18 +152,30 @@ namespace AVIL
         template<size_t bits>
         constexpr auint_t(const auint_t<bits>& copied)
         {
-            for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            // itself.reset();
+            // for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            // {
+            //     itself[i] = ((std::bitset<bits>)copied)[i];
+            // }
+            for(size_t i = 0; i < size; ++i)
             {
-                itself[i] = ((std::bitset<bits>)copied)[i];
+                if(i < bits) itself[i] = ((std::bitset<bits>)copied)[i];
+                else itself.set(i, false);
             }
         }
 
         template<size_t bits>
         constexpr auint_t& operator=(const auint_t<bits>& copied)
         {
-            for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            // itself.reset();
+            // for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
+            // {
+            //     itself[i] = ((std::bitset<bits>)copied)[i];
+            // }
+            for(size_t i = 0; i < size; ++i)
             {
-                itself[i] = ((std::bitset<bits>)copied)[i];
+                if(i < bits) itself[i] = ((std::bitset<bits>)copied)[i];
+                else itself.set(i, false);
             }
             return *this;
         }
@@ -273,44 +286,44 @@ namespace AVIL
             return (compared < 0)?(false):(*this <= ((auint_t)compared));
         }
 
-        constexpr auint_t operator+()
+        constexpr inline auint_t operator+() const
         {
             return {itself};
         }
 
-        constexpr auint_t operator&(const auint_t& processed)
+        constexpr inline auint_t operator&(const auint_t& processed) const
         {
             return itself & processed.itself;
         }
 
-        constexpr auint_t operator|(const auint_t& processed)
+        constexpr inline auint_t operator|(const auint_t& processed) const
         {
             return itself | processed.itself;
         }
 
-        constexpr auint_t operator^(const auint_t& processed)
+        constexpr inline auint_t operator^(const auint_t& processed) const
         {
             return itself ^ processed.itself;
         }
 
-        constexpr auint_t operator~()
+        constexpr inline auint_t operator~() const
         {
             return ~itself;
         }
 
-        constexpr auint_t operator&=(const auint_t& processed)
+        constexpr inline auint_t operator&=(const auint_t& processed)
         {
             itself &= processed.itself;
             return *this;
         }
 
-        constexpr auint_t operator|=(const auint_t& processed)
+        constexpr inline auint_t operator|=(const auint_t& processed)
         {
             itself |= processed.itself;
             return *this;
         }
 
-        constexpr auint_t operator^=(const auint_t& processed)
+        constexpr inline auint_t operator^=(const auint_t& processed)
         {
             itself ^= processed.itself;
             return *this;
@@ -1050,7 +1063,19 @@ namespace AVIL
         }
     };
 
-    template<> struct auint_t<0> {};
+    /**
+     * @brief Considered as number approaching to infinity.
+     * 
+     */
+    template<> struct auint_t<0>
+    {
+        inline operator std::string() const
+        {
+            return "0";
+        }
+    };
+
+    typedef auint_t<0> auint0_t;
 
     // typedef auint;
 
@@ -1099,6 +1124,7 @@ namespace AVIL
     template<size_t size>
     std::string base2auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "0";
         std::string returned;
         returned.resize(size);
         for(size_t i = 0; i < size; ++i)
@@ -1111,6 +1137,7 @@ namespace AVIL
     template<size_t size>
     std::string base4auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "0";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 2 + ((size % 2 != 0)?(1):(0)));
@@ -1148,6 +1175,7 @@ namespace AVIL
     template<size_t size>
     std::string base8auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "0";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 3 + ((size % 3 != 0)?(1):(0)));
@@ -1192,6 +1220,7 @@ namespace AVIL
     template<size_t size>
     std::string base16auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "0";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 4 + ((size % 4 != 0)?(1):(0)));
@@ -1243,6 +1272,7 @@ namespace AVIL
     template<size_t size>
     std::string base32auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "A";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
@@ -1272,6 +1302,7 @@ namespace AVIL
     template<size_t size>
     std::string zbase32auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "y";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
@@ -1301,6 +1332,7 @@ namespace AVIL
     template<size_t size>
     std::string base32hexauint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "0";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
@@ -1330,6 +1362,7 @@ namespace AVIL
     template<size_t size>
     std::string geohashauint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "0";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 5 + ((size % 5 != 0)?(1):(0)));
@@ -1366,6 +1399,7 @@ namespace AVIL
     template<size_t size>
     std::string base64auint_t(const auint_t<size>& processed)
     {
+        if(size == 0) return "A";
         std::bitset<size> current = (std::bitset<size>)processed;
         std::string returned;
         returned.resize(size / 6 + ((size % 6 != 0)?(1):(0)));
