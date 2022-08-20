@@ -514,6 +514,10 @@ namespace AVIL
 
             weak_ptr& operator=(weak_ptr& copied)
             {
+                if(&copied == this)
+                {
+                    return *this;
+                }
                 --(point[1]);
                 if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
                 {
@@ -538,6 +542,10 @@ namespace AVIL
 
             weak_ptr& operator=(weak_ptr* copied)
             {
+                if(copied == this)
+                {
+                    return *this;
+                }
                 --(point[1]);
                 if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
                 {
@@ -609,6 +617,10 @@ namespace AVIL
 
             weak_ptr& operator=(weak_ptr& copied)
             {
+                if(&copied == this)
+                {
+                    return *this;
+                }
                 --(point[1]);
                 if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
                 {
@@ -633,6 +645,10 @@ namespace AVIL
 
             weak_ptr& operator=(weak_ptr* copied)
             {
+                if(copied == this)
+                {
+                    return *this;
+                }
                 --(point[1]);
                 if((point[0]) == (size_t)0 and (point[1]) == (size_t)0)
                 {

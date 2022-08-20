@@ -82,6 +82,8 @@ namespace AVIL
             }
         public:
 
+            using value_type = type;
+
             vector<type>() : array{nullptr}, arraySize{0} {}
 
             template<size_t theSize>
