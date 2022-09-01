@@ -8,6 +8,7 @@
 #include <type_traits>
 
 #include "array.hpp"
+#include "iterator.hpp"
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
@@ -129,10 +130,20 @@ namespace AVIL
                 return *this;
             }
 
-            bool operator*() const
+            // bool operator*() const
+            // {
+            //     if(choosen > 7) return false;
+            //     return controlled->get(choosen);
+            // }
+
+            reference& operator*()
             {
-                if(choosen > 7) return false;
-                return controlled->get(choosen);
+                return *this;
+            }
+
+            const reference& operator*() const
+            {
+                return *this;
             }
 
             operator bool() const
@@ -142,6 +153,70 @@ namespace AVIL
             }
 
             ~reference(){}
+        };
+
+        struct iterator
+        {
+            protected:
+
+            friend boolbyte;
+
+            boolbyte* controlled;
+            unsigned char choosen = 0;
+            iterator(boolbyte* encontrolled, const unsigned char& enchoosen) : controlled{encontrolled}, choosen{enchoosen} {}
+
+            public:
+
+            iterator(const iterator& copied) = default;
+
+            iterator(iterator&& copied) = default;
+
+            iterator& operator=(const iterator& copied)
+            {
+                controlled = copied.controlled;
+                choosen = copied.choosen;
+                return *this;
+            }
+
+            bool operator==(const iterator& compared) const
+            {
+                return choosen == compared.choosen && controlled == compared.controlled;
+            }
+
+            bool operator!=(const iterator& compared) const
+            {
+                return choosen != compared.choosen || controlled != compared.controlled;
+            }
+
+            iterator& operator++()
+            {
+                ++choosen;
+                return *this;
+            }
+
+            iterator& operator--()
+            {
+                if(choosen != 0) --choosen;
+                else choosen = 8;
+                return *this;
+            }
+
+            reference operator*()
+            {
+                return controlled->operator[](choosen);
+            }
+
+            reference operator*() const
+            {
+                return controlled->operator[](choosen);
+            }
+
+            inline operator bool() const
+            {
+                return choosen < 8;
+            }
+
+            ~iterator() = default;
         };
 
         reference operator[](const unsigned char& index)
@@ -169,6 +244,26 @@ namespace AVIL
             return returned;
         }
         // #endif
+
+        iterator begin()
+        {
+            return {(boolbyte* const)this, 0};
+        }
+
+        iterator end()
+        {
+            return {(boolbyte* const)this, 8};
+        }
+
+        // reverse_iterator<iterator> rbegin()
+        // {
+        //     return reverse_iterator<iterator>{(boolbyte* const)this, 8};
+        // }
+
+        // reverse_iterator<iterator> rend()
+        // {
+        //     return reverse_iterator<iterator>{(boolbyte* const)this, 0};
+        // }
     };
 };
 #define AVILIB_USED_BOOLBYTE 1

@@ -1,3 +1,4 @@
+#include <stdexcept>
 #ifndef AVILIB_USED_VECTOR
 #pragma once 
 
@@ -6,8 +7,10 @@
 #include <functional>
 #include <algorithm>
 #include <type_traits>
+#include <exception>
 
 #include "array.hpp"
+#include "iterator.hpp"
 
 /**
  * @brief Namespace of Alternative Vector (And pair... and shared_ptr... and other things?) Implementation Library.
@@ -160,7 +163,7 @@ namespace AVIL
                 if(index > size) return;
                 if(index == size){ (*this)[index] = newElement; return; }
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
-                if(newArray == nullptr) { throw(ENOMEM); }
+                if(newArray == nullptr) { throw(std::bad_alloc{}); }
                 size_t writteni = 0;
                 for(size_t i = 0; i < size; ++i)
                 {
@@ -609,6 +612,13 @@ namespace AVIL
                 return size;
             }
 
+            size_t where(const type* const& checkedAddress) const
+            {
+                if(size == 0) return 0;
+                if(!contains(checkedAddress)) return size;
+                return (size_t)(checkedAddress - array);
+            }
+
             /**
              * @brief Allows you to find where is element which corresponds to the function condition.
              * 
@@ -666,16 +676,9 @@ namespace AVIL
                 return false;
             }
 
-            bool contains(const type* const checkedAddress) const
+            inline bool contains(const type* const& checkedAddress) const
             {
-                for(size_t i = 0; i < size; ++i)
-                {
-                    if(checkedAddress == (array + i))
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                return (checkedAddress < (array + size)) && (checkedAddress >= array);
             }
 
             bool contains(bool(shouldCount)(const type&)) const
@@ -1131,7 +1134,7 @@ namespace AVIL
                 {
                     if(to >= size) return;
                     type* newArray = (type*)malloc((size - (from - to + 1)) * sizeof(type));
-                    if(newArray == nullptr) { throw(ENOMEM); }
+                    if(newArray == nullptr) { throw(std::bad_alloc{}); }
                     size_t readi = 0;
                     for(size_t i = 0; i < size - (from - to + 1); ++i)
                     {
@@ -1154,7 +1157,7 @@ namespace AVIL
                 {
                     if(from >= size) return;
                     type* newArray = (type*)malloc((size - (to - from + 1)) * sizeof(type));
-                    if(newArray == nullptr) { throw(ENOMEM); }
+                    if(newArray == nullptr) { throw(std::bad_alloc{}); }
                     size_t readi = 0;
                     for(size_t i = 0; i < size - (to - from + 1); ++i)
                     {
@@ -1256,9 +1259,9 @@ namespace AVIL
              * 
              * @return type* Returned constant array.
              */
-            operator const type* const() const
+            operator const type* const&() const
             {
-                if(array == nullptr) throw(EFAULT);
+                if(array == nullptr) throw(std::bad_cast{});
                 return (const type* const)array;
             }
 
@@ -1269,7 +1272,7 @@ namespace AVIL
             //  */
             // operator const type&() const
             // {
-            //     if(array == nullptr) throw(EFAULT);
+            //     if(array == nullptr) throw(std::bad_cast{});
             //     return (const type&)array;
             // }
 
@@ -1280,7 +1283,7 @@ namespace AVIL
              */
             operator type*()
             {
-                if(array == nullptr) throw(EFAULT);
+                if(array == nullptr) throw(std::bad_cast{});
                 return (type*)array;
             }
 
@@ -1303,17 +1306,17 @@ namespace AVIL
             {
                 if(!exists(index))
                 {
-                    throw(EFAULT);
+                    throw(std::out_of_range{(std::string)"Attempted illegal access at " + std::to_string(index) + " in container of size " + std::to_string(size) + ".\n"});
                 }
                 return array[index];
             }
 
-            type &operator[](const size_t &index)
+            inline type &operator[](const size_t &index)
             {
                 return at(index);
             }
 
-            const type& operator[](const size_t &index) const
+            inline const type& operator[](const size_t &index) const
             {
                 return at(index);
             }
@@ -1334,7 +1337,7 @@ namespace AVIL
             void append(const type& newElement)
             {
                 type* newArray = (type*)malloc((size + 1) * sizeof(type));
-                if(newArray == nullptr) { throw(ENOMEM); }
+                if(newArray == nullptr) { throw(std::bad_alloc{}); }
                 for(size_t i = 0; i < size + 1; ++i)
                 {
                     if(i < size) new (&newArray[i]) type(array[i]);
@@ -1423,7 +1426,7 @@ namespace AVIL
             //     assignedVector.arraySize = 0;
             // }
 
-            vector<type>(const type* const assignedArray, size_t assignedSize)
+            vector<type>(const type* const& assignedArray, size_t assignedSize)
             {
                 // for(size_t i = 0; i < assignedSize; ++i)
                 // {
@@ -1434,7 +1437,7 @@ namespace AVIL
                 std::copy(&(assignedArray[0]), &(assignedArray[assignedSize]), begin());
             }
 
-            vector<type>& createFrom(const type* const assignedArray, size_t assignedSize)
+            vector<type>& createFrom(const type* const& assignedArray, size_t assignedSize)
             {
                 // for(size_t i = 0; i < assignedSize; ++i)
                 // {
@@ -1467,7 +1470,7 @@ namespace AVIL
                     if(newArray == nullptr)
                     {
                         newArray = (type*)malloc((newSize) * sizeof(type));
-                        if(newArray == nullptr) { throw(ENOMEM); }
+                        if(newArray == nullptr) { throw(std::bad_alloc{}); }
                         for(size_t i = 0; i < newSize; ++i)
                         {
                             if(i < size) new (&newArray[i]) type(array[i]);
@@ -1494,7 +1497,7 @@ namespace AVIL
                 else
                 {
                     array = (type*)malloc((newSize) * sizeof(type));
-                    if(array == nullptr) { throw(ENOMEM); }
+                    if(array == nullptr) { throw(std::bad_alloc{}); }
                     for(size_t i = 0; i < newSize; ++i)
                     {
                         new (&array[i]) type;
@@ -1531,7 +1534,7 @@ namespace AVIL
                 if(newArray == nullptr)
                 {
                     newArray = (type*)malloc((arraySize - reducedSize) * sizeof(type));
-                    if(newArray == nullptr) { throw(ENOMEM); }
+                    if(newArray == nullptr) { throw(std::bad_alloc{}); }
                     for(size_t i = 0; i < arraySize - reducedSize; ++i)
                     {
                         new (&newArray[i]) type(array[i]);
@@ -1583,6 +1586,26 @@ namespace AVIL
                     }
                     resize(arraySize - std::abs(choosedOffset));
                 }
+            }
+
+            vector<type> slide(size_t choosedOffset) const
+            {
+                choosedOffset %= size;
+                // size_t writteni = 0;
+                // type temporary;
+                vector<type> returned;
+                for(size_t i = 0; i < size; ++i)
+                {
+                    // temporary = array[(i + choosedOffset) % size];
+                    // array[(i + choosedOffset) % size] = array[i];
+                    returned[(i + choosedOffset) % size] = array[i];
+                }
+                return returned;
+            }
+
+            constexpr inline vector<type> slide(const intmax_t& choosedOffset) const
+            {
+                return slide(((choosedOffset % size) + size) % size);
             }
             
             void bubbleSort()
@@ -2070,22 +2093,22 @@ namespace AVIL
                 return &array[arraySize];
             }
             
-            const type* rbegin() const
+            reverse_iterator<const type*> rbegin() const
             {
                 return &array[arraySize - 1];
             }
 
-            const type* rend() const
+            reverse_iterator<const type*> rend() const
             {
                 return &array[-1];
             }
 
-            type* rbegin()
+            reverse_iterator<type*> rbegin()
             {
                 return &array[arraySize - 1];
             }
 
-            type* rend()
+            reverse_iterator<type*> rend()
             {
                 return &array[-1];
             }
@@ -2100,12 +2123,12 @@ namespace AVIL
                 return &array[arraySize];
             }
             
-            const type* crbegin() const
+            reverse_iterator<const type*> crbegin() const
             {
                 return &array[arraySize - 1];
             }
 
-            const type* crend() const
+            reverse_iterator<const type*> crend() const
             {
                 return &array[-1];
             }

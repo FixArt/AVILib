@@ -1,4 +1,5 @@
 #include <cmath>
+#include <stdexcept>
 #ifndef AVILIB_USED_NUMERIC
 #pragma once 
 
@@ -7,6 +8,7 @@
 #include <string>
 #include <cstring>
 #include <type_traits>
+// #include <exception>
 // #include <iostream>
 // #include <utility>
 // #include <type_traits>
@@ -30,7 +32,7 @@ namespace AVIL
 
         std::bitset<size> itself;
 
-        constexpr void invert()
+        constexpr void invert() noexcept
         {
             for(std::size_t i = 0; i < size/2; ++i)
             {
@@ -40,7 +42,7 @@ namespace AVIL
             }
         }
 
-        constexpr size_t highestSet() const
+        constexpr size_t highestSet() const noexcept
         {
             size_t i = 0;
             for(i = size; i > 0; --i)
@@ -50,12 +52,12 @@ namespace AVIL
             return i;
         }
 
-        constexpr inline static char digitToCharacter(const unsigned short& digit)
+        constexpr inline static char digitToCharacter(const unsigned short& digit) noexcept
         {
             return '0' + digit;
         }
 
-        constexpr inline static unsigned short characterToDigit(const char& character)
+        constexpr inline static unsigned short characterToDigit(const char& character) noexcept
         {
             return (short)(character - '0');
         }
@@ -63,7 +65,7 @@ namespace AVIL
         public:
         auint_t() = default;
 
-        constexpr size_t digits() const
+        constexpr size_t digits() const noexcept
         {
             if(*this == 0 || size < 4) return 1;
             size_t count = 0;
@@ -82,7 +84,7 @@ namespace AVIL
          * @param index Placement of digit.
          * @return unsigned short Digit itself. 
          */
-        constexpr unsigned short digitrl(const size_t& index) const
+        constexpr unsigned short digitrl(const size_t& index) const noexcept
         {
             if(size < 4)
             {
@@ -114,7 +116,7 @@ namespace AVIL
          * @param index Placement of digit.
          * @return unsigned short Digit itself. 
          */
-        constexpr inline unsigned short digitlr(const size_t& index) const
+        constexpr inline unsigned short digitlr(const size_t& index) const noexcept
         {
             return digitrl(digits() - 1 - index);
         }
@@ -133,13 +135,21 @@ namespace AVIL
         //     return returned;
         // }
 
-        constexpr inline auint_t(const unsigned long long& copied) : itself{copied}
+        // template<typename = typename std::enable_if<(size <= (sizeof(unsigned long long) * 8))>>
+        // constexpr inline operator unsigned long long() const
+        // {
+        //     return itself.to_ullong();
+        // }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned long long) * 8))>>
+        constexpr inline auint_t(const unsigned long long& copied) noexcept : itself{copied}
         {
             //invert();
             //itself <<= (size - (sizeof(unsigned long long) * 8));
         }
 
-        constexpr auint_t& operator=(const unsigned long long& copied)
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned long long) * 8))>>
+        constexpr auint_t& operator=(const unsigned long long& copied) noexcept
         {
             itself = {copied};
             //invert();
@@ -147,10 +157,154 @@ namespace AVIL
             return *this;
         }
 
-        auint_t(const std::bitset<size>& copied) : itself{copied} {}
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned long) * 8) && size < (sizeof(unsigned long long) * 8))>>
+        constexpr inline auint_t(const unsigned long& copied) noexcept : itself{copied}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned long) * 8) && size < (sizeof(unsigned long long) * 8))>>
+        constexpr auint_t& operator=(const unsigned long& copied) noexcept
+        {
+            itself = {copied};
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned int) * 8) && size < (sizeof(unsigned long) * 8))>>
+        constexpr inline auint_t(const unsigned int& copied) noexcept : itself{copied}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned int) * 8) && size < (sizeof(unsigned long) * 8))>>
+        constexpr auint_t& operator=(const unsigned int& copied) noexcept
+        {
+            itself = {copied};
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned short) * 8) && size < (sizeof(unsigned short) * 8))>>
+        constexpr inline auint_t(const unsigned short& copied) noexcept : itself{copied}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned short) * 8) && size < (sizeof(unsigned short) * 8))>>
+        constexpr auint_t& operator=(const unsigned short& copied) noexcept
+        {
+            itself = {copied};
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned char) * 8) && size < (sizeof(unsigned char) * 8))>>
+        constexpr inline auint_t(const unsigned char& copied) noexcept : itself{copied}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(unsigned char) * 8) && size < (sizeof(unsigned char) * 8))>>
+        constexpr auint_t& operator=(const unsigned char& copied) noexcept
+        {
+            itself = {copied};
+            //invert();
+            //itself <<= (size - (sizeof(unsigned long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(long long) * 8))>>
+        constexpr inline auint_t(const long long& copied) noexcept : itself{(unsigned long long)((copied >= 0)?(copied):(-copied))}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(long long) * 8))>>
+        constexpr auint_t& operator=(const long long& copied) noexcept
+        {
+            itself = {(unsigned long long)((copied >= 0)?(copied):(-copied))};
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(long) * 8) && size < (sizeof(long long) * 8))>>
+        constexpr inline auint_t(const long& copied) noexcept : itself{(unsigned long)((copied >= 0)?(copied):(-copied))}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(long) * 8) && size < (sizeof(long long) * 8))>>
+        constexpr auint_t& operator=(const long& copied) noexcept
+        {
+            itself = {(unsigned long)((copied >= 0)?(copied):(-copied))};
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(int) * 8) && size < (sizeof(long) * 8))>>
+        constexpr inline auint_t(const int& copied) noexcept : itself{(unsigned int)((copied >= 0)?(copied):(-copied))}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(int) * 8) && size < (sizeof(long) * 8))>>
+        constexpr auint_t& operator=(const int& copied) noexcept
+        {
+            itself = {(unsigned int)((copied >= 0)?(copied):(-copied))};
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(short) * 8) && size < (sizeof(short) * 8))>>
+        constexpr inline auint_t(const short& copied) noexcept : itself{(unsigned short)((copied >= 0)?(copied):(-copied))}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(short) * 8) && size < (sizeof(short) * 8))>>
+        constexpr auint_t& operator=(const short& copied) noexcept
+        {
+            itself = {(unsigned short)((copied >= 0)?(copied):(-copied))};
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+            return *this;
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(char) * 8) && size < (sizeof(char) * 8))>>
+        constexpr inline auint_t(const char& copied) noexcept : itself{(unsigned char)((copied >= 0)?(copied):(-copied))}
+        {
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+        }
+
+        template<typename = typename std::enable_if<(size >= (sizeof(char) * 8) && size < (sizeof(char) * 8))>>
+        constexpr auint_t& operator=(const char& copied) noexcept
+        {
+            itself = {(unsigned char)((copied >= 0)?(copied):(-copied))};
+            //invert();
+            //itself <<= (size - (sizeof(long long) * 8));
+            return *this;
+        }
+
+        auint_t(const std::bitset<size>& copied) noexcept : itself{copied} {}
 
         template<size_t bits>
-        constexpr auint_t(const auint_t<bits>& copied)
+        constexpr auint_t(const auint_t<bits>& copied) noexcept
         {
             // itself.reset();
             // for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
@@ -165,7 +319,7 @@ namespace AVIL
         }
 
         template<size_t bits>
-        constexpr auint_t& operator=(const auint_t<bits>& copied)
+        constexpr auint_t& operator=(const auint_t<bits>& copied) noexcept
         {
             // itself.reset();
             // for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
@@ -188,17 +342,17 @@ namespace AVIL
 
         auint_t& operator=(auint_t&&) = default;
 
-        constexpr bool operator==(const auint_t& compared) const
+        constexpr bool operator==(const auint_t& compared) const noexcept
         {
             return itself == compared.itself;
         }
 
-        constexpr bool operator!=(const auint_t& compared) const
+        constexpr bool operator!=(const auint_t& compared) const noexcept
         {
             return itself != compared.itself;
         }
 
-        constexpr bool operator>(const auint_t& compared) const
+        constexpr bool operator>(const auint_t& compared) const noexcept
         {
             //for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -215,7 +369,7 @@ namespace AVIL
             return false;
         }
 
-        constexpr bool operator<(const auint_t& compared) const
+        constexpr bool operator<(const auint_t& compared) const noexcept
         {
             // for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -232,7 +386,7 @@ namespace AVIL
             return false;
         }
 
-        constexpr bool operator>=(const auint_t& compared) const
+        constexpr bool operator>=(const auint_t& compared) const noexcept
         {
             // for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -249,7 +403,7 @@ namespace AVIL
             return true;
         }
 
-        constexpr bool operator<=(const auint_t& compared) const
+        constexpr bool operator<=(const auint_t& compared) const noexcept
         {
             // for(size_t i = 0; i < size; ++i)
             for(size_t i = size; i > 0; --i)
@@ -266,70 +420,70 @@ namespace AVIL
             return true;
         }
 
-        constexpr inline bool operator>(const intmax_t& compared) const
+        constexpr inline bool operator>(const intmax_t& compared) const noexcept
         {
             return (compared < 0)?(true):(*this > ((auint_t)compared));
         }
 
-        constexpr inline bool operator<(const intmax_t& compared) const
+        constexpr inline bool operator<(const intmax_t& compared) const noexcept
         {
             return (compared < 0)?(false):(*this < ((auint_t)compared));
         }
 
-        constexpr inline bool operator>=(const intmax_t& compared) const
+        constexpr inline bool operator>=(const intmax_t& compared) const noexcept
         {
             return (compared < 0)?(true):(*this >= ((auint_t)compared));
         }
 
-        constexpr inline bool operator<=(const intmax_t& compared) const
+        constexpr inline bool operator<=(const intmax_t& compared) const noexcept
         {
             return (compared < 0)?(false):(*this <= ((auint_t)compared));
         }
 
-        constexpr inline auint_t operator+() const
+        constexpr inline auint_t operator+() const noexcept
         {
             return {itself};
         }
 
-        constexpr inline auint_t operator&(const auint_t& processed) const
+        constexpr inline auint_t operator&(const auint_t& processed) const noexcept
         {
             return itself & processed.itself;
         }
 
-        constexpr inline auint_t operator|(const auint_t& processed) const
+        constexpr inline auint_t operator|(const auint_t& processed) const noexcept
         {
             return itself | processed.itself;
         }
 
-        constexpr inline auint_t operator^(const auint_t& processed) const
+        constexpr inline auint_t operator^(const auint_t& processed) const noexcept
         {
             return itself ^ processed.itself;
         }
 
-        constexpr inline auint_t operator~() const
+        constexpr inline auint_t operator~() const noexcept
         {
             return ~itself;
         }
 
-        constexpr inline auint_t operator&=(const auint_t& processed)
+        constexpr inline auint_t operator&=(const auint_t& processed) noexcept
         {
             itself &= processed.itself;
             return *this;
         }
 
-        constexpr inline auint_t operator|=(const auint_t& processed)
+        constexpr inline auint_t operator|=(const auint_t& processed) noexcept
         {
             itself |= processed.itself;
             return *this;
         }
 
-        constexpr inline auint_t operator^=(const auint_t& processed)
+        constexpr inline auint_t operator^=(const auint_t& processed) noexcept
         {
             itself ^= processed.itself;
             return *this;
         }
 
-        constexpr auint_t& operator+=(auint_t processed)
+        constexpr auint_t& operator+=(auint_t processed) noexcept
         {
             size_t more = 0;
             // for(size_t i = size - 1; i > 0; --i)
@@ -349,7 +503,7 @@ namespace AVIL
             return *this;
         }
 
-        constexpr auint_t& operator-=(auint_t processed)
+        constexpr auint_t& operator-=(auint_t processed) noexcept
         {
             size_t more = 0;
             //for(size_t i = size - 1; i > 0; --i)
@@ -366,7 +520,7 @@ namespace AVIL
             return *this;
         }
 
-        constexpr auint_t& operator*=(auint_t processed)
+        constexpr auint_t& operator*=(auint_t processed) noexcept
         {
             if(processed == 10)
             {
@@ -410,7 +564,7 @@ namespace AVIL
             return *this;
         }
 
-        constexpr inline auint_t distance(auint_t number)
+        constexpr inline auint_t distance(auint_t number) const noexcept
         {
             // if(*this > number)
             // {
@@ -460,11 +614,12 @@ namespace AVIL
         //     return *this;
         // }
 
-        constexpr auint_t& operator/=(const auint_t& processed)
+        constexpr auint_t& operator/=(const auint_t& processed) noexcept
         {
             if(processed == 0)
             {
-                throw(EINVAL);
+                // throw(std::overflow_error("Division by zero."));
+                return *this = 0;
             }
             auint_t quotient = 0;
             auint_t<size + 1> temporaryProcessed = processed;
@@ -498,11 +653,13 @@ namespace AVIL
             return *this;
         }
 
-        constexpr auint_t& divideWithRemainder(const auint_t& processed, auint_t& remainder)
+        constexpr auint_t& divideWithRemainder(const auint_t& processed, auint_t& remainder) noexcept
         {
             if(processed == 0)
             {
-                throw(EINVAL);
+                // throw(std::overflow_error("Division by zero."));
+                remainder = 0;
+                return *this = 0;
             }
             auint_t quotient = 0;
             auint_t<size + 1> temporaryProcessed = processed;
@@ -538,7 +695,7 @@ namespace AVIL
             return *this;
         }
 
-        constexpr auint_t& operator%=(auint_t processed)
+        constexpr auint_t& operator%=(auint_t processed) noexcept
         {
             // auint_t<size> remainder;
             // for(remainder = itself; remainder >= processed; remainder -= processed) {}
@@ -547,6 +704,7 @@ namespace AVIL
             const size_t second = processed.highestSet();
             if(second > first) return *this;
             if(second == first && (*this < processed)) return *this;
+            if(first > second) return *this = 0;
 
             const size_t shift = first - second;
             processed <<= shift;
@@ -568,22 +726,22 @@ namespace AVIL
             return *this;
         }
 
-        constexpr inline auint_t<size> mod(const auint_t<size>& number) const
+        constexpr inline auint_t<size> mod(const auint_t<size>& number) const noexcept
         {
             return *this % number;
         }
 
-        constexpr inline auint_t<size> mod2() const
+        constexpr inline auint_t<size> mod2() const noexcept
         {
             return (itself[0])?(1):(0);
         }
 
-        constexpr inline auint_t<size> mod10() const
+        constexpr inline auint_t<size> mod10() const noexcept
         {
             return *this % 10;
         }
 
-        constexpr auint_t<size> log(const auint_t<size>& previous)
+        constexpr auint_t<size> log(const auint_t<size>& previous) const noexcept
         {
             // if(*this == 1)
             // {
@@ -645,45 +803,45 @@ namespace AVIL
             return guess;
         }
 
-        constexpr inline auint_t log2()
+        constexpr inline auint_t log2() const noexcept
         {
             return log(2);
         }
 
-        constexpr inline auint_t log10()
+        constexpr inline auint_t log10() const noexcept
         {
             return log(10);
         }
 
-        constexpr inline auint_t operator+(const auint_t& processed) const
+        constexpr inline auint_t operator+(const auint_t& processed) const noexcept
         {
             auint_t<size> returned = *this;
             returned += processed;
             return returned;
         }
 
-        constexpr inline auint_t operator-(const auint_t& processed) const
+        constexpr inline auint_t operator-(const auint_t& processed) const noexcept
         {
             auint_t<size> returned = *this;
             returned -= processed;
             return returned;
         }
 
-        constexpr inline auint_t operator*(const auint_t& processed) const
+        constexpr inline auint_t operator*(const auint_t& processed) const noexcept
         {
             auint_t<size> returned = *this;
             returned *= processed;
             return returned;
         }
 
-        constexpr inline auint_t operator/(const auint_t& processed) const
+        constexpr inline auint_t operator/(const auint_t& processed) const noexcept
         {
             auint_t<size> returned = *this;
             returned /= processed;
             return returned;
         }
 
-        constexpr auint_t pow(const auint_t& power) const
+        constexpr auint_t pow(const auint_t& power) const noexcept
         {
             if(power == 0) return 1;
             auint_t<size> additional = *this;
@@ -703,7 +861,7 @@ namespace AVIL
             return resolution;
         }
 
-        constexpr auint_t sqrt() const
+        constexpr auint_t sqrt() const noexcept
         {
             auint_t<size> temporary, returned, preturned;
             preturned.itself.set(0, (returned.itself[0])?(false):(true));
@@ -722,7 +880,7 @@ namespace AVIL
             return returned;
         }
 
-        constexpr auint_t root(auint_t<size> power) const
+        constexpr auint_t root(auint_t<size> power) const noexcept
         {
             if(power == 2) return sqrt();
             // auint_t<size> low, high, plow, phigh;
@@ -767,7 +925,7 @@ namespace AVIL
         //     return (auint_t<size>)(e.pow((auint_t<(size > 15)?(size):(16)>)*this) / (((auint_t<(size > 15)?(size):(16)>)10000).pow((auint_t<(size > 15)?(size):(16)>)*this)));
         // }
 
-        constexpr auint_t factorial() const
+        constexpr auint_t factorial() const noexcept
         {
             auint_t returned = 1;
             for(auint_t i = 2; i <= *this; ++i)
@@ -777,55 +935,55 @@ namespace AVIL
             return returned;
         }
 
-        constexpr inline auint_t operator%(const auint_t& processed) const
+        constexpr inline auint_t operator%(const auint_t& processed) const noexcept
         {
             auint_t<size> returned = *this;
             returned %= processed;
             return returned;
         }
 
-        constexpr inline auint_t& operator++()
+        constexpr inline auint_t& operator++() noexcept
         {
             return *this += 1;
         }
 
-        constexpr inline auint_t& operator--()
+        constexpr inline auint_t& operator--() noexcept
         {
             return *this -= 1;
         }
 
-        constexpr inline auint_t operator++(int)
+        constexpr inline auint_t operator++(int) noexcept
         {
             *this += 1;
             return *this + 1;
         }
 
-        constexpr inline auint_t operator--(int)
+        constexpr inline auint_t operator--(int) noexcept
         {
             *this -= 1;
             return *this - 1;
         }
 
-        constexpr inline auint_t& operator>>=(size_t number)
+        constexpr inline auint_t& operator>>=(size_t number) noexcept
         {
             itself >>= number;
             return *this;
         }
 
-        constexpr inline auint_t& operator<<=(size_t number)
+        constexpr inline auint_t& operator<<=(size_t number) noexcept
         {
             itself <<= number;
             return *this;
         }
 
-        constexpr inline auint_t operator>>(size_t number) const
+        constexpr inline auint_t operator>>(size_t number) const noexcept
         {
             auint_t<size> returned = *this;
             returned >>= number;
             return returned;
         }
 
-        constexpr inline auint_t operator<<(size_t number) const
+        constexpr inline auint_t operator<<(size_t number) const noexcept
         {
             auint_t<size> returned = *this;
             returned <<= number;
@@ -837,20 +995,15 @@ namespace AVIL
         //     return itself;
         // }
 
-        constexpr inline explicit operator std::bitset<size>&()
+        constexpr inline explicit operator std::bitset<size>() noexcept
         {
             return itself;
         }
 
-        constexpr inline explicit operator const std::bitset<size>&() const
+        constexpr inline explicit operator const std::bitset<size>&() const noexcept
         {
             return itself;
         }
-
-        // operator unsigned long long()
-        // {
-        //     return itself.to_ullong();
-        // }
 
         // template<size_t bits>
         // explicit operator std::bitset<bits>() const
@@ -867,7 +1020,7 @@ namespace AVIL
         //     }
         // }
 
-        constexpr auint_t(const std::string& copied)
+        constexpr auint_t(const std::string& copied) noexcept
         {
             *this = 0;
             for(size_t i = 0; i < copied.size(); ++i)
@@ -877,7 +1030,7 @@ namespace AVIL
             // *this /= 2;
         }
 
-        constexpr auint_t& operator=(const std::string& copied)
+        constexpr auint_t& operator=(const std::string& copied) noexcept
         {
             *this = 0;
             for(size_t i = 0; i < copied.size(); ++i)
@@ -888,7 +1041,7 @@ namespace AVIL
             return *this;
         }
 
-        operator std::string() const
+        operator std::string() const noexcept
         {
             // if(*this == 0)
             // {
@@ -941,24 +1094,24 @@ namespace AVIL
             }
             }
 
-        constexpr explicit inline operator bool() const
+        constexpr explicit inline operator bool() const noexcept
         {
             return !(itself.none());
         }
 
         ~auint_t() = default;
 
-        constexpr inline bool isEven() const
+        constexpr inline bool isEven() const noexcept
         {
             return !itself[0];
         }
 
-        constexpr inline bool isOdd() const
+        constexpr inline bool isOdd() const noexcept
         {
             return itself[0];
         }
 
-        constexpr bool isPrime() const
+        constexpr bool isPrime() const noexcept
         {
             if(*this == 2) return true;
             if(*this < 2)
@@ -976,7 +1129,7 @@ namespace AVIL
             return true;
         }
 
-        constexpr bool isPowerOf2() const
+        constexpr bool isPowerOf2() const noexcept
         {
             bool found = false;
             for(bool checked : itself)
@@ -994,7 +1147,7 @@ namespace AVIL
         }
 
         template<size_t bits>
-        constexpr operator auint_t<bits>()
+        constexpr operator auint_t<bits>() const noexcept
         {
             std::bitset<bits> returned;
             for(size_t i = 0; i < ((size > bits)?(bits):(size)); ++i)
@@ -1004,22 +1157,22 @@ namespace AVIL
             return {returned};
         }
 
-        constexpr bool isAdditionOverflow(const auint_t& processed) const
+        constexpr bool isAdditionOverflow(const auint_t& processed) const noexcept
         {
             return *this > (auint_t(std::bitset<size>{}.set()) - processed);
         }
 
-        constexpr bool isSubtractionOverflow(const auint_t& processed) const
+        constexpr bool isSubtractionOverflow(const auint_t& processed) const noexcept
         {
             return *this < processed;
         }
 
-        constexpr bool isMultiplicationOverflow(const auint_t& processed) const
+        constexpr bool isMultiplicationOverflow(const auint_t& processed) const noexcept
         {
             return (processed > 1) && (*this > (auint_t(std::bitset<size>{}.set()) / processed));
         }
 
-        constexpr bool isFactorialOverflow(const auint_t& processed) const
+        constexpr bool isFactorialOverflow(const auint_t& processed) const noexcept
         {
             auint_t returned = 1;
             for(auint_t i = 2; i <= *this; ++i)
@@ -1034,7 +1187,7 @@ namespace AVIL
          * @brief Fills number with digits of Euler's number.
          * 
          */
-        constexpr auint_t& e()
+        constexpr auint_t& e() noexcept
         {
             // itself = 2;
             // auint_t currentFactorial = 2;
@@ -1064,12 +1217,12 @@ namespace AVIL
     };
 
     /**
-     * @brief Considered as number approaching to infinity.
+     * @brief Considered as zero.
      * 
      */
     template<> struct auint_t<0>
     {
-        inline operator std::string() const
+        inline operator std::string() const noexcept
         {
             return "0";
         }

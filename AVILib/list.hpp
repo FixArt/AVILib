@@ -6,7 +6,9 @@
 // #include <functional>
 #include <algorithm>
 #include <type_traits>
+#include <exception>
 
+#include "iterator.hpp"
 #include "vector.hpp"
 
 /**
@@ -345,7 +347,7 @@ namespace AVIL
             return current; // Size returned.
         }
 
-        operator vector<type>()
+        operator vector<type>() const
         {
             vector<type> returned;
             for(node* processed = next; processed != nullptr; processed = processed->next)
@@ -368,6 +370,124 @@ namespace AVIL
                 further = processed->next;
                 delete processed;
             }
+        }
+
+        class iterator
+        {
+            private:
+            node* given;
+            public:
+            iterator(node* enplaced) : given{enplaced} {}
+
+            constexpr bool operator==(const iterator& compared) const
+            {
+                return given == compared.given;
+            }
+
+            constexpr bool operator!=(const iterator& compared) const
+            {
+                return given != compared.given;
+            }
+
+            iterator& operator++()
+            {
+                if(given == nullptr) return *this;
+                given = given->next;
+                return *this;
+            }
+
+            type& operator*()
+            {
+                if(given == nullptr) throw(std::out_of_range{"Out of range access."});
+                return given->stored;
+            }
+
+            const type& operator*() const
+            {
+                if(given == nullptr) throw(std::out_of_range{"Out of range access."});
+                return given->stored;
+            }
+
+            iterator(const iterator&) = default;
+
+            iterator(iterator&&) = default;
+
+            iterator& operator=(const iterator&) = default;
+
+            iterator& operator=(iterator&&) = default;
+
+            ~iterator() = default;
+        };
+
+        class const_iterator
+        {
+            private:
+            node* given;
+            public:
+            const_iterator(node* enplaced) : given{enplaced} {}
+
+            constexpr bool operator==(const const_iterator& compared) const
+            {
+                return given == compared.given;
+            }
+
+            constexpr bool operator!=(const const_iterator& compared) const
+            {
+                return given != compared.given;
+            }
+
+            const_iterator& operator++()
+            {
+                if(given == nullptr) return *this;
+                given = given->next;
+                return *this;
+            }
+
+            const type& operator*() const
+            {
+                if(given == nullptr) throw(std::out_of_range{"Out of range access."});
+                return given->stored;
+            }
+
+            const_iterator(const const_iterator&) = default;
+
+            const_iterator(const_iterator&&) = default;
+
+            const_iterator& operator=(const const_iterator&) = default;
+
+            const_iterator& operator=(const_iterator&&) = default;
+
+            ~const_iterator() = default;
+        };
+
+        iterator begin()
+        {
+            return next;
+        }
+
+        iterator end()
+        {
+            return last;
+        }
+
+        const_iterator begin() const
+        {
+            return next;
+        }
+
+        const_iterator end() const
+        {
+            return last;
+        }
+
+        const_iterator cbegin() const
+        {
+            return next;
+        }
+
+        const_iterator cend() const
+        {
+            return last;
         }
     };
 
@@ -739,7 +859,7 @@ namespace AVIL
             return current; // Size returned.
         }
 
-        operator vector<type>()
+        operator vector<type>() const
         {
             vector<type> returned;
             for(node* processed = next; processed != nullptr; processed = processed->next)
@@ -762,6 +882,168 @@ namespace AVIL
                 further = processed->next;
                 delete processed;
             }
+        }
+
+        class iterator
+        {
+            private:
+            node* given;
+            public:
+            iterator(node* enplaced) : given{enplaced} {}
+
+            constexpr bool operator==(const iterator& compared) const
+            {
+                return given == compared.given;
+            }
+
+            constexpr bool operator!=(const iterator& compared) const
+            {
+                return given != compared.given;
+            }
+
+            iterator& operator++()
+            {
+                if(given == nullptr) return *this;
+                given = given->next;
+                return *this;
+            }
+
+            iterator& operator--()
+            {
+                if(given == nullptr) return *this;
+                given = given->previous;
+                return *this;
+            }
+
+            type& operator*()
+            {
+                if(given == nullptr) throw(std::out_of_range{"Out of range access."});
+                return given->stored;
+            }
+
+            const type& operator*() const
+            {
+                if(given == nullptr) throw(std::out_of_range{"Out of range access."});
+                return given->stored;
+            }
+
+            iterator(const iterator&) = default;
+
+            iterator(iterator&&) = default;
+
+            iterator& operator=(const iterator&) = default;
+
+            iterator& operator=(iterator&&) = default;
+
+            ~iterator() = default;
+        };
+
+        class const_iterator
+        {
+            private:
+            node* given;
+            public:
+            const_iterator(node* enplaced) : given{enplaced} {}
+
+            constexpr bool operator==(const const_iterator& compared) const
+            {
+                return given == compared.given;
+            }
+
+            constexpr bool operator!=(const const_iterator& compared) const
+            {
+                return given != compared.given;
+            }
+
+            const_iterator& operator++()
+            {
+                if(given == nullptr) return *this;
+                given = given->next;
+                return *this;
+            }
+
+            iterator& operator--()
+            {
+                if(given == nullptr) return *this;
+                given = given->previous;
+                return *this;
+            }
+
+            const type& operator*() const
+            {
+                if(given == nullptr) throw(std::out_of_range{"Out of range access."});
+                return given->stored;
+            }
+
+            const_iterator(const const_iterator&) = default;
+
+            const_iterator(const_iterator&&) = default;
+
+            const_iterator& operator=(const const_iterator&) = default;
+
+            const_iterator& operator=(const_iterator&&) = default;
+
+            ~const_iterator() = default;
+        };
+
+        iterator begin()
+        {
+            return next;
+        }
+
+        iterator end()
+        {
+            return last;
+        }
+
+        const_iterator begin() const
+        {
+            return next;
+        }
+
+        const_iterator end() const
+        {
+            return last;
+        }
+
+        const_iterator cbegin() const
+        {
+            return next;
+        }
+
+        const_iterator cend() const
+        {
+            return last;
+        }
+
+        reverse_iterator<iterator> rbegin()
+        {
+            return next;
+        }
+
+        reverse_iterator<iterator> rend()
+        {
+            return last;
+        }
+
+        reverse_iterator<const_iterator> rbegin() const
+        {
+            return next;
+        }
+
+        reverse_iterator<const_iterator> rend() const
+        {
+            return last;
+        }
+
+        reverse_iterator<const_iterator> crbegin() const
+        {
+            return next;
+        }
+
+        reverse_iterator<const_iterator> crend() const
+        {
+            return last;
         }
     };
 };
