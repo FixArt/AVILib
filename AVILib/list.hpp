@@ -204,9 +204,21 @@ namespace AVIL
             processed->next = new node{appended, nullptr};
         }
 
-        void append(const vector<type>& copied)
+        void append(const AVIL::vector<type>& copied)
         {
+            if(copied.size == 0) return;
             node* processed = last();
+            if(processed == nullptr)
+            {
+                next = new node{copied[0], nullptr};
+                processed = next;
+                for(size_t i = 1; i < copied.size; ++i)
+                {
+                    processed->next = new node{copied[i], nullptr};
+                    processed = processed->next;
+                }
+                return;
+            }
             for(const type& added : copied)
             {
                 processed = new node{added, nullptr};
@@ -257,7 +269,7 @@ namespace AVIL
             before->next = after;
         }
 
-        list(const vector<type>& copied)
+        list(const AVIL::vector<type>& copied)
         {
             node* processed = next;
             for(const type& added : copied)
@@ -347,9 +359,9 @@ namespace AVIL
             return current; // Size returned.
         }
 
-        operator vector<type>() const
+        operator AVIL::vector<type>() const
         {
-            vector<type> returned;
+            AVIL::vector<type> returned;
             for(node* processed = next; processed != nullptr; processed = processed->next)
             {
                 returned.append(processed->stored);
@@ -467,7 +479,7 @@ namespace AVIL
 
         iterator end()
         {
-            return last;
+            return nullptr;
         }
 
         const_iterator begin() const
@@ -477,7 +489,7 @@ namespace AVIL
 
         const_iterator end() const
         {
-            return last;
+            return nullptr;
         }
 
         const_iterator cbegin() const
@@ -487,7 +499,7 @@ namespace AVIL
 
         const_iterator cend() const
         {
-            return last;
+            return nullptr;
         }
     };
 
@@ -693,12 +705,14 @@ namespace AVIL
             processed->next = new node{appended, nullptr, processed};
         }
 
-        void append(const vector<type>& copied)
+        void append(const AVIL::vector<type>& copied)
         {
+            if(copied.size == 0) return;
             node* processed = last();
             if(processed == nullptr)
             {
                 next = new node{copied[0], nullptr, nullptr};
+                processed = next;
                 for(size_t i = 1; i < copied.size; ++i)
                 {
                     processed->next = new node{copied[i], nullptr, processed};
@@ -759,7 +773,7 @@ namespace AVIL
             after->previous = before;
         }
 
-        dlist(const vector<type>& copied)
+        dlist(const AVIL::vector<type>& copied)
         {
             node* processed = next;
             if(processed == nullptr)
@@ -859,9 +873,9 @@ namespace AVIL
             return current; // Size returned.
         }
 
-        operator vector<type>() const
+        operator AVIL::vector<type>() const
         {
-            vector<type> returned;
+            AVIL::vector<type> returned;
             for(node* processed = next; processed != nullptr; processed = processed->next)
             {
                 returned.append(processed->stored);
@@ -993,7 +1007,7 @@ namespace AVIL
 
         iterator end()
         {
-            return last;
+            return nullptr;
         }
 
         const_iterator begin() const
@@ -1003,7 +1017,7 @@ namespace AVIL
 
         const_iterator end() const
         {
-            return last;
+            return nullptr;
         }
 
         const_iterator cbegin() const
@@ -1013,37 +1027,37 @@ namespace AVIL
 
         const_iterator cend() const
         {
-            return last;
+            return nullptr;
         }
 
-        reverse_iterator<iterator> rbegin()
+        AVIL::reverse_iterator<iterator> rbegin()
         {
-            return next;
+            return AVIL::reverse_iterator<iterator>{last()};
         }
 
-        reverse_iterator<iterator> rend()
+        AVIL::reverse_iterator<iterator> rend()
         {
-            return last;
+            return AVIL::reverse_iterator<iterator>{nullptr};
         }
 
-        reverse_iterator<const_iterator> rbegin() const
+        AVIL::reverse_iterator<const_iterator> rbegin() const
         {
-            return next;
+            return AVIL::reverse_iterator<const_iterator>{last()};
         }
 
-        reverse_iterator<const_iterator> rend() const
+        AVIL::reverse_iterator<const_iterator> rend() const
         {
-            return last;
+            return AVIL::reverse_iterator<const_iterator>{nullptr};
         }
 
-        reverse_iterator<const_iterator> crbegin() const
+        AVIL::reverse_iterator<const_iterator> crbegin() const
         {
-            return next;
+            return AVIL::reverse_iterator<const_iterator>{last()};
         }
 
-        reverse_iterator<const_iterator> crend() const
+        AVIL::reverse_iterator<const_iterator> crend() const
         {
-            return last;
+            return AVIL::reverse_iterator<const_iterator>{nullptr};
         }
     };
 };

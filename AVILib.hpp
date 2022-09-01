@@ -5,12 +5,14 @@
  * 
  */
 #ifndef AVILIB_USED
+#include "AVILib/iterator.hpp"
 #include "AVILib/numeric.hpp"
 #include "AVILib/collector.hpp"
 #include "AVILib/array.hpp"
 #include "AVILib/vector.hpp"
 #include "AVILib/stack.hpp"
 #include "AVILib/heap.hpp"
+#include "AVILib/list.hpp"
 // #include "AVILib/sets.hpp"
 // #include "AVILib/maps.hpp"
 #include "AVILib/counter.hpp"

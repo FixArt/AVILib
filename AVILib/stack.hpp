@@ -28,6 +28,7 @@ namespace AVIL
     struct stack
     {
         private:
+
         AVIL::vector<type> itself;
         public:
         stack() : itself{} {}

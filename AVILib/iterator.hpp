@@ -52,6 +52,8 @@ namespace AVIL
 
         reverse_iterator& operator=(const reverse_iterator&) = default;
 
+        reverse_iterator(const reversed& copied) : reversed{copied} {}
+
         reverse_iterator& operator=(const reversed& copied)
         {
             reversed::operator=(copied);
@@ -64,37 +66,37 @@ namespace AVIL
 
         inline bool operator==(const reverse_iterator& compared) const
         {
-            return reversed::operator==(compared.itself);
+            return reversed::operator==(compared);
         }
 
         inline bool operator!=(const reverse_iterator& compared) const
         {
-            return reversed::operator!=(compared.itself);
+            return reversed::operator!=(compared);
         }
 
         reverse_iterator& operator++()
         {
-            reversed::operator++();
+            reversed::operator--();
             return *this;
         }
 
         reverse_iterator& operator--()
         {
-            reversed::operator--();
+            reversed::operator++();
             return *this;
         }
 
         template<typename type>
         reverse_iterator& operator+=(const type& value)
         {
-            reversed::operator+=(value);
+            reversed::operator-=(value);
             return *this;
         }
 
         template<typename type>
         reverse_iterator& operator-=(const type& value)
         {
-            reversed::operator-=(value);
+            reversed::operator+=(value);
             return *this;
         }
 
@@ -102,7 +104,7 @@ namespace AVIL
         reverse_iterator operator+(const type& value) const
         {
             reverse_iterator<reversed> returned;
-            returned.operator+=(value);
+            returned.operator-=(value);
             return returned;
         }
 
@@ -110,7 +112,7 @@ namespace AVIL
         reverse_iterator operator-(const type& value) const
         {
             reverse_iterator<reversed> returned;
-            returned.operator-=(value);
+            returned.operator+=(value);
             return returned;
         }
 
